@@ -94,6 +94,7 @@ import com.android.systemui.mediaprojection.MediaProjectionModule;
 import com.android.systemui.mediaprojection.appselector.MediaProjectionActivitiesModule;
 import com.android.systemui.mediaprojection.taskswitcher.MediaProjectionTaskSwitcherModule;
 import com.android.systemui.mediarouter.MediaRouterModule;
+import com.android.systemui.mica.MicaModule;
 import com.android.systemui.model.SysUiState;
 import com.android.systemui.motioncues.MotionCuesModule;
 import com.android.systemui.navigationbar.NavigationBarComponent;
@@ -261,6 +262,7 @@ import javax.inject.Named;
         MediaProjectionTaskSwitcherModule.class,
         MediaRouterModule.class,
         MotionCuesModule.class,
+        MicaModule.class,
         MSDLModule.class,
         NotificationRowModule.class,
         PeopleHubModule.class,
