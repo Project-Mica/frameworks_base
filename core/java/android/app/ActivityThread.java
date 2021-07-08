@@ -8155,6 +8155,11 @@ public final class ActivityThread extends ClientTransactionHandler
 
         // Preload fonts resources
         FontsContract.setApplicationContextForResources(appContext);
+        
+        if (!app.getPackageName().equals("com.google.android.gm")) {
+            Typeface.updateDefaultFont(data.info.getResources());
+        }
+
         if (!Process.isIsolated()) {
             try {
                 final ApplicationInfo info =
