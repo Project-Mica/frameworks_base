@@ -6985,6 +6985,16 @@ public abstract class Context {
     @FlaggedApi(android.service.chooser.Flags.FLAG_INTERACTIVE_CHOOSER)
     public static final String CHOOSER_SERVICE = "chooser";
 
+
+    /**
+     * {@link android.hardware.PowerShareManager} for accessing and setting locked apps state.
+     *
+     * @see #getSystemService(String)
+     * @see android.hardware.PowerShareManager
+     * @hide
+     */
+    public static final String POWER_SHARE_SERVICE = "power_share";
+
     /**
      * Determine whether the given permission is allowed for a particular
      * process and user ID running in the system.

@@ -6649,6 +6649,12 @@ public final class Settings {
          */
         public static final String SMART_5G = "smart_5g";
 
+        /** 
+         * Power share threshold
+         * @hide
+         */
+        public static final String POWER_SHARE_THRESHOLD = "powershare_threshold";
+
         /**
          * These are all public system settings
          *
