@@ -286,5 +286,6 @@ public class SystemSettingsValidators {
         VALIDATORS.put(
                 System.ACCESSIBILITY_FORCE_INVERT_COLOR_OVERRIDE_PACKAGES_TO_DISABLE,
                 new PackageNameListValidator(","));
+        VALIDATORS.put(System.POWER_SHARE_THRESHOLD, new InclusiveIntegerRangeValidator(1, 99));
     }
 }

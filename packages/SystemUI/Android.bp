@@ -572,7 +572,6 @@ android_library {
         "SurfaceEffectsComposeLib",
         "uilatencystats_flags_core_java_lib",
         "personalcontext_ace_visualizer",
-        "vendor.lineage.powershare-V1-java",
     ],
     enable_ksp: true,
     annotation_processor_flags: [
@@ -782,6 +781,7 @@ android_library {
         "displaylib",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "dynamiccolors",
         "SurfaceEffectsComposeLib",
 =======
@@ -790,6 +790,8 @@ android_library {
 =======
         "vendor.lineage.powershare-V1-java",
 >>>>>>> f647d20dda8e (PowerShareTile: Migrate to AIDL PowerShare HAL)
+=======
+>>>>>>> 67f193d3d080 (base: Add PowerShareManager)
     ],
 }
 

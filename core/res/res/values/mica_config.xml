@@ -70,4 +70,7 @@
     </string-array>
     <string-array name="device_configs_override" translatable="false">
     </string-array>
+
+   <!-- Power share thresholds -->
+    <integer name="config_defPowerShareThreshold">20</integer>
 </resources>
