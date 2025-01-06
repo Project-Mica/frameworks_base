@@ -7229,6 +7229,16 @@ public abstract class Context {
     @FlaggedApi(android.service.chooser.Flags.FLAG_INTERACTIVE_CHOOSER)
     public static final String CHOOSER_SERVICE = "chooser";
 
+
+    /**
+     * {@link android.hardware.PowerShareManager} for accessing and setting locked apps state.
+     *
+     * @see #getSystemService(String)
+     * @see android.hardware.PowerShareManager
+     * @hide
+     */
+    public static final String POWER_SHARE_SERVICE = "power_share";
+
     /**
      * Use with {@link #getSystemService(String)} to retrieve an
      * {@link android.os.AnomalyDetectorManager}.
