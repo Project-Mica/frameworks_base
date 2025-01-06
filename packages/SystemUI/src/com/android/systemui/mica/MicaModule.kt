@@ -16,9 +16,17 @@
 
 package com.android.systemui.mica
 
+import com.android.systemui.qs.QsEventLogger
+import com.android.systemui.qs.pipeline.shared.TileSpec
+import com.android.systemui.qs.shared.model.TileCategory
 import com.android.systemui.qs.tileimpl.QSTileImpl
 import com.android.systemui.qs.tiles.PowerShareTile
+import com.android.systemui.qs.tiles.base.shared.model.QSTileConfig;
+import com.android.systemui.qs.tiles.base.shared.model.QSTilePolicy;
+import com.android.systemui.qs.tiles.base.shared.model.QSTileUIConfig;
 
+import com.android.systemui.res.R
+import dagger.Provides
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -31,4 +39,21 @@ interface MicaModule {
     @IntoMap
     @StringKey(PowerShareTile.TILE_SPEC)
     fun bindPowerShareTile(powerShareTile: PowerShareTile): QSTileImpl<*>
+
+    companion object {
+        @Provides
+        @IntoMap
+        @StringKey(PowerShareTile.TILE_SPEC)
+        fun providePowerShareTileConfig(uiEventLogger: QsEventLogger): QSTileConfig {
+            return QSTileConfig(
+                tileSpec = TileSpec.create(PowerShareTile.TILE_SPEC),
+                uiConfig = QSTileUIConfig.Resource(
+                    iconRes = com.android.internal.R.drawable.ic_qs_powershare,
+                    labelRes = R.string.quick_settings_powershare_label
+                ),
+                instanceId = uiEventLogger.getNewInstanceId(),
+                category = TileCategory.UTILITIES
+            )
+        }
+    }
 }
