@@ -33,6 +33,12 @@
     <java-symbol type="array" name="global_device_configs_override" />
     <java-symbol type="array" name="device_configs_override" />
 
-    <!-- Power share thresholds -->
+   <!-- PowerShare -->
     <java-symbol type="integer" name="config_defPowerShareThreshold" />
+    <java-symbol type="string" name="battery_share_label" />
+    <java-symbol type="string" name="battery_share_notification_summary" />
+    <java-symbol type="string" name="battery_share_disabled" />
+    <java-symbol type="string" name="battery_share_disabled_power_saver" />
+    <java-symbol type="string" name="battery_share_disabled_low_battery" />
+    <java-symbol type="drawable" name="ic_qs_powershare" />
 </resources>
