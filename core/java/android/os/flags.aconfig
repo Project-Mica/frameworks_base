@@ -4,15 +4,6 @@ container: "system"
 
 # keep-sorted start block=yes newline_separated=yes
 flag {
-     # Holdback study for concurrent MessageQueue.
-     # Do not promote beyond trunkfood.
-     namespace: "system_performance"
-     name: "message_queue_force_legacy"
-     description: "Whether to holdback concurrent MessageQueue (force legacy)."
-     bug: "336880969"
-}
-
-flag {
     name: "adpf_gpu_report_actual_work_duration"
     is_exported: true
     namespace: "game"
@@ -217,6 +208,14 @@ flag {
     description: "Whether to read from angle allowlist to determine if app should use ANGLE"
     is_fixed_read_only: true
     bug: "370845648"
+}
+
+flag {
+     name: "force_concurrent_message_queue"
+     namespace: "system_performance"
+     is_exported: true
+     description: "Whether MessageQueue uses the new concurrent implementation"
+     bug: "336880969"
 }
 
 flag {

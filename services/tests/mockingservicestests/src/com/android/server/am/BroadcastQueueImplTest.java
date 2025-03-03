@@ -87,6 +87,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -1769,6 +1770,33 @@ public final class BroadcastQueueImplTest extends BaseBroadcastQueueTest {
     }
 
     @Test
+    public void testBroadcastProcessedEventRecord_broadcastDelivered_processedEventLogged()
+            throws Exception {
+        testBroadcastProcessedEventRecordLogged(
+                /* isAssumedDelivered= */ false,
+                /* isDelivered= */ true,
+                /* numberOfInvocations= */ 1);
+    }
+
+    @Test
+    public void testBroadcastProcessedEventRecord_broadcastDeliveryFailed_eventNotLogged()
+            throws Exception {
+        testBroadcastProcessedEventRecordLogged(
+                /* isAssumedDelivered= */ false,
+                /* isDelivered= */ false,
+                /* numberOfInvocations= */ 0);
+    }
+
+    @Test
+    public void testBroadcastProcessedEventRecord_broadcastAssumedDelivered_eventNotLogged()
+            throws Exception {
+        testBroadcastProcessedEventRecordLogged(
+                /* isAssumedDelivered= */ true,
+                /* isDelivered= */ true,
+                /* numberOfInvocations= */ 0);
+    }
+
+    @Test
     public void testGetPreferredSchedulingGroup() throws Exception {
         final BroadcastProcessQueue queue = new BroadcastProcessQueue(mConstants,
                 PACKAGE_GREEN, getUidForPackage(PACKAGE_GREEN));
@@ -1803,6 +1831,46 @@ public final class BroadcastQueueImplTest extends BaseBroadcastQueueTest {
         assertEquals(ProcessList.SCHED_GROUP_DEFAULT, queue.getPreferredSchedulingGroupLocked());
     }
 
+    @SuppressWarnings("GuardedBy")
+    @DisableFlags(Flags.FLAG_AVOID_NOTE_OP_AT_ENQUEUE)
+    @Test
+    public void testSkipPolicy_atEnqueueTime_flagDisabled() throws Exception {
+        final Intent userPresent = new Intent(Intent.ACTION_USER_PRESENT);
+        final Object greenReceiver = makeManifestReceiver(PACKAGE_GREEN, CLASS_GREEN);
+        final Object redReceiver = makeManifestReceiver(PACKAGE_RED, CLASS_RED);
+
+        final BroadcastRecord userPresentRecord = makeBroadcastRecord(userPresent,
+                List.of(greenReceiver, redReceiver));
+
+        final Intent timeTick = new Intent(Intent.ACTION_TIME_TICK);
+        final BroadcastRecord timeTickRecord = makeBroadcastRecord(timeTick,
+                List.of(greenReceiver, redReceiver));
+
+        doAnswer(invocation -> {
+            final BroadcastRecord r = invocation.getArgument(0);
+            final Object o = invocation.getArgument(1);
+            if (userPresent.getAction().equals(r.intent.getAction())
+                    && isReceiverEquals(o, greenReceiver)) {
+                return "receiver skipped by test";
+            }
+            return null;
+        }).when(mSkipPolicy).shouldSkipMessage(any(BroadcastRecord.class), any());
+
+        mImpl.enqueueBroadcastLocked(userPresentRecord);
+        mImpl.enqueueBroadcastLocked(timeTickRecord);
+
+        final BroadcastProcessQueue greenQueue = mImpl.getProcessQueue(PACKAGE_GREEN,
+                getUidForPackage(PACKAGE_GREEN));
+        // There should be only one broadcast for green process as the other would have
+        // been skipped.
+        verifyPendingRecords(greenQueue, List.of(timeTick));
+        final BroadcastProcessQueue redQueue = mImpl.getProcessQueue(PACKAGE_RED,
+                getUidForPackage(PACKAGE_RED));
+        verifyPendingRecords(redQueue, List.of(userPresent, timeTick));
+    }
+
+    @SuppressWarnings("GuardedBy")
+    @EnableFlags(Flags.FLAG_AVOID_NOTE_OP_AT_ENQUEUE)
     @Test
     public void testSkipPolicy_atEnqueueTime() throws Exception {
         final Intent userPresent = new Intent(Intent.ACTION_USER_PRESENT);
@@ -1824,7 +1892,7 @@ public final class BroadcastQueueImplTest extends BaseBroadcastQueueTest {
                 return "receiver skipped by test";
             }
             return null;
-        }).when(mSkipPolicy).shouldSkipMessage(any(BroadcastRecord.class), any());
+        }).when(mSkipPolicy).shouldSkipAtEnqueueMessage(any(BroadcastRecord.class), any());
 
         mImpl.enqueueBroadcastLocked(userPresentRecord);
         mImpl.enqueueBroadcastLocked(timeTickRecord);
@@ -2270,19 +2338,33 @@ public final class BroadcastQueueImplTest extends BaseBroadcastQueueTest {
         assertFalse(mImpl.isProcessFreezable(greenProcess));
     }
 
-    // TODO: Reuse BroadcastQueueTest.makeActiveProcessRecord()
-    private ProcessRecord makeProcessRecord(ApplicationInfo info) {
-        final ProcessRecord r = spy(new ProcessRecord(mAms, info, info.processName, info.uid));
-        r.setPid(mNextPid.incrementAndGet());
-        ProcessRecord.updateProcessRecordNodes(r);
-        return r;
+    @SuppressWarnings("GuardedBy")
+    private void testBroadcastProcessedEventRecordLogged(
+            boolean isAssumedDelivered,
+            boolean isDelivered,
+            int numberOfInvocations) throws Exception {
+        final Intent timeTick = new Intent(Intent.ACTION_TIME_TICK);
+        final BroadcastOptions optionsTimeTick = BroadcastOptions.makeBasic();
+        optionsTimeTick.setDeliveryGroupPolicy(BroadcastOptions.DELIVERY_GROUP_POLICY_MOST_RECENT);
+
+        final BroadcastRecord broadcastRecordSpy = Mockito.spy(
+                makeBroadcastRecord(timeTick, optionsTimeTick));
+        mImpl.enqueueBroadcastLocked(broadcastRecordSpy);
+
+        doReturn(isDelivered).when(broadcastRecordSpy).wasDelivered(anyInt());
+        doReturn(isAssumedDelivered).when(broadcastRecordSpy).isAssumedDelivered(anyInt());
+        waitForIdle();
+
+        verify(broadcastRecordSpy, times(numberOfInvocations)).updateBroadcastProcessedEventRecord(
+                any(), anyLong());
+        verify(broadcastRecordSpy).logBroadcastProcessedEventRecord();
     }
 
     BroadcastFilter makeRegisteredReceiver(ProcessRecord app, int priority) {
         final IIntentReceiver receiver = mock(IIntentReceiver.class);
         final ReceiverList receiverList = new ReceiverList(mAms, app, app.getPid(), app.info.uid,
                 UserHandle.getUserId(app.info.uid), receiver);
-        return makeRegisteredReceiver(receiverList, priority);
+        return makeRegisteredReceiver(receiverList, priority, null /* requiredPermission */);
     }
 
     private Intent createPackageChangedIntent(int uid, List<String> componentNameList) {

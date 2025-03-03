@@ -461,7 +461,14 @@ public final class SplitLayout implements DisplayInsetsController.OnInsetsChange
             return;
         }
 
-        mOffscreenTouchZones.forEach(OffscreenTouchZone::release);
+        // TODO (b/349828130): It would be good to reuse a Transaction from StageCoordinator's
+        //  mTransactionPool here, but passing it through SplitLayout and specifically
+        //  SplitLayout.release() is complicated because that function is purposely called with a
+        //  null value sometimes. When that function is refactored, we should also pass the
+        //  Transaction in here.
+        SurfaceControl.Transaction t = new SurfaceControl.Transaction();
+        mOffscreenTouchZones.forEach(touchZone -> touchZone.release(t));
+        t.apply();
         mOffscreenTouchZones.clear();
     }
 
@@ -975,8 +982,16 @@ public final class SplitLayout implements DisplayInsetsController.OnInsetsChange
         final boolean shouldVeil =
                 insets.left != 0 || insets.top != 0 || insets.right != 0 || insets.bottom != 0;
 
+        // Find the "left/top"-most position of the app surface -- usually 0, but sometimes negative
+        // if the left/top app is offscreen.
+        int leftTop = 0;
+        if (Flags.enableFlexibleTwoAppSplit()) {
+            leftTop = mIsLeftRightSplit ? getTopLeftBounds().left : getTopLeftBounds().top;
+        }
+
         final int dividerPos = mDividerSnapAlgorithm.calculateNonDismissingSnapTarget(
-                mIsLeftRightSplit ? getBottomRightBounds().width() : getBottomRightBounds().height()
+                leftTop + (mIsLeftRightSplit
+                        ? getBottomRightBounds().width() : getBottomRightBounds().height())
         ).position;
         final Rect endBounds1 = new Rect();
         final Rect endBounds2 = new Rect();
@@ -1528,11 +1543,28 @@ public final class SplitLayout implements DisplayInsetsController.OnInsetsChange
             }
         }
 
+        /**
+         * When IME is triggered on the bottom app in split screen, we want to translate the bottom
+         * app up by a certain amount so that it's not covered too much by the IME. But there's also
+         * an upper limit to the amount we want to translate (since we still need some of the top
+         * app to be visible too). So this function essentially says "try to translate the bottom
+         * app up, but stop before you make the top app too small."
+         */
         private int getTargetYOffset() {
-            final int desireOffset = Math.abs(mEndImeTop - mStartImeTop);
-            // Make sure to keep at least 30% visible for the top split.
-            final int maxOffset = (int) (getTopLeftBounds().height() * ADJUSTED_SPLIT_FRACTION_MAX);
-            return -Math.min(desireOffset, maxOffset);
+            // We want to translate up the bottom app by this amount.
+            final int desiredOffset = Math.abs(mEndImeTop - mStartImeTop);
+
+            // But we also want to keep this much of the top app visible.
+            final float amountOfTopAppToKeepVisible =
+                    getTopLeftBounds().height() * (1 - ADJUSTED_SPLIT_FRACTION_MAX);
+
+            // So the current onscreen size of the top app, minus the minimum size, is the max
+            // translation we will allow.
+            final float currentOnScreenSizeOfTopApp = getTopLeftBounds().bottom;
+            final int maxOffset =
+                    (int) Math.max(currentOnScreenSizeOfTopApp - amountOfTopAppToKeepVisible, 0);
+
+            return -Math.min(desiredOffset, maxOffset);
         }
 
         @SplitPosition
