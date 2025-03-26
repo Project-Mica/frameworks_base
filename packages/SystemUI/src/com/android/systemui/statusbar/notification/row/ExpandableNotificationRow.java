@@ -107,7 +107,6 @@ import com.android.systemui.statusbar.NotificationLockscreenUserManager.Redactio
 import com.android.systemui.statusbar.RemoteInputController;
 import com.android.systemui.statusbar.SmartReplyController;
 import com.android.systemui.statusbar.StatusBarIconView;
-import com.android.systemui.statusbar.chips.notification.shared.StatusBarNotifChips;
 import com.android.systemui.statusbar.notification.AboveShelfChangedListener;
 import com.android.systemui.statusbar.notification.ColorUpdateLogger;
 import com.android.systemui.statusbar.notification.FeedbackIcon;
@@ -130,7 +129,7 @@ import com.android.systemui.statusbar.notification.people.PeopleNotificationIden
 import com.android.systemui.statusbar.notification.promoted.PromotedNotificationUi;
 import com.android.systemui.statusbar.notification.row.shared.AsyncGroupHeaderViewInflation;
 import com.android.systemui.statusbar.notification.row.shared.LockscreenOtpRedaction;
-import com.android.systemui.statusbar.notification.row.ui.viewmodel.BundleHeaderViewModelImpl;
+import com.android.systemui.statusbar.notification.row.ui.viewmodel.BundleHeaderViewModel;
 import com.android.systemui.statusbar.notification.row.wrapper.NotificationCompactMessagingTemplateViewWrapper;
 import com.android.systemui.statusbar.notification.row.wrapper.NotificationViewWrapper;
 import com.android.systemui.statusbar.notification.shared.NotificationAddXOnHoverToDismiss;
@@ -1879,7 +1878,7 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
      * Init the bundle header view. The ComposeView is initialized within with the passed viewModel.
      * This can only be init once and not in conjunction with any other header view.
      */
-    public void initBundleHeader(@NonNull BundleHeaderViewModelImpl bundleHeaderViewModel) {
+    public void initBundleHeader(@NonNull BundleHeaderViewModel bundleHeaderViewModel) {
         if (NotificationBundleUi.isUnexpectedlyInLegacyMode()) return;
         NotificationChildrenContainer childrenContainer = getChildrenContainerNonNull();
         bundleHeaderViewModel.setOnExpandClickListener(mExpandClickListener);
@@ -3048,7 +3047,7 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
      * relevant.
      */
     public void setHasStatusBarChipDuringHeadsUpAnimation(boolean hasStatusBarChip) {
-        if (StatusBarNotifChips.isUnexpectedlyInLegacyMode()) {
+        if (PromotedNotificationUi.isUnexpectedlyInLegacyMode()) {
             return;
         }
         mHasStatusBarChipDuringHeadsUpAnimation = hasStatusBarChip;
@@ -3062,7 +3061,7 @@ public class ExpandableNotificationRow extends ActivatableNotificationView
      * that's the only time it's relevant.
      */
     public boolean hasStatusBarChipDuringHeadsUpAnimation() {
-        return StatusBarNotifChips.isEnabled() && mHasStatusBarChipDuringHeadsUpAnimation;
+        return PromotedNotificationUi.isEnabled() && mHasStatusBarChipDuringHeadsUpAnimation;
     }
 
     @Override
