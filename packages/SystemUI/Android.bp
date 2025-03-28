@@ -529,6 +529,7 @@ android_library {
         "//frameworks/libs/systemui:motion_tool_lib",
         "//frameworks/libs/systemui:contextualeducationlib",
         "//frameworks/libs/systemui/mechanics/compose:mechanics-compose",
+        "bcsmartspace-google",
         "notification_flags_lib",
         "PlatformComposeCore",
         "PlatformComposeSceneTransitionLayout",
