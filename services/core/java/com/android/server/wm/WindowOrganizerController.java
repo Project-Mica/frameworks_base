@@ -918,11 +918,6 @@ class WindowOrganizerController extends IWindowOrganizerController.Stub
             tr.forAllActivities(a -> { a.setWindowingMode(childWindowingMode); });
         }
 
-        Rect enterPipBounds = c.getEnterPipBounds();
-        if (enterPipBounds != null) {
-            tr.mDisplayContent.mPinnedTaskController.setEnterPipBounds(enterPipBounds);
-        }
-
         if (c.getWindowingMode() == WINDOWING_MODE_PINNED
                 && !tr.inPinnedWindowingMode()) {
             final ActivityRecord activity = tr.getTopNonFinishingActivity();
@@ -1196,11 +1191,17 @@ class WindowOrganizerController extends IWindowOrganizerController.Stub
                 if (currentTask != null) {
                     final ActivityRecord top = currentTask.topRunningActivity();
                     if (top != null) {
+                        final ActivityRecord topOpaqueActivity = top.mAppCompatController
+                                .getTransparentPolicy().getFirstOpaqueActivity().orElse(top);
                         if (chain.mTransition != null) {
                             chain.mTransition.collect(top);
+                            // We also add the topOpaqueActivity if top is transparent.
+                            if (top != topOpaqueActivity) {
+                                chain.mTransition.collect(topOpaqueActivity);
+                            }
                         }
-                        top.mAppCompatController.getReachabilityPolicy().handleDoubleTap(doubleTapX,
-                                doubleTapY);
+                        topOpaqueActivity.mAppCompatController.getReachabilityPolicy()
+                                .handleDoubleTap(doubleTapX, doubleTapY);
                     }
                 }
                 effects |= TRANSACT_EFFECTS_CLIENT_CONFIG;
