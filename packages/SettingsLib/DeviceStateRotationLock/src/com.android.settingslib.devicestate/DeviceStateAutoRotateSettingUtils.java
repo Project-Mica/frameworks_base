@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:JvmName("DeviceStateAutoRotateSettingUtils")
+package com.android.settingslib.devicestate;
 
-package com.android.settingslib.devicestate
+import android.annotation.NonNull;
+import android.content.Context;
 
-import android.content.Context
-import com.android.internal.R
+import com.android.internal.R;
 
-/** Returns true if device-state based rotation lock settings are enabled. */
-object DeviceStateAutoRotateSettingUtils {
-    @JvmStatic
-    fun isDeviceStateRotationLockEnabled(context: Context) =
-        context.resources
-            .getStringArray(R.array.config_perDeviceStateRotationLockDefaults)
-            .isNotEmpty()
+public final class DeviceStateAutoRotateSettingUtils {
+    private DeviceStateAutoRotateSettingUtils() {
+    }
+
+    /** Returns true if device-state based rotation lock settings are enabled. */
+    public static boolean isDeviceStateRotationLockEnabled(@NonNull Context context) {
+        return context.getResources().getStringArray(
+                R.array.config_perDeviceStateRotationLockDefaults).length > 0;
+
+    }
 }
-

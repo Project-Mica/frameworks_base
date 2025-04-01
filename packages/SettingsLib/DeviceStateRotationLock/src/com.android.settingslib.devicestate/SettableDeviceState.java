@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.android.systemui.communal.shared.model
+package com.android.settingslib.devicestate;
 
-enum class WhenToDream {
-    NEVER,
-    WHILE_CHARGING,
-    WHILE_DOCKED,
-    WHILE_POSTURED,
+/**
+ * Represents a device state and whether the auto-rotation setting can be changed for that state.
+ */
+public record SettableDeviceState(int deviceState, boolean isSettable) {
 }
