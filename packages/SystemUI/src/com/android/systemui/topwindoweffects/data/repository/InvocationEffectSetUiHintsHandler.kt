@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 The Android Open Source Project
+ * Copyright (C) 2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,15 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
-package com.android.systemui.keyguard.ui.preview
+package com.android.systemui.topwindoweffects.data.repository
 
 import android.os.Bundle
-import dagger.assisted.AssistedFactory
 
-@AssistedFactory
-interface KeyguardPreviewRendererFactory {
-    fun create(bundle: Bundle): KeyguardPreviewRenderer
+interface InvocationEffectSetUiHintsHandler {
+    /**
+     * Handles setUiHints actions specific to the invocation effect.
+     *
+     * @return true if the setUiHints action was handled, false otherwise.
+     */
+    fun tryHandleSetUiHints(hints: Bundle): Boolean
 }

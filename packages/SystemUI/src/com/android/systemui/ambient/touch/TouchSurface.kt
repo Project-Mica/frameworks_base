@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,11 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
-package com.android.systemui.shared.clocks.shared.model
+package com.android.systemui.ambient.touch
 
-object ClockPreviewConstants {
-    const val KEY_HIDE_CLOCK = "hide_clock"
-}
+import androidx.annotation.IntDef
+
+/** Enum for the surface we are running the touch monitor on. */
+@Retention(AnnotationRetention.SOURCE)
+@IntDef(value = [SURFACE_DREAM, SURFACE_HUB])
+internal annotation class TouchSurface
+
+const val SURFACE_DREAM = 0
+const val SURFACE_HUB = 1
