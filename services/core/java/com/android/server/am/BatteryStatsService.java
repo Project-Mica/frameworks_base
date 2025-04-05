@@ -2914,9 +2914,11 @@ public final class BatteryStatsService extends IBatteryStats.Stub
                 batteryStateChanged = mStats.isOnBattery() != onBattery;
             }
             mHandler.post(() -> {
-                mStats.setBatteryStateLocked(status, health, plugType, level, temp, volt, chargeUAh,
-                        chargeFullUAh, chargeTimeToFullSeconds, elapsedRealtime, uptime,
-                        currentTime);
+                synchronized (mStats) {
+                    mStats.setBatteryStateLocked(status, health, plugType, level, temp, volt,
+                            chargeUAh, chargeFullUAh, chargeTimeToFullSeconds,
+                            elapsedRealtime, uptime,currentTime);
+                }
                 if (batteryStateChanged) {
                     mWorker.scheduleSync("battery-state",
                             BatteryExternalStatsWorker.UPDATE_ALL);
