@@ -3360,16 +3360,20 @@ public class WindowManagerService extends IWindowManager.Stub
 
     @Override
     public void moveDisplayToTopIfAllowed(int displayId) {
-        moveDisplayToTopInternal(displayId);
-        syncInputTransactions(true /* waitForAnimations */);
+        final boolean moved = moveDisplayToTopInternal(displayId);
+        if (moved) {
+            syncInputTransactions(true /* waitForAnimations */);
+        }
     }
 
     /**
      * Moves the given display to the top. If it cannot be moved to the top this method does
      * nothing (e.g. if the display has the flag FLAG_STEAL_TOP_FOCUS_DISABLED set).
      * @param displayId The display to move to the top.
+     *
+     * @return whether the move actually occurred.
      */
-    void moveDisplayToTopInternal(int displayId) {
+    boolean moveDisplayToTopInternal(int displayId) {
         synchronized (mGlobalLock) {
             final DisplayContent displayContent = mRoot.getDisplayContent(displayId);
             if (displayContent != null && mRoot.getTopChild() != displayContent) {
@@ -3379,7 +3383,7 @@ public class WindowManagerService extends IWindowManager.Stub
                             "Not moving display (displayId=%d) to top. Top focused displayId=%d. "
                                     + "Reason: FLAG_STEAL_TOP_FOCUS_DISABLED",
                             displayId, mRoot.getTopFocusedDisplayContent().getDisplayId());
-                    return;
+                    return false;
                 }
 
                 Transition transition = null;
@@ -3405,6 +3409,7 @@ public class WindowManagerService extends IWindowManager.Stub
                     transition.setReady(displayContent, true /* ready */);
                 }
             }
+            return true;
         }
     }
 
@@ -9454,12 +9459,10 @@ public class WindowManagerService extends IWindowManager.Stub
 
     /**
      * Updates the flags on an existing surface's input channel. This assumes the surface provided
-     * is the one associated with the provided input-channel. If this isn't the case, behavior is
-     * undefined.
+     * is the one associated with the provided input-channel. If this isn't the case, behavior
+     * is undefined.
      */
-    void updateInputChannel(IBinder channelToken,
-            @Nullable InputTransferToken hostInputTransferToken, int displayId,
-            SurfaceControl surface,
+    void updateInputChannel(IBinder channelToken, int displayId, SurfaceControl surface,
             int flags, int privateFlags, int inputFeatures, Region region) {
         final InputApplicationHandle applicationHandle;
         final String name;
@@ -9473,11 +9476,6 @@ public class WindowManagerService extends IWindowManager.Stub
             name = win.toString();
             applicationHandle = win.getApplicationHandle();
             win.setIsFocusable((flags & FLAG_NOT_FOCUSABLE) == 0);
-            if (Flags.updateHostInputTransferToken()) {
-                WindowState hostWindowState = hostInputTransferToken != null
-                        ? mInputToWindowMap.get(hostInputTransferToken.getToken()) : null;
-                win.updateHost(hostWindowState);
-            }
         }
 
         updateInputChannel(channelToken, win.mOwnerUid, win.mOwnerPid, displayId, surface, name,

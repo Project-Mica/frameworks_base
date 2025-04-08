@@ -297,7 +297,8 @@ public abstract class WMShellBaseModule {
             @NonNull CompatUIState compatUIState,
             @NonNull CompatUIComponentIdGenerator componentIdGenerator,
             @NonNull CompatUIComponentFactory compatUIComponentFactory,
-            CompatUIStatusManager compatUIStatusManager) {
+            CompatUIStatusManager compatUIStatusManager,
+            DesktopState desktopState) {
         if (!context.getResources().getBoolean(R.bool.config_enableCompatUIController)) {
             return Optional.empty();
         }
@@ -322,7 +323,8 @@ public abstract class WMShellBaseModule {
                         compatUIShellCommandHandler.get(),
                         accessibilityManager.get(),
                         compatUIStatusManager,
-                        desktopUserRepositories));
+                        desktopUserRepositories,
+                        desktopState));
     }
 
     @WMSingleton
@@ -666,8 +668,8 @@ public abstract class WMShellBaseModule {
     @Provides
     static Optional<FreeformComponents> provideFreeformComponents(
             @DynamicOverride Optional<FreeformComponents> freeformComponents,
-            Context context) {
-        if (FreeformComponents.requiresFreeformComponents(context)) {
+            DesktopState desktopState) {
+        if (FreeformComponents.requiresFreeformComponents(desktopState)) {
             return freeformComponents;
         }
         return Optional.empty();
