@@ -925,7 +925,8 @@ public abstract class WMShellModule {
             DesktopState desktopState) {
         if (ENABLE_WINDOWING_TRANSITION_HANDLERS_OBSERVERS.isTrue()
                 && desktopState.canEnterDesktopMode()) {
-            return Optional.of(new DesktopTaskChangeListener(desktopUserRepositories));
+            return Optional.of(new DesktopTaskChangeListener(
+                    desktopUserRepositories, desktopState));
         }
         return Optional.empty();
     }
@@ -1136,8 +1137,8 @@ public abstract class WMShellModule {
     @WMSingleton
     @Provides
     static MultiDisplayDragMoveIndicatorSurface.Factory
-            providesMultiDisplayDragMoveIndicatorSurfaceFactory(Context context) {
-        return new MultiDisplayDragMoveIndicatorSurface.Factory(context);
+            providesMultiDisplayDragMoveIndicatorSurfaceFactory() {
+        return new MultiDisplayDragMoveIndicatorSurface.Factory();
     }
 
     @WMSingleton
