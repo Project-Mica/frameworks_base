@@ -22,8 +22,6 @@ import static android.window.DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_MODALS_PO
 import static android.window.DesktopModeFlags.ENABLE_DESKTOP_WINDOWING_TASK_LIMIT;
 import static android.window.DesktopModeFlags.ENABLE_WINDOWING_TRANSITION_HANDLERS_OBSERVERS;
 
-import static com.android.hardware.input.Flags.manageKeyGestures;
-
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.IActivityTaskManager;
@@ -491,7 +489,8 @@ public abstract class WMShellModule {
             Optional<TaskChangeListener> taskChangeListener,
             FocusTransitionObserver focusTransitionObserver,
             Optional<DesksTransitionObserver> desksTransitionObserver,
-            DesktopState desktopState) {
+            DesktopState desktopState,
+            Optional<DesktopImeHandler> desktopImeHandler) {
         return new FreeformTaskTransitionObserver(
                 shellInit,
                 transitions,
@@ -500,7 +499,8 @@ public abstract class WMShellModule {
                 taskChangeListener,
                 focusTransitionObserver,
                 desksTransitionObserver,
-                desktopState);
+                desktopState,
+                desktopImeHandler);
     }
 
     @WMSingleton
@@ -900,7 +900,8 @@ public abstract class WMShellModule {
             WindowDecorTaskResourceLoader windowDecorTaskResourceLoader,
             FocusTransitionObserver focusTransitionObserver,
             @ShellMainThread ShellExecutor mainExecutor,
-            DesktopState desktopState) {
+            DesktopState desktopState,
+            ShellInit shellInit) {
         return new DesktopTilingDecorViewModel(
                 context,
                 mainDispatcher,
@@ -917,7 +918,8 @@ public abstract class WMShellModule {
                 windowDecorTaskResourceLoader,
                 focusTransitionObserver,
                 mainExecutor,
-                desktopState
+                desktopState,
+                shellInit
         );
     }
 
@@ -942,7 +944,8 @@ public abstract class WMShellModule {
             ShellTaskOrganizer shellTaskOrganizer,
             DesksOrganizer desksOrganizer,
             DesktopConfig desktopConfig,
-            DesktopState desktopState) {
+            DesktopState desktopState,
+            Optional<DesktopMixedTransitionHandler> desktopMixedTransitionHandler) {
         if (!desktopState.canEnterDesktopMode()
                 || !ENABLE_DESKTOP_WINDOWING_TASK_LIMIT.isTrue()) {
             return Optional.empty();
@@ -954,6 +957,7 @@ public abstract class WMShellModule {
                         desktopUserRepositories,
                         shellTaskOrganizer,
                         desksOrganizer,
+                        desktopMixedTransitionHandler.get(),
                         maxTaskLimit <= 0 ? null : maxTaskLimit));
     }
 
@@ -1044,7 +1048,6 @@ public abstract class WMShellModule {
             DisplayController displayController,
             DesktopState desktopState) {
         if (desktopState.canEnterDesktopMode()
-                && manageKeyGestures()
                 && (Flags.enableMoveToNextDisplayShortcut()
                 || DesktopModeFlags.ENABLE_TASK_RESIZING_KEYBOARD_SHORTCUTS.isTrue())) {
             return Optional.of(new DesktopModeKeyGestureHandler(context,

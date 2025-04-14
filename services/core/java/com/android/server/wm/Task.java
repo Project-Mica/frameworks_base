@@ -3034,16 +3034,6 @@ class Task extends TaskFragment {
         return super.makeAnimationLeash().setMetadata(METADATA_TASK_ID, mTaskId);
     }
 
-    boolean shouldAnimate() {
-        /**
-         * Animations are handled by the TaskOrganizer implementation.
-         */
-        if (isOrganized()) {
-            return false;
-        }
-        return true;
-    }
-
     @Override
     void setInitialSurfaceControlProperties(SurfaceControl.Builder b) {
         b.setEffectLayer().setMetadata(METADATA_TASK_ID, mTaskId);
@@ -3105,15 +3095,6 @@ class Task extends TaskFragment {
      */
     ActivityRecord getTopVisibleActivity() {
         return getActivity((r) -> !r.mIsExiting && r.isClientVisible() && r.isVisibleRequested());
-    }
-
-    /**
-     * Return the top visible activity. The activity has a window on which contents are drawn.
-     * However it's possible that the activity has already been requested to be invisible, but the
-     * visibility is not yet committed.
-     */
-    ActivityRecord getTopRealVisibleActivity() {
-        return getActivity((r) -> !r.mIsExiting && r.isClientVisible() && r.isVisible());
     }
 
     ActivityRecord getTopWaitSplashScreenActivity() {
@@ -3255,10 +3236,6 @@ class Task extends TaskFragment {
         return isRootTask() && callback.test(this) ? this : null;
     }
 
-    void dontAnimateDimExit() {
-        mDimmer.dontAnimateExit();
-    }
-
     String getName() {
         return "Task=" + mTaskId;
     }
@@ -3320,6 +3297,10 @@ class Task extends TaskFragment {
             scheduleAnimation();
         }
 
+        if (mWmService.mFlags.mEnsureSurfaceVisibility) {
+            return;
+        }
+
         // Let organizer manage task visibility for shell transition. So don't change it's
         // visibility during collecting.
         if (mTransitionController.isCollecting() && mCreatedByOrganizer) {
@@ -3341,6 +3322,11 @@ class Task extends TaskFragment {
             mOverlayHost.setVisibility(t, visible);
         }
         mLastSurfaceShowing = show;
+    }
+
+    @Override
+    void updateSurfaceVisibility(SurfaceControl.Transaction t) {
+        t.setVisibility(mSurfaceControl, isVisible());
     }
 
     /**
@@ -3523,12 +3509,6 @@ class Task extends TaskFragment {
         info.capturedLink = null;
         info.capturedLinkTimestamp = 0;
         info.topActivityRequestOpenInBrowserEducationTimestamp = 0;
-    }
-
-    @Nullable PictureInPictureParams getPictureInPictureParams() {
-        final Task topTask = getTopMostTask();
-        if (topTask == null) return null;
-        return getPictureInPictureParams(topTask.getTopMostActivity());
     }
 
     private static @Nullable PictureInPictureParams getPictureInPictureParams(ActivityRecord top) {
@@ -3719,8 +3699,9 @@ class Task extends TaskFragment {
         }
         mDecorSurfaceContainer.commitBoostedState();
 
-        // assignChildLayers() calls scheduleAnimation(), which calls prepareSurfaces()
-        // to ensure child surface visibility.
+        forAllActivities(mWmService.mAnimator::addSurfaceVisibilityUpdate,
+                true /* traverseTopToBottom */);
+        // This calls scheduleAnimation(), then WindowAnimator will update surface visibility.
         assignChildLayers();
     }
 
@@ -4813,7 +4794,14 @@ class Task extends TaskFragment {
                     // rotation change) after leaving this scope, the visibility operation will be
                     // put in sync transaction, then it is not synced with reparent.
                     if (lastParentBeforePip.mSyncState == SYNC_STATE_NONE) {
-                        lastParentBeforePip.prepareSurfaces();
+                        if (mWmService.mFlags.mEnsureSurfaceVisibility) {
+                            if (lastParentBeforePip.isVisible()) {
+                                lastParentBeforePip.getPendingTransaction().show(
+                                        lastParentBeforePip.mSurfaceControl);
+                            }
+                        } else {
+                            lastParentBeforePip.prepareSurfaces();
+                        }
                         // If the moveToFront is a part of finishing transition, then make sure
                         // the z-order of tasks are up-to-date.
                         if (topActivity.mTransitionController.inFinishingTransition(topActivity)) {

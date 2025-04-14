@@ -41,6 +41,17 @@ flag {
 }
 
 flag {
+  name: "respect_hierarchy_surface_visibility"
+  namespace: "windowing_frontend"
+  description: "Ensure consistent surface visibility with window hierarchy"
+  bug: "383241933"
+  is_fixed_read_only: true
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
+}
+
+flag {
   name: "use_cached_insets_for_display_switch"
   namespace: "windowing_frontend"
   description: "Reduce intermediate insets changes for display switch"
@@ -361,17 +372,6 @@ flag {
 }
 
 flag {
-  name: "record_task_snapshots_before_shutdown"
-  namespace: "windowing_frontend"
-  description: "Record task snapshots before shutdown"
-  bug: "376821232"
-  is_fixed_read_only: true
-  metadata {
-    purpose: PURPOSE_BUGFIX
-  }
-}
-
-flag {
     name: "predictive_back_three_button_nav"
     namespace: "systemui"
     description: "Enable Predictive Back Animation for 3-button-nav"
@@ -395,17 +395,6 @@ flag {
     description: "Enable Predictive Back by default with targetSdk>=36"
     is_fixed_read_only: true
     bug: "376407910"
-}
-
-flag {
-    name: "remove_defer_hiding_client"
-    namespace: "windowing_frontend"
-    description: "Remove mDeferHidingClient since everything is in shell-transition."
-    is_fixed_read_only: true
-    bug: "382485959"
-    metadata {
-        purpose: PURPOSE_BUGFIX
-    }
 }
 
 flag {
@@ -444,17 +433,6 @@ flag {
     description: "Do not let app window visible while device is locked"
     is_fixed_read_only: true
     bug: "378088391"
-    metadata {
-        purpose: PURPOSE_BUGFIX
-    }
-}
-
-flag {
-    name: "use_rt_frame_callback_for_splash_screen_transfer"
-    namespace: "windowing_frontend"
-    description: "report SplashscreenView shown after RtFrame commit"
-    is_fixed_read_only: true
-    bug: "387231234"
     metadata {
         purpose: PURPOSE_BUGFIX
     }

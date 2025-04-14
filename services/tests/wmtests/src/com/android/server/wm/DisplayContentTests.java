@@ -2299,7 +2299,7 @@ public class DisplayContentTests extends WindowTestsBase {
                 TYPE_BASE_APPLICATION).setWindowToken(act2).build();
         appWin2.setHasSurface(true);
         assertTrue(appWin2.canBeImeLayeringTarget());
-        doReturn(true).when(appWin1).inTransitionSelfOrParent();
+        doReturn(true).when(appWin1).inTransition();
 
         // Test step 3: Verify appWin2 will be the next IME layering target and the IME snapshot
         // surface will be attached and shown on the display at this time.
@@ -2334,7 +2334,7 @@ public class DisplayContentTests extends WindowTestsBase {
         DisplayContent.ImeScreenshot curSnapshot = mDisplayContent.mImeScreenshot;
         spyOn(curSnapshot);
         mDisplayContent.showImeScreenshot();
-        verify(curSnapshot).detach(any());
+        verify(curSnapshot).removeSurface(any());
         assertNotNull(mDisplayContent.mImeScreenshot);
         assertNotEquals(curSnapshot, mDisplayContent.mImeScreenshot);
     }

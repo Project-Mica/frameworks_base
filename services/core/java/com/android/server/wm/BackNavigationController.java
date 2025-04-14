@@ -428,12 +428,6 @@ class BackNavigationController {
                         ProtoLog.w(WM_DEBUG_BACK_PREVIEW,
                                 "Pending back animation due to another animation is running");
                         mPendingAnimationBuilder = builder;
-                        // Current transition is still running, we have to defer the hiding to the
-                        // client process to prevent the unexpected relayout when handling the back
-                        // animation.
-                        for (int i = prevActivities.size() - 1; i >= 0; --i) {
-                            prevActivities.get(i).setDeferHidingClient();
-                        }
                     } else {
                         scheduleAnimation(builder);
                     }
@@ -1895,7 +1889,8 @@ class BackNavigationController {
                     }
                 }
                 // Force update mLastSurfaceShowing for opening activity and its task.
-                if (mWindowManagerService.mRoot.mTransitionController.isShellTransitionsEnabled()) {
+                if (mWindowManagerService.mRoot.mTransitionController.isShellTransitionsEnabled()
+                        && !mWindowManagerService.mFlags.mEnsureSurfaceVisibility) {
                     for (int i = visibleOpenActivities.length - 1; i >= 0; --i) {
                         WindowContainer.enforceSurfaceVisible(visibleOpenActivities[i]);
                     }

@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package com.android.settingslib.widget
+package com.android.internal.widget;
 
-/**
- * A base interface to indicate that a widget is placed onto the screen.
- *
- * Widget implements this interface will be treated as on-screen widget and applied proper padding.
- */
-interface OnScreenWidgetMixin
+import android.app.Activity;
 
+public class ActionBarContextViewActivity extends Activity {
+}
