@@ -64,6 +64,8 @@ public enum DesktopExperienceFlags {
             android.app.Flags.FLAG_ENABLE_CONNECTED_DISPLAYS_WALLPAPER),
     ENABLE_CONNECTED_DISPLAYS_WINDOW_DRAG(Flags::enableConnectedDisplaysWindowDrag, true,
             Flags.FLAG_ENABLE_CONNECTED_DISPLAYS_WINDOW_DRAG),
+    ENABLE_DEFAULT_DESK_WITHOUT_WARMUP_MIGRATION(Flags::defaultDeskWithoutWarmupMigration, false,
+            Flags.FLAG_DEFAULT_DESK_WITHOUT_WARMUP_MIGRATION),
     ENABLE_DESKTOP_APP_LAUNCH_BUGFIX(Flags::enableDesktopAppLaunchBugfix, false,
             Flags.FLAG_ENABLE_DESKTOP_APP_LAUNCH_BUGFIX),
     ENABLE_DESKTOP_CLOSE_TASK_ANIMATION_IN_DTC_BUGFIX(
@@ -80,6 +82,8 @@ public enum DesktopExperienceFlags {
     ENABLE_DESKTOP_TAB_TEARING_LAUNCH_ANIMATION(
             Flags::enableDesktopTabTearingLaunchAnimation, false,
             Flags.FLAG_ENABLE_DESKTOP_TAB_TEARING_LAUNCH_ANIMATION),
+    ENABLE_DESKTOP_TASKBAR_ON_FREEFORM_DISPLAYS(Flags::enableDesktopTaskbarOnFreeformDisplays,
+            false, Flags.FLAG_ENABLE_DESKTOP_TASKBAR_ON_FREEFORM_DISPLAYS),
     ENABLE_DESKTOP_TASK_LIMIT_SEPARATE_TRANSITION(
             Flags::enableDesktopTaskLimitSeparateTransition, false,
             Flags.FLAG_ENABLE_DESKTOP_TASK_LIMIT_SEPARATE_TRANSITION),

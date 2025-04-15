@@ -1781,9 +1781,6 @@ class DisplayContent extends RootDisplayArea implements WindowManagerPolicy.Disp
      * different fixed orientations will still keep their original appearances.
      */
     void applyFixedRotationForNonTopVisibleActivityIfNeeded() {
-        if (!mWmService.mFlags.mRespectNonTopVisibleFixedOrientation) {
-            return;
-        }
         final ActivityRecord orientationSrcApp = getLastOrientationSourceApp();
         if (orientationSrcApp == null || orientationSrcApp.fillsParent()) {
             return;
@@ -1807,9 +1804,6 @@ class DisplayContent extends RootDisplayArea implements WindowManagerPolicy.Disp
      * then the bottom one will apply the fixed rotation transform for its orientation.
      */
     void applyFixedRotationForNonTopVisibleActivityIfNeeded(@NonNull ActivityRecord ar) {
-        if (!mWmService.mFlags.mRespectNonTopVisibleFixedOrientation) {
-            return;
-        }
         final ActivityRecord orientationSrcApp = getLastOrientationSourceApp();
         if (orientationSrcApp != null) {
             applyFixedRotationForNonTopVisibleActivityIfNeeded(ar,
@@ -1916,8 +1910,7 @@ class DisplayContent extends RootDisplayArea implements WindowManagerPolicy.Disp
             return false;
         }
         if (r.hasFixedRotationTransform()) {
-            if (mWmService.mFlags.mRespectNonTopVisibleFixedOrientation
-                    && mFixedRotationLaunchingApp == null) {
+            if (mFixedRotationLaunchingApp == null) {
                 // It could be finishing the previous top translucent activity, and the next fixed
                 // orientation activity becomes the current top.
                 setFixedRotationLaunchingAppUnchecked(r,
@@ -1926,16 +1919,9 @@ class DisplayContent extends RootDisplayArea implements WindowManagerPolicy.Disp
             // It has been set and not yet finished.
             return true;
         }
-        if (mWmService.mFlags.mRespectNonTopVisibleFixedOrientation) {
-            if (r.isReportedDrawn()) {
-                // It is late for a drawn app. Either this is already a stable state or it needs
-                // a rotation animation to handle the change.
-                return false;
-            }
-        } else if (!r.occludesParent() || r.isReportedDrawn()) {
-            // While entering or leaving a translucent or floating activity (e.g. dialog style),
-            // there is a visible activity in the background. Then it still needs rotation animation
-            // to cover the activity configuration change.
+        if (r.isReportedDrawn()) {
+            // It is late for a drawn app. Either this is already a stable state or it needs
+            // a rotation animation to handle the change.
             return false;
         }
         if (checkOpening) {
@@ -3326,6 +3312,16 @@ class DisplayContent extends RootDisplayArea implements WindowManagerPolicy.Disp
         return true;
     }
 
+    void updateShouldShowSystemDecorations() {
+        final boolean shouldShow = mDisplay.canHostTasks();
+        if (allowContentModeSwitch() &&
+                (shouldShow != mWmService.mDisplayWindowSettings
+                        .shouldShowSystemDecorsLocked(this))) {
+            mWmService.mDisplayWindowSettings
+                    .setShouldShowSystemDecorsInternalLocked(this, shouldShow);
+        }
+    }
+
     DisplayCutout loadDisplayCutout(int displayWidth, int displayHeight) {
         if (mDisplayPolicy == null || mInitialDisplayCutout == null) {
             return null;
@@ -4332,8 +4328,11 @@ class DisplayContent extends RootDisplayArea implements WindowManagerPolicy.Disp
             return DISPLAY_IME_POLICY_FALLBACK_DISPLAY;
         }
         final int imePolicy = mWmService.mDisplayWindowSettings.getImePolicyLocked(this);
+        // Show IME locally if display is eligible for desktop mode and the flag is enabled.
         if (imePolicy == DISPLAY_IME_POLICY_FALLBACK_DISPLAY
-                && isPublicSecondaryDisplayWithDesktopModeForceEnabled()) {
+                && (isPublicSecondaryDisplayWithDesktopModeForceEnabled()
+                    || (DesktopExperienceFlags.ENABLE_DISPLAY_CONTENT_MODE_MANAGEMENT.isTrue()
+                    && (isSystemDecorationsSupported() && allowContentModeSwitch())))) {
             // If the display has not explicitly requested for the IME to be hidden then it shall
             // show the IME locally.
             return DISPLAY_IME_POLICY_LOCAL;
@@ -5210,9 +5209,21 @@ class DisplayContent extends RootDisplayArea implements WindowManagerPolicy.Disp
     }
 
     /**
-     * Creates a LayerCaptureArgs object to represent the entire DisplayContent
+     * Creates a {@link LayerCaptureArgs} object.
+     *
+     * If {@code useWindowingLayerAsScreenshotRoot} is false, the returned
+     * {@code LayerCaptureArgs} will represent the entire DisplayContent.
+     *
+     * If {@code useWindowingLayerAsScreenshotRoot} is true, the
+     * {@code LayerCaptureArgs} will represent the surface area of the windowing layer.
+     * @param predicate An optional filter function to determine which windows are captured. If
+     *                  null, all windows are included.
+     * @param useWindowingLayerAsScreenshotRoot Whether to use the windowing layer's
+     * surface area as the screenshot root.
+     * @return A {@code LayerCaptureArgs} object configured according to the parameters.
      */
-    LayerCaptureArgs getLayerCaptureArgs(@Nullable ToBooleanFunction<WindowState> predicate) {
+    LayerCaptureArgs getLayerCaptureArgs(@Nullable ToBooleanFunction<WindowState> predicate,
+            boolean useWindowingLayerAsScreenshotRoot) {
         if (!mWmService.mPolicy.isScreenOn()) {
             if (DEBUG_SCREENSHOT) {
                 Slog.i(TAG_WM, "Attempted to take screenshot while display was off.");
@@ -5222,8 +5233,9 @@ class DisplayContent extends RootDisplayArea implements WindowManagerPolicy.Disp
 
         getBounds(mTmpRect);
         mTmpRect.offsetTo(0, 0);
-        LayerCaptureArgs.Builder builder = new LayerCaptureArgs.Builder(getSurfaceControl())
-                .setSourceCrop(mTmpRect);
+        SurfaceControl sc =
+                useWindowingLayerAsScreenshotRoot ? getWindowingLayer() : getSurfaceControl();
+        LayerCaptureArgs.Builder builder = new LayerCaptureArgs.Builder(sc).setSourceCrop(mTmpRect);
 
         if (predicate != null) {
             ArrayList<SurfaceControl> excludeLayers = new ArrayList<>();
@@ -6735,7 +6747,7 @@ class DisplayContent extends RootDisplayArea implements WindowManagerPolicy.Disp
         final boolean rotationChanged = super.setIgnoreOrientationRequest(ignoreOrientationRequest);
         mWmService.mDisplayWindowSettings.setIgnoreOrientationRequest(
                 this, mSetIgnoreOrientationRequest);
-        if (ignoreOrientationRequest && mWmService.mFlags.mRespectNonTopVisibleFixedOrientation) {
+        if (ignoreOrientationRequest) {
             forAllActivities(r -> {
                 r.finishFixedRotationTransform();
             });
@@ -6971,9 +6983,7 @@ class DisplayContent extends RootDisplayArea implements WindowManagerPolicy.Disp
                 // In most cases this is a no-op if the activity doesn't have fixed rotation.
                 // Otherwise it could be from finishing recents animation while the display has
                 // different orientation.
-                if (!mWmService.mFlags.mRespectNonTopVisibleFixedOrientation) {
-                    r.finishFixedRotationTransform();
-                } else if (!r.isVisible()) {
+                if (!r.isVisible()) {
                     r.finishFixedRotationTransform();
                 }
                 return;

@@ -3455,9 +3455,7 @@ public class ActivityManagerService extends IActivityManager.Stub
                 doLowMem = false;
             }
             if (doOomAdj) {
-                if (Flags.migrateFullOomadjUpdates()) {
-                    app.forEachConnectionHost((host) -> enqueueOomAdjTargetLocked(host));
-                }
+                app.forEachConnectionHost((host) -> enqueueOomAdjTargetLocked(host));
             }
 
             EventLogTags.writeAmProcDied(app.userId, pid, app.processName, setAdj, setProcState);
@@ -3466,11 +3464,7 @@ public class ActivityManagerService extends IActivityManager.Stub
             handleAppDiedLocked(app, pid, false, true, fromBinderDied);
 
             if (doOomAdj) {
-                if (Flags.migrateFullOomadjUpdates()) {
-                    updateOomAdjPendingTargetsLocked(OOM_ADJ_REASON_PROCESS_END);
-                } else {
-                    updateOomAdjLocked(OOM_ADJ_REASON_PROCESS_END);
-                }
+                updateOomAdjPendingTargetsLocked(OOM_ADJ_REASON_PROCESS_END);
             }
             if (doLowMem) {
                 mAppProfiler.doLowMemReportIfNeededLocked(app);
@@ -15856,6 +15850,11 @@ public class ActivityManagerService extends IActivityManager.Stub
                 if (pid > 0 && pid != MY_PID) {
                     app.killLocked("empty",
                             ApplicationExitInfo.REASON_OTHER,
+                            ApplicationExitInfo.SUBREASON_TRCESSIVE_CPU,
+        app.getPid();
+                if (pid > 0 && pid != MY_PID) {
+                    app.killLocked("empty",
+                            ApplicationExitInfo.REASON_OTHER,
                             ApplicationExitInfo.SUBREASON_TRIM_EMPTY,
                             false);
                 } else if (thread != null) {
@@ -19525,12 +19524,4 @@ public class ActivityManagerService extends IActivityManager.Stub
         synchronized (sIntentCreatorTokenCache) {
             WeakReference<IntentCreatorToken> ref = sIntentCreatorTokenCache.get(key);
             if (ref == null || ref.get() == null) {
-                token = new IntentCreatorToken(key.mCreatorUid, key.mCreatorPackage, intent);
-                sIntentCreatorTokenCache.put(key, token.mRef);
-            } else {
-                token = ref.get();
-            }
-        }
-        return token;
-    }
-}
+                to

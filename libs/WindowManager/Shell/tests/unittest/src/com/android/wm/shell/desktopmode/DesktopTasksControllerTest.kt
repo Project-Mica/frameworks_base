@@ -19,6 +19,7 @@ package com.android.wm.shell.desktopmode
 import android.app.ActivityManager.RecentTaskInfo
 import android.app.ActivityManager.RunningTaskInfo
 import android.app.ActivityOptions
+import android.app.AppOpsManager
 import android.app.KeyguardManager
 import android.app.PendingIntent
 import android.app.PictureInPictureParams
@@ -276,6 +277,8 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
     @Mock private lateinit var dragToDisplayTransitionHandler: DragToDisplayTransitionHandler
     @Mock
     private lateinit var moveToDisplayTransitionHandler: DesktopModeMoveToDisplayTransitionHandler
+    @Mock private lateinit var mockAppOpsManager: AppOpsManager
+    @Mock private lateinit var visualIndicatorUpdateScheduler: VisualIndicatorUpdateScheduler
 
     private lateinit var controller: DesktopTasksController
     private lateinit var shellInit: ShellInit
@@ -478,6 +481,7 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
             homeIntentProvider,
             desktopState,
             desktopConfig,
+            visualIndicatorUpdateScheduler,
         )
 
     @After
@@ -1243,6 +1247,31 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
         val finalBounds = findBoundsChange(wct, freeformTask)
         assertThat(stableBounds.getDesktopTaskPosition(finalBounds!!))
             .isEqualTo(DesktopTaskPosition.BottomRight)
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ENABLE_CASCADING_WINDOWS, Flags.FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND)
+    fun handleRequest_newFreeformTaskLaunch_newDesk_desksCascadeIndependently() {
+        setUpLandscapeDisplay()
+        val stableBounds = Rect()
+        displayLayout.getStableBoundsForDesktopMode(stableBounds)
+
+        // Launch freeform tasks in default desk.
+        setUpFreeformTask(bounds = DEFAULT_LANDSCAPE_BOUNDS)
+        val freeformTask = setUpFreeformTask(bounds = DEFAULT_LANDSCAPE_BOUNDS, active = false)
+        controller.handleRequest(Binder(), createTransition(freeformTask))
+
+        // Create new active desk and launch new task.
+        taskRepository.addDesk(DEFAULT_DISPLAY, deskId = 2)
+        taskRepository.setActiveDesk(displayId = DEFAULT_DISPLAY, deskId = 2)
+        val newDeskTask = setUpFullscreenTask(displayId = DEFAULT_DISPLAY)
+        val wct = controller.handleRequest(Binder(), createTransition(newDeskTask))
+
+        // New task should be cascaded independently of tasks in other desks.
+        assertNotNull(wct, "should handle request")
+        val finalBounds = findBoundsChange(wct, newDeskTask)
+        assertThat(stableBounds.getDesktopTaskPosition(finalBounds!!))
+            .isEqualTo(DesktopTaskPosition.Center)
     }
 
     @Test
@@ -3800,10 +3829,23 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
             .addPendingTransition(DeskTransition.DeactivateDesk(token = transition, deskId = 0))
     }
 
-    private fun minimizePipTask(task: RunningTaskInfo) {
+    private fun minimizePipTask(task: RunningTaskInfo, appOpsAllowed: Boolean = true) {
         val handler = mock(TransitionHandler::class.java)
         whenever(transitions.dispatchRequest(any(), any(), anyOrNull()))
             .thenReturn(android.util.Pair(handler, WindowContainerTransaction()))
+        mContext.addMockSystemService(Context.APP_OPS_SERVICE, mockAppOpsManager)
+        mContext.setMockPackageManager(packageManager)
+
+        whenever(
+                mockAppOpsManager.checkOpNoThrow(
+                    eq(AppOpsManager.OP_PICTURE_IN_PICTURE),
+                    any(),
+                    any(),
+                )
+            )
+            .thenReturn(
+                if (appOpsAllowed) AppOpsManager.MODE_ALLOWED else AppOpsManager.MODE_IGNORED
+            )
 
         controller.minimizeTask(task, MinimizeReason.MINIMIZE_BUTTON)
     }
@@ -3834,6 +3876,34 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
             .thenReturn(Binder())
 
         minimizePipTask(task)
+
+        verify(freeformTaskTransitionStarter)
+            .startMinimizedModeTransition(any(), eq(task.taskId), anyBoolean())
+        verify(freeformTaskTransitionStarter, never()).startPipTransition(any())
+    }
+
+    @Test
+    @EnableFlags(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_PIP)
+    fun onPipTaskMinimize_pipNotAllowedInAppOps_startMinimizeTransition() {
+        val task = setUpPipTask(autoEnterEnabled = true)
+        whenever(
+                freeformTaskTransitionStarter.startMinimizedModeTransition(
+                    any(),
+                    anyInt(),
+                    anyBoolean(),
+                )
+            )
+            .thenReturn(Binder())
+        whenever(
+                mockAppOpsManager.checkOpNoThrow(
+                    eq(AppOpsManager.OP_PICTURE_IN_PICTURE),
+                    any(),
+                    any(),
+                )
+            )
+            .thenReturn(AppOpsManager.MODE_IGNORED)
+
+        minimizePipTask(task, appOpsAllowed = false)
 
         verify(freeformTaskTransitionStarter)
             .startMinimizedModeTransition(any(), eq(task.taskId), anyBoolean())
@@ -6547,6 +6617,46 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
     }
 
     @Test
+    @EnableFlags(Flags.FLAG_ENABLE_CONNECTED_DISPLAYS_WINDOW_DRAG)
+    fun onDesktopDragMove_callVisualIndicatorUpdateScheduler() {
+        val task = setUpFreeformTask()
+        val spyController = spy(controller)
+        val mockSurface = mock(SurfaceControl::class.java)
+        val mockDisplayLayout = mock(DisplayLayout::class.java)
+        val indicatorType = DesktopModeVisualIndicator.IndicatorType.NO_INDICATOR
+        whenever(displayController.getDisplayLayout(task.displayId)).thenReturn(mockDisplayLayout)
+        whenever(mockDisplayLayout.stableInsets()).thenReturn(Rect(0, 100, 2000, 2000))
+        val inputX = 200f
+        val inputY = 10f
+        val bounds = Rect(100, -100, 500, 1000)
+        doReturn(desktopModeVisualIndicator)
+            .whenever(spyController)
+            .getOrCreateVisualIndicator(
+                eq(task),
+                eq(mockSurface),
+                eq(DesktopModeVisualIndicator.DragStartState.FROM_FREEFORM),
+            )
+        whenever(
+                desktopModeVisualIndicator.calculateIndicatorType(
+                    eq(PointF(inputX, bounds.top.toFloat()))
+                )
+            )
+            .thenReturn(indicatorType)
+
+        spyController.onDragPositioningMove(task, mockSurface, inputX, inputY, bounds)
+
+        verify(visualIndicatorUpdateScheduler)
+            .schedule(
+                eq(task.displayId),
+                eq(indicatorType),
+                eq(inputX),
+                eq(inputY),
+                eq(bounds),
+                any(),
+            )
+    }
+
+    @Test
     fun onDesktopDragMove_endsOutsideValidDragArea_snapsToValidBounds() {
         val task = setUpFreeformTask()
         val spyController = spy(controller)
@@ -6554,7 +6664,13 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
         val mockDisplayLayout = mock(DisplayLayout::class.java)
         whenever(displayController.getDisplayLayout(task.displayId)).thenReturn(mockDisplayLayout)
         whenever(mockDisplayLayout.stableInsets()).thenReturn(Rect(0, 100, 2000, 2000))
-        spyController.onDragPositioningMove(task, mockSurface, 200f, Rect(100, -100, 500, 1000))
+        spyController.onDragPositioningMove(
+            task,
+            mockSurface,
+            200f,
+            10f,
+            Rect(100, -100, 500, 1000),
+        )
 
         whenever(spyController.getVisualIndicator()).thenReturn(desktopModeVisualIndicator)
         whenever(desktopModeVisualIndicator.updateIndicatorType(anyOrNull()))
@@ -6589,7 +6705,7 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
         val mockDisplayLayout = mock(DisplayLayout::class.java)
         whenever(displayController.getDisplayLayout(task.displayId)).thenReturn(mockDisplayLayout)
         whenever(mockDisplayLayout.stableInsets()).thenReturn(Rect(0, 100, 2000, 2000))
-        spyController.onDragPositioningMove(task, mockSurface, 200f, Rect(100, 200, 500, 1000))
+        spyController.onDragPositioningMove(task, mockSurface, 200f, 10f, Rect(100, 200, 500, 1000))
 
         val currentDragBounds = Rect(100, 200, 500, 1000)
         whenever(spyController.getVisualIndicator()).thenReturn(desktopModeVisualIndicator)
@@ -6628,7 +6744,7 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
         val mockDisplayLayout = mock(DisplayLayout::class.java)
         whenever(displayController.getDisplayLayout(task.displayId)).thenReturn(mockDisplayLayout)
         whenever(mockDisplayLayout.stableInsets()).thenReturn(Rect(0, 100, 2000, 2000))
-        spyController.onDragPositioningMove(task, mockSurface, 200f, Rect(100, 200, 500, 1000))
+        spyController.onDragPositioningMove(task, mockSurface, 200f, 10f, Rect(100, 200, 500, 1000))
 
         val currentDragBounds = Rect(100, 200, 500, 1000)
         whenever(spyController.getVisualIndicator()).thenReturn(desktopModeVisualIndicator)
@@ -6675,7 +6791,7 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
             .thenReturn(DesktopModeVisualIndicator.IndicatorType.TO_FULLSCREEN_INDICATOR)
 
         // Drag move the task to the top edge
-        spyController.onDragPositioningMove(task, mockSurface, 200f, Rect(100, 200, 500, 1000))
+        spyController.onDragPositioningMove(task, mockSurface, 200f, 10f, Rect(100, 200, 500, 1000))
         spyController.onDragPositioningEnd(
             task,
             mockSurface,
@@ -6713,7 +6829,7 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
 
         // Drag move the task to the top edge
         val currentDragBounds = Rect(100, 50, 500, 1000)
-        spyController.onDragPositioningMove(task, mockSurface, 200f, Rect(100, 200, 500, 1000))
+        spyController.onDragPositioningMove(task, mockSurface, 200f, 10f, Rect(100, 200, 500, 1000))
         spyController.onDragPositioningEnd(
             task,
             mockSurface,
@@ -6769,7 +6885,7 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
 
         // Drag move the task to the top edge
         val currentDragBounds = Rect(100, 50, 500, 1000)
-        spyController.onDragPositioningMove(task, mockSurface, 200f, Rect(100, 200, 500, 1000))
+        spyController.onDragPositioningMove(task, mockSurface, 200f, 10f, Rect(100, 200, 500, 1000))
         spyController.onDragPositioningEnd(
             task,
             mockSurface,
@@ -6820,7 +6936,7 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
 
         // Drag move the task to the top edge
         val currentDragBounds = Rect(100, 50, 500, 1000)
-        spyController.onDragPositioningMove(task, mockSurface, 200f, Rect(100, 200, 500, 1000))
+        spyController.onDragPositioningMove(task, mockSurface, 200f, 10f, Rect(100, 200, 500, 1000))
         spyController.onDragPositioningEnd(
             task,
             mockSurface,
@@ -6876,7 +6992,7 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
 
         // Drag move the task to the top edge
         val currentDragBounds = Rect(100, 50, 500, 1000)
-        spyController.onDragPositioningMove(task, mockSurface, 200f, Rect(100, 200, 500, 1000))
+        spyController.onDragPositioningMove(task, mockSurface, 200f, 10f, Rect(100, 200, 500, 1000))
         spyController.onDragPositioningEnd(
             task,
             mockSurface,
@@ -8841,11 +8957,17 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
         autoEnterEnabled: Boolean,
         displayId: Int = DEFAULT_DISPLAY,
         deskId: Int = DEFAULT_DISPLAY,
-    ): RunningTaskInfo =
-        setUpFreeformTask(displayId = displayId, deskId = deskId).apply {
-            pictureInPictureParams =
-                PictureInPictureParams.Builder().setAutoEnterEnabled(autoEnterEnabled).build()
-        }
+    ): RunningTaskInfo {
+        val task =
+            setUpFreeformTask(displayId = displayId, deskId = deskId).apply {
+                pictureInPictureParams =
+                    PictureInPictureParams.Builder().setAutoEnterEnabled(autoEnterEnabled).build()
+                baseActivity = ComponentName("com.test.dummypackage", "TestClass")
+            }
+        whenever(packageManager.getApplicationInfoAsUser(any(), anyInt(), anyInt()))
+            .thenReturn(task.topActivityInfo?.applicationInfo)
+        return task
+    }
 
     private fun setUpHomeTask(displayId: Int = DEFAULT_DISPLAY): RunningTaskInfo {
         val task = createHomeTask(displayId)
@@ -8923,12 +9045,7 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
         whenever(displayLayout.width()).thenReturn(DISPLAY_DIMENSION_LONG)
         whenever(displayLayout.height()).thenReturn(DISPLAY_DIMENSION_SHORT)
         val stableBounds =
-            Rect(
-                0,
-                0,
-                DISPLAY_DIMENSION_LONG,
-                DISPLAY_DIMENSION_SHORT - Companion.TASKBAR_FRAME_HEIGHT,
-            )
+            Rect(0, 0, DISPLAY_DIMENSION_LONG, DISPLAY_DIMENSION_SHORT - TASKBAR_FRAME_HEIGHT)
         whenever(displayLayout.getStableBoundsForDesktopMode(any())).thenAnswer { i ->
             (i.arguments.first() as Rect).set(stableBounds)
         }
@@ -8938,12 +9055,7 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
         whenever(displayLayout.width()).thenReturn(DISPLAY_DIMENSION_SHORT)
         whenever(displayLayout.height()).thenReturn(DISPLAY_DIMENSION_LONG)
         val stableBounds =
-            Rect(
-                0,
-                0,
-                DISPLAY_DIMENSION_SHORT,
-                DISPLAY_DIMENSION_LONG - Companion.TASKBAR_FRAME_HEIGHT,
-            )
+            Rect(0, 0, DISPLAY_DIMENSION_SHORT, DISPLAY_DIMENSION_LONG - TASKBAR_FRAME_HEIGHT)
         whenever(displayLayout.getStableBoundsForDesktopMode(any())).thenAnswer { i ->
             (i.arguments.first() as Rect).set(stableBounds)
         }
@@ -9063,7 +9175,10 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
         @JvmStatic
         @Parameters(name = "{0}")
         fun getParams(): List<FlagsParameterization> =
-            FlagsParameterization.allCombinationsOf(Flags.FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND)
+            FlagsParameterization.allCombinationsOf(
+                Flags.FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND,
+                Flags.FLAG_DEFAULT_DESK_WITHOUT_WARMUP_MIGRATION,
+            )
     }
 }
 
