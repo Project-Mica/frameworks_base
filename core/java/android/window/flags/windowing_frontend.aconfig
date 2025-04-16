@@ -102,17 +102,6 @@ flag {
 }
 
 flag {
-  name: "reduce_keyguard_transitions"
-  namespace: "windowing_frontend"
-  description: "Avoid setting keyguard transitions ready unless there are no other changes"
-  bug: "354647472"
-  is_fixed_read_only: true
-  metadata {
-    purpose: PURPOSE_BUGFIX
-  }
-}
-
-flag {
   name: "transit_tracker_plumbing"
   namespace: "windowing_frontend"
   description: "Plumb and collect on transition tracking object instead of singleton"
@@ -486,6 +475,17 @@ flag {
     namespace: "lse_desktop_experience"
     description: "Adds support for trackpad back gestures on connected displays"
     bug: "382774299"
+}
+
+flag {
+    name: "splash_screen_view_sync_transaction"
+    namespace: "windowing_frontend"
+    description: "Fixes flickering when transfer splash screen view to client."
+    bug: "402644135"
+    is_fixed_read_only: true
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
 }
 
 flag {

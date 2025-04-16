@@ -168,6 +168,9 @@
     <!-- Button label to share wifi [CHAR_LIMIT=20] -->
     <string name="share_wifi_button_text">Share Wi\u2011Fi</string>
 
+    <!-- Button label to add a new network [CHAR_LIMIT=20] -->
+    <string name="add_network_button_text">Add network</string>
+
     <!-- Title of confirmation dialog for wireless debugging [CHAR LIMIT=NONE] -->
     <string name="wifi_debugging_title">Allow wireless debugging on this network?</string>
 
@@ -4213,9 +4216,13 @@
     <string name="qs_edit_mode_category_privacy">
         Privacy
     </string>
-    <!-- Label for category in QS Edit mode list of tiles, for tiles that are provided by an app, e.g. Calculator. [CHAR LIMIT=NONE] -->
+    <!-- Label for category in QS Edit mode list of tiles, for tiles that are provided by a system app, e.g. Calculator. [CHAR LIMIT=NONE] -->
+    <string name="qs_edit_mode_category_providedBySystemApps">
+        From system apps
+    </string>
+    <!-- Label for category in QS Edit mode list of tiles, for tiles that are provided by a third party app. [CHAR LIMIT=NONE] -->
     <string name="qs_edit_mode_category_providedByApps">
-        Provided by apps
+        From apps you installed
     </string>
     <!-- Label for category in QS Edit mode list of tiles, for tiles that are related to the display, e.g. Dark theme. [CHAR LIMIT=NONE] -->
     <string name="qs_edit_mode_category_display">

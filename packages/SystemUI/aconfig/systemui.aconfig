@@ -711,6 +711,13 @@ flag {
 }
 
 flag {
+    name: "screen_reactions"
+    namespace: "systemui"
+    description: "Enables the new screen recording UX"
+    bug: "410901215"
+}
+
+flag {
     name: "clipboard_overlay_multiuser"
     namespace: "systemui"
     description: "Fix clipboard overlay for secondary users"
@@ -1332,16 +1339,6 @@ flag {
   namespace: "systemui"
   description: "Enables media visuals update"
   bug: "379044958"
-}
-
-flag {
-    name: "media_controls_a11y_colors"
-    namespace: "systemui"
-    description: "Color scheme updates for improved a11y"
-    bug: "378848399"
-    metadata {
-      purpose: PURPOSE_BUGFIX
-    }
 }
 
 flag {
