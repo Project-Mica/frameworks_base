@@ -8738,6 +8738,19 @@ public final class Settings {
                 "pack_theme_feature_enabled";
 
         /**
+         * Setting to indicate that suggested themes feature should be enabled in related app.
+         *
+         * <ul>
+         *   <li>0 = Off
+         *   <li>1 = Enable suggested themes
+         * </ul>
+         *
+         * @hide
+         */
+        public static final String SUGGESTED_THEME_FEATURE_ENABLED =
+                "suggested_theme_feature_enabled";
+
+        /**
          * Set by the system to track if the user needs to see the call to action for
          * the lockscreen notification policy.
          * @hide
@@ -12705,6 +12718,13 @@ public final class Settings {
          */
         public static final String ACCESSIBILITY_MAGNIFICATION_FOLLOW_TYPING_ENABLED =
                 "accessibility_magnification_follow_typing_enabled";
+
+        /**
+         * Whether the following keyboard focus feature for magnification is enabled.
+         * @hide
+         */
+        public static final String ACCESSIBILITY_MAGNIFICATION_FOLLOW_KEYBOARD_ENABLED =
+                "accessibility_magnification_follow_keyboard_enabled";
 
         /**
          * Whether the magnification joystick controller feature is enabled.

@@ -1622,16 +1622,6 @@ flag {
 }
 
 flag {
-  name: "transition_race_condition"
-  namespace: "systemui"
-  description: "Thread-safe keyguard transitions"
-  bug: "358533338"
-  metadata {
-       purpose: PURPOSE_BUGFIX
-  }
-}
-
-flag {
    name: "media_projection_request_attribution_fix"
    namespace: "systemui"
    description: "Ensure MediaProjection consent requests are properly attributed"
@@ -2075,6 +2065,16 @@ flag {
     description: "Use AAD proximity sensor if flag is enabled and sensor is present"
     bug: "402534470"
     is_fixed_read_only: true
+}
+
+flag {
+    name: "do_not_use_immediate_coroutine_dispatcher"
+    namespace: "systemui"
+    description: "Uses the Main coroutine dispatcher (not immediate) when enabled"
+    bug: "411091082"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
 }
 
 flag {
