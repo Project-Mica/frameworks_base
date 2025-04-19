@@ -579,14 +579,42 @@ static void nativeSetAnimationTransaction(JNIEnv* env, jclass clazz, jlong trans
     transaction->setAnimationTransaction();
 }
 
-static void nativeSetEarlyWakeupStart(JNIEnv* env, jclass clazz, jlong transactionObj) {
+static void nativeSetEarlyWakeupStart(JNIEnv* env, jclass clazz, jlong transactionObj,
+                                      jobject infoObj) {
+    Parcel* infoParcel = parcelForJavaObject(env, infoObj);
+    if (infoParcel == NULL) {
+        doThrowNPE(env);
+        return;
+    }
+    gui::EarlyWakeupInfo earlyWakeupInfo;
+    status_t err = earlyWakeupInfo.readFromParcel(infoParcel);
+    if (err != NO_ERROR) {
+        jniThrowException(env, "java/lang/IllegalArgumentException",
+                          "EarlyWakeupInfo parcel has wrong format");
+        return;
+    }
+
     auto transaction = reinterpret_cast<SurfaceComposerClient::Transaction*>(transactionObj);
-    transaction->setEarlyWakeupStart();
+    transaction->setEarlyWakeupStart(earlyWakeupInfo);
 }
 
-static void nativeSetEarlyWakeupEnd(JNIEnv* env, jclass clazz, jlong transactionObj) {
+static void nativeSetEarlyWakeupEnd(JNIEnv* env, jclass clazz, jlong transactionObj,
+                                    jobject infoObj) {
+    Parcel* infoParcel = parcelForJavaObject(env, infoObj);
+    if (infoParcel == NULL) {
+        doThrowNPE(env);
+        return;
+    }
+    gui::EarlyWakeupInfo earlyWakeupInfo;
+    status_t err = earlyWakeupInfo.readFromParcel(infoParcel);
+    if (err != NO_ERROR) {
+        jniThrowException(env, "java/lang/IllegalArgumentException",
+                          "EarlyWakeupInfo parcel has wrong format");
+        return;
+    }
+
     auto transaction = reinterpret_cast<SurfaceComposerClient::Transaction*>(transactionObj);
-    transaction->setEarlyWakeupEnd();
+    transaction->setEarlyWakeupEnd(earlyWakeupInfo);
 }
 
 static jlong nativeGetTransactionId(JNIEnv* env, jclass clazz, jlong transactionObj) {
@@ -1131,6 +1159,14 @@ static void nativeSetBackgroundBlurRadius(JNIEnv* env, jclass clazz, jlong trans
     transaction->setBackgroundBlurRadius(ctrl, blurRadius);
 }
 
+static void nativeSetBackgroundBlurScale(JNIEnv* env, jclass clazz, jlong transactionObj,
+         jlong nativeObject, jfloat blurScale) {
+    auto transaction = reinterpret_cast<SurfaceComposerClient::Transaction*>(transactionObj);
+
+    SurfaceControl* const ctrl = reinterpret_cast<SurfaceControl *>(nativeObject);
+    transaction->setBackgroundBlurScale(ctrl, blurScale);
+}
+
 static void nativeSetLayerStack(JNIEnv* env, jclass clazz, jlong transactionObj,
         jlong nativeObject, jint layerStack) {
     auto transaction = reinterpret_cast<SurfaceComposerClient::Transaction*>(transactionObj);
@@ -1168,8 +1204,8 @@ static void nativeSetBoxShadowSettings(JNIEnv* env, jclass clazz, jlong transact
     transaction->setBoxShadowSettings(ctrl, settings);
 }
 
-static void nativeSetBorderSettings(JNIEnv* env, jclass clazz, jlong transactionObj,
-                                    jlong nativeObject, jobject settingsObj) {
+static void nativeSetBorderSettings(JNIEnv* env, jclass clazz,
+        jlong transactionObj, jlong nativeObject, jobject settingsObj) {
     Parcel* settingsParcel = parcelForJavaObject(env, settingsObj);
     if (settingsParcel == NULL) {
         doThrowNPE(env);
@@ -2563,10 +2599,10 @@ static const JNINativeMethod sSurfaceControlMethods[] = {
             (void*)nativeMergeTransaction },
     {"nativeSetAnimationTransaction", "(J)V",
             (void*)nativeSetAnimationTransaction },
-    {"nativeSetEarlyWakeupStart", "(J)V",
-            (void*)nativeSetEarlyWakeupStart },
-    {"nativeSetEarlyWakeupEnd", "(J)V",
-            (void*)nativeSetEarlyWakeupEnd },
+    {"nativeSetEarlyWakeupStart", "(JLandroid/os/Parcel;)V",
+                (void*)nativeSetEarlyWakeupStart },
+    {"nativeSetEarlyWakeupEnd", "(JLandroid/os/Parcel;)V",
+                (void*)nativeSetEarlyWakeupEnd },
     {"nativeGetTransactionId", "(J)J",
                 (void*)nativeGetTransactionId },
     {"nativeSetLayer", "(JJI)V",
@@ -2606,6 +2642,8 @@ static const JNINativeMethod sSurfaceControlMethods[] = {
             (void*) nativeSetClientDrawnCornerRadius },
     {"nativeSetBackgroundBlurRadius", "(JJI)V",
             (void*)nativeSetBackgroundBlurRadius },
+    {"nativeSetBackgroundBlurScale", "(JJF)V",
+            (void*)nativeSetBackgroundBlurScale },
     {"nativeSetLayerStack", "(JJI)V",
             (void*)nativeSetLayerStack },
     {"nativeSetBlurRegions", "(JJ[[FI)V",
