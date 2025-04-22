@@ -572,7 +572,7 @@ android_library {
         "SurfaceEffectsComposeLib",
         "uilatencystats_flags_core_java_lib",
         "personalcontext_ace_visualizer",
-        "vendor.lineage.powershare-V1.0-java",
+        "vendor.lineage.powershare-V1-java",
     ],
     enable_ksp: true,
     annotation_processor_flags: [
@@ -781,11 +781,15 @@ android_library {
         "kairos",
         "displaylib",
 <<<<<<< HEAD
+<<<<<<< HEAD
         "dynamiccolors",
         "SurfaceEffectsComposeLib",
 =======
         "vendor.lineage.powershare-V1.0-java",
 >>>>>>> 8762e5ad13b4 (SystemUI: Add powershare QS tile)
+=======
+        "vendor.lineage.powershare-V1-java",
+>>>>>>> f647d20dda8e (PowerShareTile: Migrate to AIDL PowerShare HAL)
     ],
 }
 
