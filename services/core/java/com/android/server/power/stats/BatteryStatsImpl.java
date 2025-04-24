@@ -627,7 +627,6 @@ public class BatteryStatsImpl extends BatteryStats {
     }
 
     private boolean mSaveBatteryUsageStatsOnNewSession;
-    private boolean mResetBatteryHistoryOnNewSession;
     private boolean mAccumulateBatteryUsageStats;
     private BatteryUsageStatsProvider mBatteryUsageStatsProvider;
     private PowerStatsStore mPowerStatsStore;
@@ -11703,13 +11702,6 @@ public class BatteryStatsImpl extends BatteryStats {
     }
 
     /**
-     * Enables or disables battery history reset at the beginning of a battery stats session.
-     */
-    public void resetBatteryHistoryOnNewSession(boolean enabled) {
-        mResetBatteryHistoryOnNewSession = enabled;
-    }
-
-    /**
      * Enables or disables battery history file compression.
      */
     public void setBatteryHistoryCompressionEnabled(boolean enabled) {
@@ -11908,9 +11900,8 @@ public class BatteryStatsImpl extends BatteryStats {
 
         initDischarge(elapsedRealtimeUs);
 
-        if ((resetReason != RESET_REASON_FULL_CHARGE
-                && resetReason != RESET_REASON_PLUGGED_IN_FOR_LONG_DURATION)
-                || mResetBatteryHistoryOnNewSession) {
+        if (resetReason != RESET_REASON_FULL_CHARGE
+                && resetReason != RESET_REASON_PLUGGED_IN_FOR_LONG_DURATION) {
             mHistory.reset();
         }
 
@@ -16770,8 +16761,9 @@ public class BatteryStatsImpl extends BatteryStats {
     }
 
     @GuardedBy("this")
+    @Override
     public void dump(Context context, PrintWriter pw, int flags, int reqUid, long histStart,
-            BatteryStatsDumpHelper dumpHelper) {
+            BatteryStatsDumpHelper dumpHelper, long monotonicClockStartTime) {
         if (DEBUG) {
             pw.println("mOnBatteryTimeBase:");
             mOnBatteryTimeBase.dump(pw, "  ");
@@ -16843,7 +16835,7 @@ public class BatteryStatsImpl extends BatteryStats {
             pr.println("*** Camera timer:");
             mCameraOnTimer.logState(pr, "  ");
         }
-        super.dump(context, pw, flags, reqUid, histStart, dumpHelper);
+        super.dump(context, pw, flags, reqUid, histStart, dumpHelper, monotonicClockStartTime);
 
         synchronized (this) {
             pw.print("Per process state tracking available: ");
