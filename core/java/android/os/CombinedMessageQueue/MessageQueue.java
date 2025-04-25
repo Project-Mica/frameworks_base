@@ -801,8 +801,6 @@ public final class MessageQueue {
             if (found == null) {
                 if (getQuitting()) {
                     mNextPollTimeoutMillis = 0;
-                    // State change will be Active->Active, so can immediately return here.
-                    return null;
                 } else if (next == null) {
                     /* No message to deliver, sleep indefinitely, unless quitting */
                     mNextPollTimeoutMillis = -1;
