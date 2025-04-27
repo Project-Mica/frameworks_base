@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 
-package android.app.supervision;
+package com.android.settingslib.spa.framework.compose
 
-/**
- * A parcelable of the supervision recovery information. This stores information for recovery
- * purposes for device supervision pin.
- */
-parcelable SupervisionRecoveryInfo;
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+
+@Composable
+internal fun localActivity(): Activity? = LocalContext.current.getActivity()
+
+internal fun Context.getActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.getActivity()
+    else -> null
+}
