@@ -360,16 +360,6 @@ flag {
 }
 
 flag {
-  name: "qs_quick_rebind_active_tiles"
-  namespace: "systemui"
-  description: "Rebind active custom tiles quickly."
-  bug: "362526228"
-  metadata {
-    purpose: PURPOSE_BUGFIX
-  }
-}
-
-flag {
     name: "coroutine_tracing"
     namespace: "systemui"
     description: "Adds thread-local data to System UI's global coroutine scopes to "
@@ -2002,16 +1992,6 @@ flag {
 }
 
 flag {
-    name: "app_shortcut_removal_fix"
-    namespace: "systemui"
-    description: "During custom app shortcut removal, use custom shortcut command as key to find the right InputGestureData to be deleted"
-    bug: "405058325"
-    metadata {
-        purpose: PURPOSE_BUGFIX
-    }
-}
-
-flag {
    name: "skip_cancelling_huns_for_guts"
    namespace: "systemui"
    description: "Do not cancel HUNs when GUTs are exposed"
@@ -2078,6 +2058,16 @@ flag {
     namespace: "systemui"
     description: "Enables the UI for the suggested devices feature."
     bug: "411452237"
+}
+
+flag {
+    name: "enable_top_ui_controller"
+    namespace: "systemui"
+    description: "Extracts top ui requests into TopUiController"
+    bug: "411061512"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
 }
 
 flag {

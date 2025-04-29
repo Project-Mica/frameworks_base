@@ -40,6 +40,7 @@ import android.annotation.DrawableRes;
 import android.annotation.FlaggedApi;
 import android.annotation.IdRes;
 import android.annotation.IntDef;
+import android.annotation.IntRange;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.RequiresPermission;
@@ -11600,6 +11601,11 @@ public class Notification implements Parcelable
             }
             if (segment.getLength() > 0) {
                 mProgressSegments.add(segment);
+                if (mProgressSegments.size() > MAX_PROGRESS_SEGMENT_LIMIT) {
+                  Log.w(TAG, "Progress segments limit ("
+                      + MAX_PROGRESS_SEGMENT_LIMIT +") is reached. "
+                      + "All segments will be merged into one segment.");
+                }
             } else {
                 Log.w(TAG, "Dropped the segment. The length is not a positive integer.");
             }
@@ -12265,7 +12271,7 @@ public class Notification implements Parcelable
              * @param length
              * See {@link #getLength}
              */
-            public Segment(int length) {
+            public Segment(@IntRange(from = 1) int length) {
                 mLength = length;
             }
 
@@ -12351,7 +12357,7 @@ public class Notification implements Parcelable
              * @param position
              * See {@link #getPosition}
              */
-            public Point(int position) {
+            public Point(@IntRange(from = 1) int position) {
                 mPosition = position;
             }
 
