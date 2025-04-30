@@ -16,6 +16,8 @@
 
 package android.window;
 
+import static com.android.server.display.feature.flags.Flags.enableDisplayContentModeManagement;
+
 import android.annotation.Nullable;
 import android.app.ActivityThread;
 import android.app.Application;
@@ -131,7 +133,6 @@ public enum DesktopModeFlags {
     ENABLE_TASK_RESIZING_KEYBOARD_SHORTCUTS(Flags::enableTaskResizingKeyboardShortcuts, true),
     ENABLE_TASK_STACK_OBSERVER_IN_SHELL(Flags::enableTaskStackObserverInShell, true),
     ENABLE_THEMED_APP_HEADERS(Flags::enableThemedAppHeaders, true),
-    ENABLE_TILE_RESIZING(Flags::enableTileResizing, true),
     ENABLE_TOP_VISIBLE_ROOT_TASK_PER_USER_TRACKING(Flags::enableTopVisibleRootTaskPerUserTracking,
             true),
     ENABLE_VISUAL_INDICATOR_IN_TRANSITION_BUGFIX(
@@ -214,6 +215,10 @@ public enum DesktopModeFlags {
             boolean shouldOverrideByDevOption) {
         if (!shouldOverrideByDevOption) return flagFunction.getAsBoolean();
         if (Flags.showDesktopExperienceDevOption()) {
+            // If the feature is enabled, just return the flag's value.
+            if (enableDisplayContentModeManagement()) {
+                return flagFunction.getAsBoolean();
+            }
             return switch (getToggleOverride()) {
                 case OVERRIDE_UNSET, OVERRIDE_OFF -> flagFunction.getAsBoolean();
                 case OVERRIDE_ON -> true;

@@ -110,6 +110,7 @@ import com.android.wm.shell.desktopmode.DesktopTasksController;
 import com.android.wm.shell.desktopmode.DesktopTasksLimiter;
 import com.android.wm.shell.desktopmode.DesktopTasksTransitionObserver;
 import com.android.wm.shell.desktopmode.DesktopUserRepositories;
+import com.android.wm.shell.desktopmode.DisplayDisconnectTransitionHandler;
 import com.android.wm.shell.desktopmode.DragToDesktopTransitionHandler;
 import com.android.wm.shell.desktopmode.DragToDisplayTransitionHandler;
 import com.android.wm.shell.desktopmode.EnterDesktopTaskTransitionHandler;
@@ -191,6 +192,8 @@ import com.android.wm.shell.windowdecor.education.DesktopWindowingEducationPromo
 import com.android.wm.shell.windowdecor.education.DesktopWindowingEducationTooltipController;
 import com.android.wm.shell.windowdecor.tiling.DesktopTilingDecorViewModel;
 import com.android.wm.shell.windowdecor.viewholder.AppHandleNotifier;
+
+import com.google.android.msdl.domain.MSDLPlayer;
 
 import dagger.Binds;
 import dagger.Lazy;
@@ -613,7 +616,8 @@ public abstract class WMShellModule {
             @ShellMainThread Handler mainHandler,
             RootDisplayAreaOrganizer rootDisplayAreaOrganizer,
             DesktopState desktopState,
-            IActivityTaskManager activityTaskManager) {
+            IActivityTaskManager activityTaskManager,
+            MSDLPlayer msdlPlayer) {
         return new SplitScreenController(
                 context,
                 shellInit,
@@ -640,7 +644,8 @@ public abstract class WMShellModule {
                 mainHandler,
                 rootDisplayAreaOrganizer,
                 desktopState,
-                activityTaskManager);
+                activityTaskManager,
+                msdlPlayer);
     }
 
     //
@@ -831,6 +836,7 @@ public abstract class WMShellModule {
             DesktopModeDragAndDropTransitionHandler desktopModeDragAndDropTransitionHandler,
             ToggleResizeDesktopTaskTransitionHandler toggleResizeDesktopTaskTransitionHandler,
             DragToDesktopTransitionHandler dragToDesktopTransitionHandler,
+            DisplayDisconnectTransitionHandler displayDisconnectTransitionHandler,
             @DynamicOverride DesktopUserRepositories desktopUserRepositories,
             DesktopRepositoryInitializer desktopRepositoryInitializer,
             Optional<DesktopImmersiveController> desktopImmersiveController,
@@ -881,6 +887,7 @@ public abstract class WMShellModule {
                 desktopModeDragAndDropTransitionHandler,
                 toggleResizeDesktopTaskTransitionHandler,
                 dragToDesktopTransitionHandler,
+                displayDisconnectTransitionHandler,
                 desktopImmersiveController.get(),
                 desktopUserRepositories,
                 desktopRepositoryInitializer,
@@ -1038,6 +1045,14 @@ public abstract class WMShellModule {
                         context, transitions, rootTaskDisplayAreaOrganizer, desksOrganizer,
                         desktopUserRepositories, interactionJankMonitor, bubbleController,
                         desktopState);
+    }
+
+    @WMSingleton
+    @Provides
+    static DisplayDisconnectTransitionHandler provideDesktopDisconnectTransitionHandler(
+            Transitions transitions,
+            ShellInit shellInit) {
+        return new DisplayDisconnectTransitionHandler(transitions, shellInit);
     }
 
     @WMSingleton
@@ -1367,6 +1382,7 @@ public abstract class WMShellModule {
             Optional<DesktopUserRepositories> desktopUserRepositories,
             Optional<DesktopMixedTransitionHandler> desktopMixedTransitionHandler,
             Optional<BackAnimationController> backAnimationController,
+            DesksOrganizer desksOrganizer,
             DesktopState desktopState,
             ShellInit shellInit) {
         return desktopUserRepositories.flatMap(
@@ -1376,6 +1392,7 @@ public abstract class WMShellModule {
                                         repository,
                                         desktopMixedTransitionHandler.get(),
                                         backAnimationController.get(),
+                                        desksOrganizer,
                                         desktopState,
                                         shellInit)));
     }

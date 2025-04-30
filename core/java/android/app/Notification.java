@@ -18,7 +18,6 @@ package android.app;
 
 import static android.annotation.Dimension.DP;
 import static android.app.Flags.FLAG_NM_SUMMARIZATION;
-import static android.app.Flags.evenlyDividedCallStyleActionLayout;
 import static android.app.Flags.notificationsRedesignTemplates;
 import static android.app.admin.DevicePolicyResources.Drawables.Source.NOTIFICATION;
 import static android.app.admin.DevicePolicyResources.Drawables.Style.SOLID_COLORED;
@@ -234,13 +233,6 @@ public class Notification implements Parcelable
      * that can be used to narrow down what settings should be shown in the target app.
      */
     public static final String EXTRA_NOTIFICATION_ID = "android.intent.extra.NOTIFICATION_ID";
-
-    /**
-     * Optional extra for {@link Notification}. If provided, should contain a boolean indicating
-     * whether the notification is requesting promoted treatment.
-     */
-    @FlaggedApi(Flags.FLAG_OPT_IN_RICH_ONGOING)
-    public static final String EXTRA_REQUEST_PROMOTED_ONGOING = "android.REQUEST_PROMOTED_ONGOING";
 
     /**
      * Use all default values (where applicable).
@@ -1737,6 +1729,13 @@ public class Notification implements Parcelable
     public static final String EXTRA_PROGRESS_END_ICON = "android.progressEndIcon";
 
     /**
+     * {@link #extras} key: If provided, should contain a boolean indicating
+     * whether the notification is requesting promoted treatment.
+     */
+    @FlaggedApi(Flags.FLAG_OPT_IN_RICH_ONGOING)
+    public static final String EXTRA_REQUEST_PROMOTED_ONGOING = "android.requestPromotedOngoing";
+
+    /**
      * @hide
      */
     public static final String EXTRA_BUILDER_APPLICATION_INFO = "android.appInfo";
@@ -1796,6 +1795,7 @@ public class Notification implements Parcelable
      * @hide
      */
     public static final String EXTRA_SUMMARIZED_CONTENT = "android.summarization";
+
 
     @UnsupportedAppUsage
     private Icon mSmallIcon;
@@ -6673,12 +6673,10 @@ public class Notification implements Parcelable
                     contentView.setInt(R.id.actions, "setCollapsibleIndentDimen",
                             R.dimen.call_notification_collapsible_indent);
                 }
-                if (evenlyDividedCallStyleActionLayout()) {
-                    if (CallStyle.DEBUG_NEW_ACTION_LAYOUT) {
-                        Log.d(TAG, "setting evenly divided mode on action list");
-                    }
-                    contentView.setBoolean(R.id.actions, "setEvenlyDividedMode", true);
+                if (CallStyle.DEBUG_NEW_ACTION_LAYOUT) {
+                    Log.d(TAG, "setting evenly divided mode on action list");
                 }
+                contentView.setBoolean(R.id.actions, "setEvenlyDividedMode", true);
             }
             if (!notificationsRedesignTemplates()) {
                 contentView.setBoolean(R.id.actions, "setEmphasizedMode", emphasizedMode);
@@ -7281,7 +7279,7 @@ public class Notification implements Parcelable
 
 
                 final CharSequence label = ensureColorSpanContrastOrStripStyling(title, p);
-                if (p.mCallStyleActions && evenlyDividedCallStyleActionLayout()) {
+                if (p.mCallStyleActions) {
                     if (CallStyle.DEBUG_NEW_ACTION_LAYOUT) {
                         Log.d(TAG, "new action layout enabled, gluing instead of setting text");
                     }
@@ -7305,14 +7303,10 @@ public class Notification implements Parcelable
                 button.setColorStateList(R.id.action0, "setButtonBackground",
                         ColorStateList.valueOf(buttonFillColor));
                 if (p.mCallStyleActions) {
-                    if (evenlyDividedCallStyleActionLayout()) {
-                        if (CallStyle.DEBUG_NEW_ACTION_LAYOUT) {
-                            Log.d(TAG, "new action layout enabled, gluing instead of setting icon");
-                        }
-                        button.setIcon(R.id.action0, "glueIcon", action.getIcon());
-                    } else {
-                        button.setImageViewIcon(R.id.action0, action.getIcon());
+                    if (CallStyle.DEBUG_NEW_ACTION_LAYOUT) {
+                        Log.d(TAG, "new action layout enabled, gluing instead of setting icon");
                     }
+                    button.setIcon(R.id.action0, "glueIcon", action.getIcon());
                     boolean priority = action.getExtras().getBoolean(CallStyle.KEY_ACTION_PRIORITY);
                     button.setBoolean(R.id.action0, "setIsPriority", priority);
                     int minWidthDimen =
@@ -11680,6 +11674,7 @@ public class Notification implements Parcelable
          * Gets the progress value of the progress bar.
          * @see #setProgress
          */
+        @IntRange(from = 0)
         public int getProgress() {
             return mProgress;
         }
@@ -11691,7 +11686,7 @@ public class Notification implements Parcelable
         * The max progress value is the sum of all Segment lengths.
         * The default value is 0.
         */
-        public @NonNull ProgressStyle setProgress(int progress) {
+        public @NonNull ProgressStyle setProgress(@IntRange(from = 0) int progress) {
             mProgress = progress;
             return this;
         }
@@ -11700,6 +11695,7 @@ public class Notification implements Parcelable
          * Gets the sum of the lengths of all Segments in the style, which
          * defines the maximum progress. Defaults to 100 when segments are omitted.
          */
+        @IntRange(from = 0)
         public int getProgressMax() {
             final List<Segment> progressSegment = mProgressSegments;
             if (progressSegment == null || progressSegment.isEmpty()) {
@@ -12280,6 +12276,7 @@ public class Notification implements Parcelable
              * This value has no units, it is just relative to the length of other segments,
              * and the value provided to {@link ProgressStyle#setProgress}.
              */
+            @IntRange(from = 1)
             public int getLength() {
                 return mLength;
             }
@@ -12295,6 +12292,7 @@ public class Notification implements Parcelable
 
             /**
              * Optional ID used to uniquely identify the element across updates.
+             * The default is 0.
              */
             public @NonNull Segment setId(int id) {
                 mId = id;
@@ -12346,7 +12344,7 @@ public class Notification implements Parcelable
         public static final class Point {
 
             private int mPosition;
-            private int mId;
+            private int mId = 0;
             @ColorInt
             private int mColor = Notification.COLOR_DEFAULT;
 
@@ -12366,6 +12364,7 @@ public class Notification implements Parcelable
              * The position of this point on the progress bar
              * relative to {@link ProgressStyle#getProgressMax}.
              */
+            @IntRange(from = 1)
             public int getPosition() {
                 return mPosition;
             }
@@ -12380,6 +12379,7 @@ public class Notification implements Parcelable
 
             /**
              * Optional ID used to uniquely identify the element across updates.
+             * The default is 0.
              */
             public @NonNull Point setId(int id) {
                 mId = id;

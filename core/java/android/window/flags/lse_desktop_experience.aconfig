@@ -1151,6 +1151,14 @@ flag {
 }
 
 flag {
+    name: "grant_manage_key_gestures_to_recents"
+    namespace: "lse_desktop_experience"
+    description: "Grant MANAGE_KEY_GESTURES permission to the recents holder."
+    bug: "406452076"
+    is_fixed_read_only: true
+}
+
+flag {
     name: "enable_key_gesture_handler_for_recents"
     namespace: "lse_desktop_experience"
     description: "Enables the key gesture handler for listening to recents related key events, e.g. overview, all apps."
@@ -1193,6 +1201,16 @@ flag {
     namespace: "lse_desktop_experience"
     description: "Add an overflow button to accommodate pinned items that can't be fit into the taskbar."
     bug: "375647992"
+}
+
+flag {
+    name: "enable_window_decoration_refactor"
+    namespace: "lse_desktop_experience"
+    description: "Utilizes the new WindowDecoration2."
+    bug: "409648813"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
 }
 
 flag {

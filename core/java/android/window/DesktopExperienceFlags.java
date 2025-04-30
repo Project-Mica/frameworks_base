@@ -22,10 +22,14 @@ import static com.android.server.display.feature.flags.Flags.enableDisplayConten
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.os.SystemProperties;
+import android.util.ArrayMap;
 import android.util.Log;
 
 import com.android.window.flags.Flags;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -70,10 +74,10 @@ public enum DesktopExperienceFlags {
     ENABLE_DESKTOP_APP_HEADER_STATE_CHANGE_ANNOUNCEMENTS(
             Flags::enableDesktopAppHeaderStateChangeAnnouncements, false,
             Flags.FLAG_ENABLE_DESKTOP_APP_HEADER_STATE_CHANGE_ANNOUNCEMENTS),
-    ENABLE_DESKTOP_APP_LAUNCH_BUGFIX(Flags::enableDesktopAppLaunchBugfix, false,
+    ENABLE_DESKTOP_APP_LAUNCH_BUGFIX(Flags::enableDesktopAppLaunchBugfix, true,
             Flags.FLAG_ENABLE_DESKTOP_APP_LAUNCH_BUGFIX),
     ENABLE_DESKTOP_CLOSE_TASK_ANIMATION_IN_DTC_BUGFIX(
-            Flags::enableDesktopCloseTaskAnimationInDtcBugfix, false,
+            Flags::enableDesktopCloseTaskAnimationInDtcBugfix, true,
             Flags.FLAG_ENABLE_DESKTOP_CLOSE_TASK_ANIMATION_IN_DTC_BUGFIX),
     ENABLE_DESKTOP_FIRST_BASED_DEFAULT_TO_DESKTOP_BUGFIX(
             Flags::enableDesktopFirstBasedDefaultToDesktopBugfix, false,
@@ -83,12 +87,12 @@ public enum DesktopExperienceFlags {
     ENABLE_DESKTOP_IME_BUGFIX(Flags::enableDesktopImeBugfix, false,
             Flags.FLAG_ENABLE_DESKTOP_IME_BUGFIX),
     ENABLE_DESKTOP_TAB_TEARING_LAUNCH_ANIMATION(
-            Flags::enableDesktopTabTearingLaunchAnimation, false,
+            Flags::enableDesktopTabTearingLaunchAnimation, true,
             Flags.FLAG_ENABLE_DESKTOP_TAB_TEARING_LAUNCH_ANIMATION),
     ENABLE_DESKTOP_TASKBAR_ON_FREEFORM_DISPLAYS(Flags::enableDesktopTaskbarOnFreeformDisplays,
             false, Flags.FLAG_ENABLE_DESKTOP_TASKBAR_ON_FREEFORM_DISPLAYS),
     ENABLE_DESKTOP_TASK_LIMIT_SEPARATE_TRANSITION(
-            Flags::enableDesktopTaskLimitSeparateTransition, false,
+            Flags::enableDesktopTaskLimitSeparateTransition, true,
             Flags.FLAG_ENABLE_DESKTOP_TASK_LIMIT_SEPARATE_TRANSITION),
     ENABLE_DESKTOP_WINDOWING_PIP(Flags::enableDesktopWindowingPip, false,
             Flags.FLAG_ENABLE_DESKTOP_WINDOWING_PIP),
@@ -159,9 +163,12 @@ public enum DesktopExperienceFlags {
     ENABLE_TALL_APP_HEADERS(Flags::enableTallAppHeaders, false, Flags.FLAG_ENABLE_TALL_APP_HEADERS),
     ENABLE_TASKBAR_CONNECTED_DISPLAYS(Flags::enableTaskbarConnectedDisplays, true,
             Flags.FLAG_ENABLE_TASKBAR_CONNECTED_DISPLAYS),
+    ENABLE_TILE_RESIZING(Flags::enableTileResizing, true, Flags.FLAG_ENABLE_TILE_RESIZING),
     ENABLE_WINDOWING_TRANSITION_HANDLERS_OBSERVERS(
             Flags::enableWindowingTransitionHandlersObservers, true,
             Flags.FLAG_ENABLE_WINDOWING_TRANSITION_HANDLERS_OBSERVERS),
+    ENABLE_WINDOW_DECORATION_REFACTOR(Flags::enableWindowDecorationRefactor, false,
+            Flags.FLAG_ENABLE_WINDOW_DECORATION_REFACTOR),
     ENABLE_WINDOW_REPOSITIONING_API(Flags::enableWindowRepositioningApi, false,
             Flags.FLAG_ENABLE_WINDOW_REPOSITIONING_API),
     ENTER_DESKTOP_BY_DEFAULT_ON_FREEFORM_DISPLAYS(Flags::enterDesktopByDefaultOnFreeformDisplays,
@@ -194,6 +201,9 @@ public enum DesktopExperienceFlags {
             this.mFlagFunction = flagFunction;
             this.mFlagName = flagName;
             this.mShouldOverrideByDevOptionDefault = shouldOverrideByDevOption;
+            if (Flags.showDesktopExperienceDevOption()) {
+                registerFlag(flagName, this);
+            }
         }
 
         /**
@@ -209,6 +219,18 @@ public enum DesktopExperienceFlags {
                         mShouldOverrideByDevOptionDefault);
             }
             return isFlagTrue(mFlagFunction, mCachedIsOverrideByDevOption);
+        }
+
+        public String getFlagName() {
+            return mFlagName;
+        }
+
+        public boolean getFlagValue() {
+            return mFlagFunction.getAsBoolean();
+        }
+
+        public boolean isOverridable() {
+            return mShouldOverrideByDevOptionDefault;
         }
     }
 
@@ -226,6 +248,13 @@ public enum DesktopExperienceFlags {
     // be refreshed only on reboots as overridden state is expected to take effect on reboots.
     @Nullable
     private static Boolean sCachedToggleOverride;
+
+    /**
+     * Local cache of dynamically defined flag, organised by name.
+     *
+     * <p> Create an array with a capacity of 10, which should be plenty.
+     */
+    private static Map<String, DesktopExperienceFlag> sDynamicFlags = new ArrayMap<>(10);
 
     public static final String SYSTEM_PROPERTY_NAME = "persist.wm.debug.desktop_experience_devopts";
     public static final String SYSTEM_PROPERTY_OVERRIDE_PREFIX =
@@ -253,6 +282,19 @@ public enum DesktopExperienceFlags {
         return isFlagTrue(mFlagFunction, mCachedIsOverrideByDevOption);
     }
 
+    public boolean getFlagValue() {
+        return mFlagFunction.getAsBoolean();
+    }
+
+    public String getFlagName() {
+        return mFlagName;
+    }
+
+    /** Returns whether or not the developer option can override that flag. */
+    public boolean isOverridable() {
+        return mShouldOverrideByDevOptionDefault;
+    }
+
     private static boolean isFlagTrue(
             BooleanSupplier flagFunction, boolean shouldOverrideByDevOption) {
         if (Flags.showDesktopExperienceDevOption()
@@ -261,6 +303,14 @@ public enum DesktopExperienceFlags {
             return true;
         }
         return flagFunction.getAsBoolean();
+    }
+
+    private static void registerFlag(String name, DesktopExperienceFlag flag) {
+        sDynamicFlags.put(name, flag);
+    }
+
+    public static List<DesktopExperienceFlag> getRegisteredFlags() {
+        return new ArrayList<>(sDynamicFlags.values());
     }
 
     private static boolean checkIfFlagShouldBeOverridden(@Nullable String flagName,
@@ -277,7 +327,8 @@ public enum DesktopExperienceFlags {
                 defaultValue);
     }
 
-    private static boolean getToggleOverride() {
+    /** Check whether the flags are overridden to true or not. */
+    public static boolean getToggleOverride() {
         // If cached, return it
         if (sCachedToggleOverride != null) {
             return sCachedToggleOverride;
@@ -295,3 +346,4 @@ public enum DesktopExperienceFlags {
         return SystemProperties.getBoolean(SYSTEM_PROPERTY_NAME, false);
     }
 }
+
