@@ -1604,16 +1604,6 @@ flag {
 }
 
 flag {
-   name: "show_toast_when_app_control_brightness"
-   namespace: "systemui"
-   description: "Showing the warning toast if the current running app window has controlled the brightness value."
-   bug: "363225340"
-   metadata {
-       purpose: PURPOSE_BUGFIX
-   }
-}
-
-flag {
   name: "home_controls_dream_hsum"
   namespace: "systemui"
   description: "Enables the home controls dream in HSUM"
@@ -1691,6 +1681,17 @@ flag {
   description: "Updates the fonts of the shade header"
   bug: "393609960"
   is_fixed_read_only: true
+}
+
+flag {
+  name: "shade_header_blur_font_color"
+  namespace: "systemui"
+  description: "Updates the font colors of the shade header for blur"
+  bug: "393609960"
+  is_fixed_read_only: true
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
 }
 
 flag {

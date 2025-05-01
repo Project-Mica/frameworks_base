@@ -21,6 +21,7 @@ import android.app.ActivityManager
 import android.app.ActivityManager.RecentTaskInfo
 import android.app.ActivityManager.RunningTaskInfo
 import android.app.ActivityOptions
+import android.app.ActivityTaskManager.INVALID_TASK_ID
 import android.app.AppOpsManager
 import android.app.KeyguardManager
 import android.app.PendingIntent
@@ -207,7 +208,6 @@ class DesktopTasksController(
     private val desktopModeDragAndDropTransitionHandler: DesktopModeDragAndDropTransitionHandler,
     private val toggleResizeDesktopTaskTransitionHandler: ToggleResizeDesktopTaskTransitionHandler,
     private val dragToDesktopTransitionHandler: DragToDesktopTransitionHandler,
-    private val displayDisconnectTransitionHandler: DisplayDisconnectTransitionHandler,
     private val desktopImmersiveController: DesktopImmersiveController,
     private val userRepositories: DesktopUserRepositories,
     desktopRepositoryInitializer: DesktopRepositoryInitializer,
@@ -378,11 +378,19 @@ class DesktopTasksController(
         return TRANSIT_TO_FRONT
     }
 
-    /** Show all tasks, that are part of the desktop, on top of launcher */
+    /**
+     * Shows all tasks, that are part of the desktop, on top of launcher. Brings the task with id
+     * [taskIdToReorderToFront] to front if provided and is already on the default desk on the given
+     * display.
+     */
     @Deprecated("Use activateDesk() instead.", ReplaceWith("activateDesk()"))
-    fun showDesktopApps(displayId: Int, remoteTransition: RemoteTransition? = null) {
+    fun showDesktopApps(
+        displayId: Int,
+        remoteTransition: RemoteTransition? = null,
+        taskIdToReorderToFront: Int? = null,
+    ) {
         logV("showDesktopApps")
-        activateDefaultDeskInDisplay(displayId, remoteTransition)
+        activateDefaultDeskInDisplay(displayId, remoteTransition, taskIdToReorderToFront)
     }
 
     /** Returns whether the given display has an active desk. */
@@ -739,8 +747,6 @@ class DesktopTasksController(
                 }
             }
         }
-        // Inform the transition handler here since this class will handle the request.
-        displayDisconnectTransitionHandler.addPendingTransition(transition)
         return wct
     }
 
@@ -1813,7 +1819,7 @@ class DesktopTasksController(
         }
 
         if (
-            !Flags.enableNonDefaultDisplaySplit() ||
+            !DesktopExperienceFlags.ENABLE_NON_DEFAULT_DISPLAY_SPLIT.isTrue ||
                 !DesktopExperienceFlags.ENABLE_MOVE_TO_NEXT_DISPLAY_SHORTCUT.isTrue
         ) {
             return
@@ -3554,9 +3560,10 @@ class DesktopTasksController(
     private fun activateDefaultDeskInDisplay(
         displayId: Int,
         remoteTransition: RemoteTransition? = null,
+        taskIdToReorderToFront: Int? = null,
     ) {
         val deskId = getOrCreateDefaultDeskId(displayId) ?: return
-        activateDesk(deskId, remoteTransition)
+        activateDesk(deskId, remoteTransition, taskIdToReorderToFront)
     }
 
     /**
@@ -3756,11 +3763,57 @@ class DesktopTasksController(
         activateDesk(destinationDeskId)
     }
 
-    /** Activates the given desk. */
-    fun activateDesk(deskId: Int, remoteTransition: RemoteTransition? = null) {
-        logV("activateDesk deskId=%d", deskId)
+    /**
+     * Activates the given desk and brings [taskIdToReorderToFront] to front if provided and is
+     * already on the given desk.
+     */
+    fun activateDesk(
+        deskId: Int,
+        remoteTransition: RemoteTransition? = null,
+        taskIdToReorderToFront: Int? = null,
+    ) {
+        if (
+            taskIdToReorderToFront != null &&
+                taskRepository.getDeskIdForTask(taskIdToReorderToFront) != deskId
+        ) {
+            logW(
+                "activeDesk taskIdToReorderToFront=%d not on the desk %d",
+                taskIdToReorderToFront,
+                deskId,
+            )
+            return
+        }
+
+        val newTaskInFront =
+            taskIdToReorderToFront?.let { taskId ->
+                shellTaskOrganizer.getRunningTaskInfo(taskId)
+                    ?: recentTasksController?.findTaskInBackground(taskId)
+            }
+
         val wct = WindowContainerTransaction()
-        val runOnTransitStart = addDeskActivationChanges(deskId, wct)
+        val runOnTransitStart = addDeskActivationChanges(deskId, wct, newTaskInFront)
+
+        // Put task with [taskIdToReorderToFront] to front.
+        when (newTaskInFront) {
+            is RunningTaskInfo -> {
+                // Task is running, reorder it.
+                if (DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue) {
+                    desksOrganizer.reorderTaskToFront(wct, deskId, newTaskInFront)
+                } else {
+                    wct.reorder(newTaskInFront.token, /* onTop= */ true)
+                }
+            }
+            is RecentTaskInfo -> {
+                // Task is not running, start it.
+                wct.startTask(
+                    taskIdToReorderToFront,
+                    createActivityOptionsForStartTask().toBundle(),
+                )
+            }
+            else -> {
+                logW("activateDesk taskIdToReorderToFront=%d not found", taskIdToReorderToFront)
+            }
+        }
 
         val transitionType = transitionType(remoteTransition)
         val handler =
@@ -4740,15 +4793,31 @@ class DesktopTasksController(
             }
         }
 
-        override fun activateDesk(deskId: Int, remoteTransition: RemoteTransition?) {
+        override fun activateDesk(
+            deskId: Int,
+            remoteTransition: RemoteTransition?,
+            taskIdInFront: Int,
+        ) {
             executeRemoteCallWithTaskPermission(controller, "activateDesk") { c ->
-                c.activateDesk(deskId, remoteTransition)
+                c.activateDesk(
+                    deskId,
+                    remoteTransition,
+                    if (taskIdInFront != INVALID_TASK_ID) taskIdInFront else null,
+                )
             }
         }
 
-        override fun showDesktopApps(displayId: Int, remoteTransition: RemoteTransition?) {
+        override fun showDesktopApps(
+            displayId: Int,
+            remoteTransition: RemoteTransition?,
+            taskIdInFront: Int,
+        ) {
             executeRemoteCallWithTaskPermission(controller, "showDesktopApps") { c ->
-                c.showDesktopApps(displayId, remoteTransition)
+                c.showDesktopApps(
+                    displayId,
+                    remoteTransition,
+                    if (taskIdInFront != INVALID_TASK_ID) taskIdInFront else null,
+                )
             }
         }
 

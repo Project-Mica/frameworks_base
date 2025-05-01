@@ -166,7 +166,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_TOAST;
 import static android.view.contentprotection.flags.Flags.rapidClearNotificationsByListenerAppOpEnabled;
 
 import static com.android.internal.util.FrameworkStatsLog.DND_MODE_RULE;
-import static com.android.internal.util.FrameworkStatsLog.NOTIFICATION_BUNDLE_PREFERENCES;
+import static com.android.internal.util.FrameworkStatsLog.NOTIFICATION_ADJUSTMENT_PREFERENCES;
 import static com.android.internal.util.FrameworkStatsLog.PACKAGE_NOTIFICATION_CHANNEL_GROUP_PREFERENCES;
 import static com.android.internal.util.FrameworkStatsLog.PACKAGE_NOTIFICATION_CHANNEL_PREFERENCES;
 import static com.android.internal.util.FrameworkStatsLog.PACKAGE_NOTIFICATION_PREFERENCES;
@@ -2992,7 +2992,7 @@ public class NotificationManagerService extends SystemService {
             mStatsManager.clearPullAtomCallback(PACKAGE_NOTIFICATION_PREFERENCES);
             mStatsManager.clearPullAtomCallback(PACKAGE_NOTIFICATION_CHANNEL_PREFERENCES);
             mStatsManager.clearPullAtomCallback(PACKAGE_NOTIFICATION_CHANNEL_GROUP_PREFERENCES);
-            mStatsManager.clearPullAtomCallback(NOTIFICATION_BUNDLE_PREFERENCES);
+            mStatsManager.clearPullAtomCallback(NOTIFICATION_ADJUSTMENT_PREFERENCES);
             mStatsManager.clearPullAtomCallback(DND_MODE_RULE);
         }
         if (mAppOps != null) {
@@ -3116,7 +3116,7 @@ public class NotificationManagerService extends SystemService {
                 mPullAtomCallback
         );
         mStatsManager.setPullAtomCallback(
-                NOTIFICATION_BUNDLE_PREFERENCES,
+                NOTIFICATION_ADJUSTMENT_PREFERENCES,
                 null, // use default PullAtomMetadata values
                 ConcurrentUtils.DIRECT_EXECUTOR,
                 mPullAtomCallback
@@ -3155,7 +3155,7 @@ public class NotificationManagerService extends SystemService {
                 case PACKAGE_NOTIFICATION_PREFERENCES:
                 case PACKAGE_NOTIFICATION_CHANNEL_PREFERENCES:
                 case PACKAGE_NOTIFICATION_CHANNEL_GROUP_PREFERENCES:
-                case NOTIFICATION_BUNDLE_PREFERENCES:
+                case NOTIFICATION_ADJUSTMENT_PREFERENCES:
                 case DND_MODE_RULE:
                     return pullNotificationStates(atomTag, data);
                 default:
@@ -3182,9 +3182,9 @@ public class NotificationManagerService extends SystemService {
             case PACKAGE_NOTIFICATION_CHANNEL_GROUP_PREFERENCES:
                 mPreferencesHelper.pullPackageChannelGroupPreferencesStats(data);
                 break;
-            case NOTIFICATION_BUNDLE_PREFERENCES:
+            case NOTIFICATION_ADJUSTMENT_PREFERENCES:
                 if (notificationClassification() && notificationClassificationUi()) {
-                    mAssistants.pullBundlePreferencesStats(data);
+                    mAssistants.pullAdjustmentPreferencesStats(data);
                 }
                 break;
             case DND_MODE_RULE:
@@ -12423,7 +12423,7 @@ public class NotificationManagerService extends SystemService {
         protected @NonNull String[] getAdjustmentDeniedPackages(@UserIdInt int userId,
                 @Adjustment.Keys String key) {
             synchronized (mLock) {
-                if (notificationClassificationUi() || nmSummarization() | nmSummarizationUi()) {
+                if (notificationClassificationUi() || nmSummarization() || nmSummarizationUi()) {
                     if (mAdjustmentKeyDeniedPackages.containsKey(userId)) {
                         return mAdjustmentKeyDeniedPackages.get(userId).getOrDefault(
                                 key, new ArraySet<>()).toArray(new String[0]);
@@ -12436,7 +12436,7 @@ public class NotificationManagerService extends SystemService {
         protected boolean isAdjustmentAllowedForPackage(@UserIdInt int userId,
                 @Adjustment.Keys String key, String pkg) {
             synchronized (mLock) {
-                if (notificationClassificationUi() || nmSummarization() | nmSummarizationUi()) {
+                if (notificationClassificationUi() || nmSummarization() || nmSummarizationUi()) {
                     if (mAdjustmentKeyDeniedPackages.containsKey(userId)) {
                         return !mAdjustmentKeyDeniedPackages.get(userId).getOrDefault(
                                 key, new ArraySet<>()).contains(pkg);
@@ -12448,7 +12448,7 @@ public class NotificationManagerService extends SystemService {
 
         public void setAdjustmentSupportedForPackage(int userId, @Adjustment.Keys String key,
                 String pkg, boolean enabled) {
-            if (!(notificationClassificationUi() || nmSummarization() | nmSummarizationUi())) {
+            if (!(notificationClassificationUi() || nmSummarization() || nmSummarizationUi())) {
                 return;
             }
             synchronized (mLock) {
@@ -13046,7 +13046,7 @@ public class NotificationManagerService extends SystemService {
          * Fills out {@link BundlePreferences} proto and wraps it in a {@link StatsEvent}.
          */
         @FlaggedApi(android.service.notification.Flags.FLAG_NOTIFICATION_CLASSIFICATION)
-        protected void pullBundlePreferencesStats(List<StatsEvent> events) {
+        protected void pullAdjustmentPreferencesStats(List<StatsEvent> events) {
             boolean bundlesAllowed = true;
             synchronized (mLock) {
                 List<String> unsupportedAdjustments = new ArrayList(
@@ -13061,12 +13061,14 @@ public class NotificationManagerService extends SystemService {
             int[] allowedBundleTypes = getAllowedClassificationTypes(UserHandle.getCallingUserId());
 
             events.add(FrameworkStatsLog.buildStatsEvent(
-                    NOTIFICATION_BUNDLE_PREFERENCES,
+                    NOTIFICATION_ADJUSTMENT_PREFERENCES,
                     /* optional int32 event_id = 1 */
                     NotificationPullStatsEvent.NOTIFICATION_BUNDLE_PREFERENCES_PULLED.getId(),
                     /* optional bool bundles_allowed = 2 */ bundlesAllowed,
                     /* repeated android.stats.notification.BundleTypes allowed_bundle_types = 3 */
-                    allowedBundleTypes));
+                    allowedBundleTypes,
+                    /* optional android.stats.notification.AdjustmentKey key = 4 */
+                    NotificationPullStatsEvent.adjustmentKeyEnum(KEY_TYPE)));
         }
     }
 
