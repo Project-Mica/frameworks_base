@@ -22,7 +22,6 @@ import android.platform.test.annotations.DisableFlags
 import android.platform.test.annotations.EnableFlags
 import android.platform.test.annotations.Presubmit
 import android.platform.test.flag.junit.SetFlagsRule
-import android.window.DesktopExperienceFlags
 import android.window.DesktopModeFlags
 import androidx.test.filters.SmallTest
 import com.android.internal.R
@@ -58,6 +57,7 @@ class DesktopModeStatusTest : ShellTestCase() {
         doReturn(false).whenever(mockResources).getBoolean(
             eq(R.bool.config_isDesktopModeDevOptionSupported)
         )
+        setDeviceEligibleForDesktopMode(false)
         doReturn(context.contentResolver).whenever(mockContext).contentResolver
         resetDesktopModeFlagsCache()
         resetEnforceDeviceRestriction()
@@ -140,10 +140,8 @@ class DesktopModeStatusTest : ShellTestCase() {
         assertThat(DesktopModeStatus.canEnterDesktopMode(mockContext)).isTrue()
     }
 
-    @EnableFlags(
-        Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE,
-        Flags.FLAG_ENABLE_DESKTOP_MODE_THROUGH_DEV_OPTION
-    )
+    @DisableFlags(Flags.FLAG_ENABLE_DESKTOP_MODE_THROUGH_DEV_OPTION)
+    @EnableFlags(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE)
     @Test
     fun canEnterDesktopMode_DWFlagEnabled_deviceNotEligible_forceUsingDevOption_returnsTrue() {
         doReturn(true).whenever(mockResources).getBoolean(
@@ -172,12 +170,12 @@ class DesktopModeStatusTest : ShellTestCase() {
 
     @DisableFlags(Flags.FLAG_ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE)
     @Test
-    fun isDeviceEligibleForDesktopMode_configDEModeOnAndIntDispHostsDesktopOff_returnsTrue() {
+    fun isDeviceEligibleForDesktopMode_configDEModeOnAndIntDispHostsDesktopOff_returnsFalse() {
         doReturn(true).whenever(mockResources).getBoolean(eq(R.bool.config_isDesktopModeSupported))
         doReturn(false).whenever(mockResources)
             .getBoolean(eq(R.bool.config_canInternalDisplayHostDesktops))
 
-        assertThat(DesktopModeStatus.isDeviceEligibleForDesktopMode(mockContext)).isTrue()
+        assertThat(DesktopModeStatus.isDeviceEligibleForDesktopMode(mockContext)).isFalse()
     }
 
     @EnableFlags(Flags.FLAG_ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE)
@@ -249,36 +247,23 @@ class DesktopModeStatusTest : ShellTestCase() {
     }
 
     private fun resetDesktopModeFlagsCache() {
-        // Toggle override cache for DesktopModeFlags
-        val cachedToggleOverride1 =
+        val cachedToggleOverride =
             DesktopModeFlags::class.java.getDeclaredField("sCachedToggleOverride")
-        cachedToggleOverride1.isAccessible = true
-        cachedToggleOverride1.set(null, DesktopModeFlags.ToggleOverride.OVERRIDE_OFF)
-
-        // Toggle override cache for DesktopExperienceFlags
-        val cachedToggleOverride2 =
-            DesktopExperienceFlags::class.java.getDeclaredField("sCachedToggleOverride")
-        cachedToggleOverride2.isAccessible = true
-        cachedToggleOverride2.set(null, false)
+        cachedToggleOverride.isAccessible = true
+        cachedToggleOverride.set(null, null)
     }
 
     private fun setFlagOverride(override: DesktopModeFlags.ToggleOverride) {
-        // Toggle override cache for DesktopModeFlags can be on/off/unset
-        val cachedToggleOverride1 =
+        val cachedToggleOverride =
             DesktopModeFlags::class.java.getDeclaredField("sCachedToggleOverride")
-        cachedToggleOverride1.isAccessible = true
-        cachedToggleOverride1.set(null, override)
-
-        // Toggle override cache for DesktopExperienceFlags can be true or false
-        val cachedToggleOverride2 =
-            DesktopExperienceFlags::class.java.getDeclaredField("sCachedToggleOverride")
-        cachedToggleOverride2.isAccessible = true
-        cachedToggleOverride2.set(null, override == DesktopModeFlags.ToggleOverride.OVERRIDE_ON)
+        cachedToggleOverride.isAccessible = true
+        cachedToggleOverride.set(null, override)
     }
 
     private fun setDeviceEligibleForDesktopMode(eligible: Boolean) {
-        doReturn(eligible).whenever(mockResources)
-            .getBoolean(eq(R.bool.config_isDesktopModeSupported))
+        val deviceRestrictions = DesktopModeStatus::class.java.getDeclaredField("ENFORCE_DEVICE_RESTRICTIONS")
+        deviceRestrictions.isAccessible = true
+        deviceRestrictions.setBoolean(/* obj= */ null, /* z= */ !eligible)
     }
 
     private fun setIsVeiledResizeEnabled(enabled: Boolean) {
