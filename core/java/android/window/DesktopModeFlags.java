@@ -16,8 +16,6 @@
 
 package android.window;
 
-import static com.android.server.display.feature.flags.Flags.enableDisplayContentModeManagement;
-
 import android.annotation.Nullable;
 import android.app.ActivityThread;
 import android.app.Application;
@@ -215,10 +213,6 @@ public enum DesktopModeFlags {
             boolean shouldOverrideByDevOption) {
         if (!shouldOverrideByDevOption) return flagFunction.getAsBoolean();
         if (Flags.showDesktopExperienceDevOption()) {
-            // If the feature is enabled, just return the flag's value.
-            if (enableDisplayContentModeManagement()) {
-                return flagFunction.getAsBoolean();
-            }
             return switch (getToggleOverride()) {
                 case OVERRIDE_UNSET, OVERRIDE_OFF -> flagFunction.getAsBoolean();
                 case OVERRIDE_ON -> true;

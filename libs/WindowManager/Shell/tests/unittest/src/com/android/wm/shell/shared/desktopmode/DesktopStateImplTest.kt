@@ -23,7 +23,6 @@ import android.platform.test.annotations.EnableFlags
 import android.platform.test.annotations.Presubmit
 import android.view.Display
 import android.view.WindowManager
-import android.window.DesktopExperienceFlags
 import android.window.DesktopModeFlags
 import androidx.test.filters.SmallTest
 import com.android.dx.mockito.inline.extended.ExtendedMockito
@@ -194,18 +193,16 @@ class DesktopStateImplTest : ShellTestCase() {
     )
     @EnableFlags(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE)
     @Test
-    fun canEnterDesktopMode_DWFlagEnabled_deviceEligibleWithoutInternalDisplay_returnsTrue() {
+    fun canEnterDesktopMode_DWFlagEnabled_deviceEligibleWithoutInternalDisplay_returnsFalse() {
         setDeviceEligibleForDesktopMode(true)
         setCanInternalDisplayHostDesktops(false)
         val desktopState = DesktopStateImpl(context)
 
-        assertThat(desktopState.canEnterDesktopMode).isTrue()
+        assertThat(desktopState.canEnterDesktopMode).isFalse()
     }
 
-    @EnableFlags(
-        Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE,
-        Flags.FLAG_ENABLE_DESKTOP_MODE_THROUGH_DEV_OPTION
-    )
+    @DisableFlags(Flags.FLAG_ENABLE_DESKTOP_MODE_THROUGH_DEV_OPTION)
+    @EnableFlags(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE)
     @Test
     fun canEnterDesktopMode_DWFlagEnabled_deviceNotEligible_forceUsingDevOption_returnsTrue() {
         mContext
@@ -239,13 +236,13 @@ class DesktopStateImplTest : ShellTestCase() {
 
     @DisableFlags(Flags.FLAG_ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE)
     @Test
-    fun isDeviceEligibleForDesktopMode_configDEModeOnAndIntDispHostsDesktopOff_returnsTrue() {
+    fun isDeviceEligibleForDesktopMode_configDEModeOnAndIntDispHostsDesktopOff_returnsFalse() {
         val resources = mContext.getOrCreateTestableResources()
         resources.addOverride(R.bool.config_isDesktopModeSupported, true)
         resources.addOverride(R.bool.config_canInternalDisplayHostDesktops, false)
         val desktopState = DesktopStateImpl(context)
 
-        assertThat(desktopState.isDeviceEligibleForDesktopMode).isTrue()
+        assertThat(desktopState.isDeviceEligibleForDesktopMode).isFalse()
     }
 
     @EnableFlags(Flags.FLAG_ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE)
@@ -287,7 +284,7 @@ class DesktopStateImplTest : ShellTestCase() {
         assertThat(desktopState.isDeviceEligibleForDesktopMode).isTrue()
     }
 
-    @EnableFlags(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE, Flags.FLAG_ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE)
+    @EnableFlags(Flags.FLAG_ENABLE_DESKTOP_MODE_THROUGH_DEV_OPTION, Flags.FLAG_ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE)
     @Test
     fun isProjectedMode_oneDisplay_returnsFalse() {
         val resources = mContext.getOrCreateTestableResources()
@@ -298,7 +295,7 @@ class DesktopStateImplTest : ShellTestCase() {
         assertThat(desktopState.isProjectedMode()).isFalse()
     }
 
-    @EnableFlags(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE, Flags.FLAG_ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE)
+    @EnableFlags(Flags.FLAG_ENABLE_DESKTOP_MODE_THROUGH_DEV_OPTION, Flags.FLAG_ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE)
     @Test
     fun isProjectedMode_twoDisplay_bothSupportDesktopMode_returnsFalse() {
         whenever(displayManager
@@ -313,10 +310,11 @@ class DesktopStateImplTest : ShellTestCase() {
         assertThat(desktopState.isProjectedMode()).isFalse()
     }
 
-    @EnableFlags(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE, Flags.FLAG_ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE)
+    @EnableFlags(Flags.FLAG_ENABLE_DESKTOP_MODE_THROUGH_DEV_OPTION, Flags.FLAG_ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE)
     @Test
     fun isProjectedMode_twoDisplay_onlyExternalSupportDesktopMode_returnsTrue() {
-        whenever(displayManager.displays)
+        whenever(displayManager
+            .getDisplays(DisplayManager.DISPLAY_CATEGORY_ALL_INCLUDING_DISABLED))
             .thenReturn(arrayOf(defaultDisplay, extendedDisplay))
         val resources = mContext.getOrCreateTestableResources()
         resources.addOverride(R.bool.config_isDesktopModeSupported, true)
@@ -327,7 +325,7 @@ class DesktopStateImplTest : ShellTestCase() {
         assertThat(desktopState.isProjectedMode()).isTrue()
     }
 
-    @EnableFlags(Flags.FLAG_ENABLE_DESKTOP_WINDOWING_MODE, Flags.FLAG_ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE)
+    @EnableFlags(Flags.FLAG_ENABLE_DESKTOP_MODE_THROUGH_DEV_OPTION, Flags.FLAG_ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE)
     @Test
     fun isProjectedMode_twoDisplay_neitherSupportDesktopMode_returnsFalse() {
         whenever(displayManager
@@ -375,12 +373,12 @@ class DesktopStateImplTest : ShellTestCase() {
     @EnableFlags(Flags.FLAG_SHOW_DESKTOP_EXPERIENCE_DEV_OPTION)
     @DisableFlags(Flags.FLAG_ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE)
     @Test
-    fun canShowDesktopExperienceDevOption_flagEnabled_deviceEligibleNotInternalDisplay_returnsTrue() {
+    fun canShowDesktopExperienceDevOption_flagEnabled_deviceEligibleNotInternalDisplay_returnsFalse() {
         setDeviceEligibleForDesktopMode(true)
         setCanInternalDisplayHostDesktops(false)
         val desktopState = DesktopStateImpl(context)
 
-        assertThat(desktopState.canShowDesktopExperienceDevOption).isTrue()
+        assertThat(desktopState.canShowDesktopExperienceDevOption).isFalse()
     }
 
     @EnableFlags(
@@ -423,29 +421,17 @@ class DesktopStateImplTest : ShellTestCase() {
     }
 
     private fun resetDesktopModeFlagsCache() {
-        val cachedToggleOverride1 =
+        val cachedToggleOverride =
             DesktopModeFlags::class.java.getDeclaredField("sCachedToggleOverride")
-        cachedToggleOverride1.isAccessible = true
-        cachedToggleOverride1.set(null, null)
-
-        val cachedToggleOverride2 =
-            DesktopExperienceFlags::class.java.getDeclaredField("sCachedToggleOverride")
-        cachedToggleOverride2.isAccessible = true
-        cachedToggleOverride2.set(null, null)
+        cachedToggleOverride.isAccessible = true
+        cachedToggleOverride.set(null, null)
     }
 
     private fun setFlagOverride(override: DesktopModeFlags.ToggleOverride) {
-        // Override for DesktopModeFlags can be on/off/unset
         val cachedToggleOverride =
             DesktopModeFlags::class.java.getDeclaredField("sCachedToggleOverride")
         cachedToggleOverride.isAccessible = true
         cachedToggleOverride.set(null, override)
-
-        // Override for DesktopExperienceFlags can be true or flags
-        val cachedToggleOverride2 =
-            DesktopExperienceFlags::class.java.getDeclaredField("sCachedToggleOverride")
-        cachedToggleOverride2.isAccessible = true
-        cachedToggleOverride2.set(null, override == DesktopModeFlags.ToggleOverride.OVERRIDE_ON)
     }
 
     private fun setDeviceEligibleForDesktopMode(eligible: Boolean) {

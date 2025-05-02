@@ -330,6 +330,7 @@ import com.android.internal.accessibility.util.AccessibilityUtils;
 import com.android.internal.annotations.GuardedBy;
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.annotations.VisibleForTesting.Visibility;
+import com.android.internal.os.ApplicationSharedMemory;
 import com.android.internal.os.IResultReceiver;
 import com.android.internal.os.TransferPipe;
 import com.android.internal.policy.IKeyguardDismissCallback;
@@ -858,13 +859,8 @@ public class WindowManagerService extends IWindowManager.Stub
                         UserHandle.USER_ALL);
             }
             resolver.registerContentObserver(mPolicyControlUri, false, this, UserHandle.USER_ALL);
-            if (DesktopModeHelper.isDesktopExperienceDevOptionSupported(mContext)) {
-                disableForceDesktopModeOnExternalDisplays();
-            } else {
-                resolver.registerContentObserver(mForceDesktopModeOnExternalDisplaysUri, false,
-                        this,
-                        UserHandle.USER_ALL);
-            }
+            resolver.registerContentObserver(mForceDesktopModeOnExternalDisplaysUri, false, this,
+                    UserHandle.USER_ALL);
             resolver.registerContentObserver(mFreeformWindowUri, false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(mForceResizableUri, false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(mDevEnableNonResizableMultiWindowUri, false, this,
@@ -958,15 +954,6 @@ public class WindowManagerService extends IWindowManager.Stub
                     || mMaximumObscuringOpacityForTouch > 1.0f) {
                 mMaximumObscuringOpacityForTouch =
                         InputSettings.DEFAULT_MAXIMUM_OBSCURING_OPACITY_FOR_TOUCH;
-            }
-        }
-
-        void disableForceDesktopModeOnExternalDisplays() {
-            ContentResolver resolver = mContext.getContentResolver();
-            Settings.Global.putInt(resolver,
-                    DEVELOPMENT_FORCE_DESKTOP_MODE_ON_EXTERNAL_DISPLAYS, 0);
-            if (mForceDesktopModeOnExternalDisplays) {
-                setForceDesktopModeOnExternalDisplays(false);
             }
         }
 
