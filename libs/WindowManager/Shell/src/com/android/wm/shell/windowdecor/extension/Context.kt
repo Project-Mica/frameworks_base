@@ -13,19 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.android.wm.shell.windowdecor.extension
 
-package com.android.systemui.lowlight.data.repository
+import android.content.Context
+import android.view.View
 
-import android.content.res.mockResources
-import com.android.systemui.kosmos.Kosmos
-import com.android.systemui.kosmos.Kosmos.Fixture
-import com.android.systemui.kosmos.testDispatcher
-import com.android.systemui.util.settings.fakeSettings
-
-val Kosmos.lowLightSettingsRepository by Fixture {
-    LowLightSettingsRepositoryImpl(
-        bgDispatcher = testDispatcher,
-        secureSettings = fakeSettings,
-        resources = mockResources,
-    )
-}
+/** Returns true if layout direction is right-to-left. */
+val Context.isRtl: Boolean
+    get() = resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL
