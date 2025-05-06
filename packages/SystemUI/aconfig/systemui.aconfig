@@ -451,17 +451,6 @@ flag {
 }
 
 flag {
-    name: "status_bar_stop_updating_window_height"
-    namespace: "systemui"
-    description: "Don't have PhoneStatusBarView manually trigger an update of the height in "
-        "StatusBarWindowController"
-    bug: "360115167"
-    metadata {
-      purpose: PURPOSE_BUGFIX
-    }
-}
-
-flag {
     name: "status_bar_popup_chips"
     namespace: "systemui"
     description: "Show rich ongoing processes as chips in the status bar"
@@ -1040,6 +1029,16 @@ flag {
     namespace: "systemui"
     description: "Uses a different QS fragment in NPVC that uses the new compose UI and recommended architecture. This flag depends on qs_ui_refactor flag."
     bug: "325099249"
+}
+
+flag {
+    name: "qs_edit_mode_tooltip"
+    namespace: "systemui"
+    description: "Displays an educational tooltip on the edit mode icon from the expanded shade. This flag depends on qs_ui_refactor_compose_fragment flag."
+    bug: "403596182"
+    metadata {
+      purpose: PURPOSE_BUGFIX
+    }
 }
 
 flag {

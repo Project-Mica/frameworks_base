@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package com.android.systemui.media.remedia.data.repository
+package com.android.systemui.annotations;
 
-import android.content.applicationContext
-import com.android.systemui.kosmos.Kosmos
-import com.android.systemui.kosmos.applicationCoroutineScope
-import com.android.systemui.kosmos.testDispatcher
-import com.android.systemui.util.time.systemClock
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-val Kosmos.mediaRepository by
-    Kosmos.Fixture {
-        MediaRepositoryImpl(
-            applicationContext = applicationContext,
-            applicationScope = applicationCoroutineScope,
-            backgroundDispatcher = testDispatcher,
-            systemClock = systemClock,
-        )
-    }
+/**
+ * Used to mark a test method that requires more than one second to run, to enable efficient
+ * runtime filtering in some configurations (see b/415097440)
+ */
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SlowerThanOneSecond {
+}
