@@ -3171,7 +3171,7 @@ public class NotificationManagerService extends SystemService {
                 if (notificationClassificationUi()) {
                     mPreferencesHelper.pullPackagePreferencesStats(data,
                             getAllUsersNotificationPermissions(),
-                            new ArrayMap<>());
+                            mAssistants.getDeniedKeysForUsersAndPackages());
                 } else {
                     mPreferencesHelper.pullPackagePreferencesStats(data,
                             getAllUsersNotificationPermissions());
@@ -3184,7 +3184,8 @@ public class NotificationManagerService extends SystemService {
                 mPreferencesHelper.pullPackageChannelGroupPreferencesStats(data);
                 break;
             case NOTIFICATION_ADJUSTMENT_PREFERENCES:
-                if (notificationClassification() && notificationClassificationUi()) {
+                if ((notificationClassification() && notificationClassificationUi())
+                        || nmSummarization() || nmSummarizationUi()) {
                     mAssistants.pullAdjustmentPreferencesStats(data);
                 }
                 break;
@@ -5143,8 +5144,7 @@ public class NotificationManagerService extends SystemService {
                     enforceDeletingChannelHasNoUserInitiatedJob(pkg, userId, channelId);
                 }
                 List<NotificationChannel> deletedChannels =
-                        mPreferencesHelper.deleteNotificationChannelGroup(pkg, callingUid, groupId,
-                                callingUid, isSystemOrSystemUi);
+                        mPreferencesHelper.deleteNotificationChannelGroup(pkg, callingUid, groupId);
                 for (int i = 0; i < deletedChannels.size(); i++) {
                     final NotificationChannel deletedChannel = deletedChannels.get(i);
                     cancelAllNotificationsInt(MY_UID, MY_PID, pkg, deletedChannel.getId(), 0, 0,
@@ -6892,29 +6892,23 @@ public class NotificationManagerService extends SystemService {
                 int newVisualEffects = calculateSuppressedVisualEffects(
                             policy, currPolicy, applicationInfo.targetSdkVersion);
 
-                if (android.app.Flags.modesUi()) {
-                    // 1. Callers should not modify STATE_CHANNELS_BYPASSING_DND, which is
-                    // internally calculated and only indicates whether channels that want to bypass
-                    // DND _exist_.
-                    // 2. Only system callers should modify STATE_PRIORITY_CHANNELS_BLOCKED because
-                    // it is @hide.
-                    // 3. If the policy has been modified by the targetSdkVersion checks above then
-                    // it has lost its state flags and that's fine (STATE_PRIORITY_CHANNELS_BLOCKED
-                    // didn't exist until V).
-                    int newState = Policy.STATE_UNSET;
-                    if (isSystemCaller && policy.state != Policy.STATE_UNSET) {
-                        newState = Policy.policyState(
-                                currPolicy.hasPriorityChannels(),
-                                policy.allowPriorityChannels());
-                    }
-                    policy = new Policy(policy.priorityCategories,
-                            policy.priorityCallSenders, policy.priorityMessageSenders,
-                            newVisualEffects, newState, policy.priorityConversationSenders);
-                } else {
-                    policy = new Policy(policy.priorityCategories,
-                            policy.priorityCallSenders, policy.priorityMessageSenders,
-                            newVisualEffects, policy.priorityConversationSenders);
+                // 1. Callers should not modify STATE_CHANNELS_BYPASSING_DND, which is
+                // internally calculated and only indicates whether channels that want to bypass
+                // DND _exist_.
+                // 2. Only system callers should modify STATE_PRIORITY_CHANNELS_BLOCKED because
+                // it is @hide.
+                // 3. If the policy has been modified by the targetSdkVersion checks above then
+                // it has lost its state flags and that's fine (STATE_PRIORITY_CHANNELS_BLOCKED
+                // didn't exist until V).
+                int newState = Policy.STATE_UNSET;
+                if (isSystemCaller && policy.state != Policy.STATE_UNSET) {
+                    newState = Policy.policyState(
+                            currPolicy.hasPriorityChannels(),
+                            policy.allowPriorityChannels());
                 }
+                policy = new Policy(policy.priorityCategories,
+                        policy.priorityCallSenders, policy.priorityMessageSenders,
+                        newVisualEffects, newState, policy.priorityConversationSenders);
 
                 if (shouldApplyAsImplicitRule) {
                     mZenModeHelper.applyGlobalPolicyAsImplicitZenRule(zenUser, pkg, callingUid,
@@ -8767,8 +8761,7 @@ public class NotificationManagerService extends SystemService {
 
         mHistoryManager.deleteConversations(pkg, uid, shortcuts);
         List<String> deletedChannelIds =
-                mPreferencesHelper.deleteConversations(pkg, uid, shortcuts,
-                        /* callingUid */ Process.SYSTEM_UID, /* is system */ true);
+                mPreferencesHelper.deleteConversations(pkg, uid, shortcuts);
         for (String channelId : deletedChannelIds) {
             cancelAllNotificationsInt(MY_UID, MY_PID, pkg, channelId, 0, 0,
                     UserHandle.getUserId(uid), REASON_CHANNEL_REMOVED
@@ -12457,6 +12450,28 @@ public class NotificationManagerService extends SystemService {
                     mAdjustmentKeyDeniedPackages.get(userId).get(key).add(pkg);
                 }
             }
+        }
+
+        // For logging preferences: get a map of user id -> package name -> list of denied keys
+        // This is essentially a reconfiguration of the contents of mAdjustmentKeyDeniedPackages.
+        @NonNull Map<Integer, Map<String, List<String>>> getDeniedKeysForUsersAndPackages() {
+            Map<Integer, Map<String, List<String>>> out = new ArrayMap<>();
+            synchronized (mLock) {
+                for (int userId : mAdjustmentKeyDeniedPackages.keySet()) {
+                    Map<String, Set<String>> pkgsByType = mAdjustmentKeyDeniedPackages.get(userId);
+                    if (!pkgsByType.isEmpty()) {
+                        out.putIfAbsent(userId, new ArrayMap<>());
+                        Map<String, List<String>> pkgMapForUser = out.get(userId);
+                        for (String keyType : pkgsByType.keySet()) {
+                            for (String pkgName : pkgsByType.get(keyType)) {
+                                pkgMapForUser.putIfAbsent(pkgName, new ArrayList<>());
+                                pkgMapForUser.get(pkgName).add(keyType);
+                            }
+                        }
+                    }
+                }
+            }
+            return out;
         }
 
         protected void onNotificationsSeenLocked(ArrayList<NotificationRecord> records) {

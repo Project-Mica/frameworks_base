@@ -86,9 +86,9 @@ public enum DesktopExperienceFlags {
     ENABLE_DESKTOP_FIRST_BASED_DEFAULT_TO_DESKTOP_BUGFIX(
             Flags::enableDesktopFirstBasedDefaultToDesktopBugfix, false,
             Flags.FLAG_ENABLE_DESKTOP_FIRST_BASED_DEFAULT_TO_DESKTOP_BUGFIX),
-    ENABLE_DESKTOP_FIRST_BASED_DRAG_TO_MAXIMIZE(Flags::enableDesktopFirstBasedDragToMaximize, false,
+    ENABLE_DESKTOP_FIRST_BASED_DRAG_TO_MAXIMIZE(Flags::enableDesktopFirstBasedDragToMaximize, true,
             Flags.FLAG_ENABLE_DESKTOP_FIRST_BASED_DRAG_TO_MAXIMIZE),
-    ENABLE_DESKTOP_IME_BUGFIX(Flags::enableDesktopImeBugfix, false,
+    ENABLE_DESKTOP_IME_BUGFIX(Flags::enableDesktopImeBugfix, true,
             Flags.FLAG_ENABLE_DESKTOP_IME_BUGFIX),
     ENABLE_DESKTOP_TAB_TEARING_LAUNCH_ANIMATION(
             Flags::enableDesktopTabTearingLaunchAnimation, true,
@@ -98,7 +98,7 @@ public enum DesktopExperienceFlags {
     ENABLE_DESKTOP_TASK_LIMIT_SEPARATE_TRANSITION(
             Flags::enableDesktopTaskLimitSeparateTransition, true,
             Flags.FLAG_ENABLE_DESKTOP_TASK_LIMIT_SEPARATE_TRANSITION),
-    ENABLE_DESKTOP_WINDOWING_PIP(Flags::enableDesktopWindowingPip, false,
+    ENABLE_DESKTOP_WINDOWING_PIP(Flags::enableDesktopWindowingPip, true,
             Flags.FLAG_ENABLE_DESKTOP_WINDOWING_PIP),
     ENABLE_DESKTOP_WINDOWING_PIP_IN_OVERVIEW_BUGFIX(
             Flags::enableDesktopWindowingPipInOverviewBugfix, false,
@@ -193,7 +193,12 @@ public enum DesktopExperienceFlags {
     FORM_FACTOR_BASED_DESKTOP_FIRST_SWITCH(Flags::formFactorBasedDesktopFirstSwitch, true,
             Flags.FLAG_FORM_FACTOR_BASED_DESKTOP_FIRST_SWITCH),
     REPARENT_WINDOW_TOKEN_API(Flags::reparentWindowTokenApi, true,
-            Flags.FLAG_REPARENT_WINDOW_TOKEN_API)
+            Flags.FLAG_REPARENT_WINDOW_TOKEN_API),
+    USE_RESOURCES_FROM_CONTEXT_TO_CREATE_DRAWABLE_ICONS(
+            com.android.graphics.flags.Flags::useResourcesFromContextToCreateDrawableIcons,
+            true,
+            com.android.graphics.flags.Flags
+                    .FLAG_USE_RESOURCES_FROM_CONTEXT_TO_CREATE_DRAWABLE_ICONS)
     // go/keep-sorted end
     ;
 

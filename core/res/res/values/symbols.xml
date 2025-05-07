@@ -1692,7 +1692,6 @@
   <java-symbol type="xml" name="sms_short_codes" />
   <java-symbol type="xml" name="audio_assets" />
   <java-symbol type="xml" name="global_keys" />
-  <java-symbol type="xml" name="default_zen_mode_config" />
   <java-symbol type="xml" name="sms_7bit_translation_table" />
   <java-symbol type="xml" name="color_extraction" />
 
@@ -5458,6 +5457,7 @@
   <java-symbol type="string" name="screen_not_shared_sensitive_content"/>
 
   <java-symbol type="bool" name="config_batteryStatsResetOnUnplugHighBatteryLevel" />
+  <java-symbol type="integer" name="config_batteryStatsHighBatteryLevelAfterCharge" />
   <java-symbol type="bool" name="config_batteryStatsResetOnUnplugAfterSignificantCharge" />
   <java-symbol type="string" name="config_powerStatsThrottlePeriods" />
   <java-symbol type="integer" name="config_powerStatsAggregationPeriod" />
@@ -5465,6 +5465,8 @@
   <java-symbol type="integer" name="config_accumulatedBatteryUsageStatsSpanSize" />
   <java-symbol type="integer" name="config_batteryHistoryStorageSize" />
   <java-symbol type="integer" name="config_batteryHistoryDumpWindowSize" />
+  <java-symbol type="integer" name="config_batteryHistoryDumpCheckinWindowSize" />
+  <java-symbol type="integer" name="config_batteryHistoryDumpRealCheckinWindowSize" />
 
   <!--Dynamic Tokens-->
   <java-symbol name="system_accent1_0_light" type="color"/>

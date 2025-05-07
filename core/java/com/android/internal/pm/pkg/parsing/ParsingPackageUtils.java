@@ -151,6 +151,8 @@ import java.util.StringTokenizer;
  *
  * @hide
  */
+@android.ravenwood.annotation.RavenwoodKeepPartialClass
+@android.ravenwood.annotation.RavenwoodKeepStaticInitializer
 public class ParsingPackageUtils {
 
     private static final String TAG = ParsingUtils.TAG;
@@ -2070,15 +2072,16 @@ public class ParsingPackageUtils {
                     }
 
                     pkg.setBackupAgentName(backupAgentName)
-                            .setKillAfterRestoreAllowed(bool(true,
-                                    R.styleable.AndroidManifestApplication_killAfterRestore, sa))
-                            .setRestoreAnyVersion(bool(false,
-                                    R.styleable.AndroidManifestApplication_restoreAnyVersion, sa))
                             .setFullBackupOnly(bool(false,
                                     R.styleable.AndroidManifestApplication_fullBackupOnly, sa))
                             .setBackupInForeground(bool(false,
                                     R.styleable.AndroidManifestApplication_backupInForeground, sa));
                 }
+
+                pkg.setKillAfterRestoreAllowed(bool(true,
+                                R.styleable.AndroidManifestApplication_killAfterRestore, sa))
+                        .setRestoreAnyVersion(bool(false,
+                                R.styleable.AndroidManifestApplication_restoreAnyVersion, sa));
 
                 TypedValue v = sa.peekValue(
                         R.styleable.AndroidManifestApplication_fullBackupContent);
@@ -3624,6 +3627,7 @@ public class ParsingPackageUtils {
     /**
      * Getter for the flags object
      */
+    @android.ravenwood.annotation.RavenwoodKeep
     public static AconfigFlags getAconfigFlags() {
         return sAconfigFlags;
     }
