@@ -63,13 +63,6 @@ flag {
 }
 
 flag {
-   name: "priority_people_section"
-   namespace: "systemui"
-   description: "Add a new section for priority people (aka important conversations)."
-   bug: "340294566"
-}
-
-flag {
   name: "notifications_redesign_footer_view"
   namespace: "systemui"
   description: "Notifications Redesign: Update the look of the notifications footer."
@@ -88,16 +81,6 @@ flag {
    namespace: "systemui"
    description: "Move the DND visual effects filter to the finalize stage of the pipeline when it is doze-dependent, but keep it in the pre-group stage when it is doze-independent."
    bug: "373411431"
-   metadata {
-        purpose: PURPOSE_BUGFIX
-   }
-}
-
-flag {
-   name: "notification_over_expansion_clipping_fix"
-   namespace: "systemui"
-   description: "Fix NSSL clipping when over-expanding; fixes split shade bug."
-   bug: "288553572"
    metadata {
         purpose: PURPOSE_BUGFIX
    }
@@ -778,16 +761,6 @@ flag {
 }
 
 flag {
-   name: "smartspace_remoteviews_rendering_fix"
-   namespace: "systemui"
-   description: "Indicate Smartspace RemoteViews rendering"
-   bug: "326292691"
-   metadata {
-     purpose: PURPOSE_BUGFIX
-   }
-}
-
-flag {
     name: "smartspace_viewpager2"
     namespace: "systemui"
     description: "Use viewpager2 in Smartspace"
@@ -1240,6 +1213,16 @@ flag {
   namespace: "systemui"
   description: "Flags some minor bug fixes for opening the shade on the hub"
   bug: "409682586"
+  metadata {
+    purpose: PURPOSE_BUGFIX
+  }
+}
+
+flag {
+  name: "dream_transition_fixes"
+  namespace: "systemui"
+  description: "Flags some minor transition fixes for opening the dream"
+  bug: "409720192"
   metadata {
     purpose: PURPOSE_BUGFIX
   }
@@ -2017,6 +2000,16 @@ flag {
     namespace: "systemui"
     description: "Allowing Click Events for Quick Setting Tile while QS dialog is collapsing. This Flag also prevents QS Tile from Dismissal when it is tapped during launch "
     bug: "358291064"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
+    name: "enable_constraint_layout_lockscreen_on_external_display"
+    namespace: "systemui"
+    description: "Uses a constraint layout to have clocks on the extenral display lockscreen"
+    bug: "415295016"
     metadata {
         purpose: PURPOSE_BUGFIX
     }

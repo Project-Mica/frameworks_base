@@ -1213,7 +1213,13 @@ class DesktopTasksController(
             desktopExitRunnable?.invoke(transition)
         } else {
             snapEventHandler.removeTaskIfTiled(displayId, taskId)
-            val willExitDesktop = willExitDesktop(taskId, displayId, forceExitDesktop = false)
+            val willExitDesktop =
+                if (
+                    DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue &&
+                        DesktopExperienceFlags.ENABLE_EMPTY_DESK_ON_MINIMIZE.isTrue
+                )
+                    false
+                else willExitDesktop(taskId, displayId, forceExitDesktop = false)
             val desktopExitRunnable =
                 performDesktopExitCleanUp(
                     wct = wct,
@@ -3802,6 +3808,20 @@ class DesktopTasksController(
         remoteTransition: RemoteTransition? = null,
         taskIdToReorderToFront: Int? = null,
     ) {
+        logD(
+            "activateDesk deskId=%d taskIdToReorderToFront=%d remoteTransition=%s",
+            deskId,
+            taskIdToReorderToFront,
+            remoteTransition,
+        )
+        if (!taskRepository.getAllDeskIds().contains(deskId)) {
+            logW(
+                "Request to activate desk=%d but desk not found for user=%d",
+                deskId,
+                taskRepository.userId,
+            )
+            return
+        }
         if (
             taskIdToReorderToFront != null &&
                 taskRepository.getDeskIdForTask(taskIdToReorderToFront) != deskId

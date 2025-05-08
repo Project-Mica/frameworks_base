@@ -2432,6 +2432,11 @@ public class UserManagerService extends IUserManager.Stub {
                 int number = mUser0Allocations.incrementAndGet();
                 Slog.w(LOG_TAG, "System user instantiated at least " + number + " times");
             }
+            if (android.multiuser.Flags.logoutUserApi()) {
+                if (isHeadlessSystemUserMode()) {
+                    return getHeadlessSystemUserName();
+                }
+            }
             return getOwnerName();
         }
         if (user.isMain()) {
@@ -3128,6 +3133,13 @@ public class UserManagerService extends IUserManager.Stub {
     @Override
     public boolean canHaveRestrictedProfile(@UserIdInt int userId) {
         checkManageUsersPermission("canHaveRestrictedProfile");
+        return canHaveRestrictedProfileNoChecks(userId);
+    }
+
+    private boolean canHaveRestrictedProfileNoChecks(@UserIdInt int userId) {
+        if (isCreationOverrideEnabled()) {
+            return true;
+        }
         synchronized (mUsersLock) {
             final UserInfo userInfo = getUserInfoLU(userId);
             if (userInfo == null || !userInfo.canHaveProfile()) {
@@ -5308,6 +5320,10 @@ public class UserManagerService extends IUserManager.Stub {
         return mContext.getString(com.android.internal.R.string.guest_name);
     }
 
+    String getHeadlessSystemUserName() {
+        return mContext.getString(com.android.internal.R.string.headless_system_user_name);
+    }
+
     private void invalidateOwnerNameIfNecessary(@NonNull Resources res, boolean forceUpdate) {
         final int configChanges = mLastConfiguration.updateFrom(res.getConfiguration());
         if (forceUpdate || (configChanges & mOwnerNameTypedValue.changingConfigurations) != 0) {
@@ -6133,10 +6149,9 @@ public class UserManagerService extends IUserManager.Stub {
                                     + " for user " + parentId,
                             UserManager.USER_OPERATION_ERROR_MAX_USERS);
                 }
-                if (isRestricted && (parentId != UserHandle.USER_SYSTEM)
-                        && !isCreationOverrideEnabled()) {
+                if (isRestricted && !canHaveRestrictedProfileNoChecks(parentId)) {
                     throwCheckedUserOperationException(
-                            "Cannot add restricted profile - parent user must be system",
+                            "Cannot add restricted profile for user " + parentId,
                             USER_OPERATION_ERROR_UNKNOWN);
                 }
 

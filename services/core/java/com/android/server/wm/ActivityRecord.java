@@ -328,6 +328,7 @@ import android.window.SplashScreen;
 import android.window.SplashScreenView;
 import android.window.SplashScreenView.SplashScreenViewParcelable;
 import android.window.TaskSnapshot;
+import android.window.TaskSnapshotManager;
 import android.window.TransitionInfo.AnimationOptions;
 import android.window.WindowContainerToken;
 import android.window.WindowOnBackInvokedDispatcher;
@@ -2284,8 +2285,14 @@ final class ActivityRecord extends WindowToken {
             return false;
         }
 
-        final TaskSnapshot snapshot = mWmService.mTaskSnapshotController.getSnapshot(task.mTaskId,
-                false /* isLowResolution */);
+        final TaskSnapshot snapshot;
+        if (Flags.reduceTaskSnapshotMemoryUsage()) {
+            snapshot = mWmService.mTaskSnapshotController.getSnapshot(task.mTaskId,
+                    TaskSnapshotManager.RESOLUTION_HIGH);
+        } else {
+            snapshot = mWmService.mTaskSnapshotController.getSnapshot(task.mTaskId,
+                    false /* isLowResolution */);
+        }
         final int type = getStartingWindowType(newTask, taskSwitch, processRunning,
                 allowTaskSnapshot, activityCreated, activityAllDrawn, snapshot);
 
@@ -8383,8 +8390,7 @@ final class ActivityRecord extends WindowToken {
         if (isConfigurationDispatchPaused()) {
             Slog.wtf(TAG, "trying to update reported(client) config while dispatch is paused");
         }
-        ProtoLog.v(WM_DEBUG_CONFIGURATION, "Ensuring correct "
-                + "configuration: %s", this);
+        ProtoLog.v(WM_DEBUG_CONFIGURATION, "Ensuring correct configuration: %s", this);
 
         final int newDisplayId = getDisplayId();
         final boolean displayChanged = mLastReportedDisplayId != newDisplayId;
@@ -8414,8 +8420,7 @@ final class ActivityRecord extends WindowToken {
                 !mLastReportedActivityWindowInfo.equals(newActivityWindowInfo);
         if (!displayChanged && !isActivityWindowInfoChanged
                 && getConfiguration().equals(mTmpConfig)) {
-            ProtoLog.v(WM_DEBUG_CONFIGURATION, "Configuration & display "
-                    + "unchanged in %s", this);
+            ProtoLog.v(WM_DEBUG_CONFIGURATION, "Configuration & display unchanged in %s", this);
             return true;
         }
 
@@ -8428,6 +8433,11 @@ final class ActivityRecord extends WindowToken {
 
         // Update last reported values.
         final Configuration newMergedOverrideConfig = getMergedOverrideConfiguration();
+
+        if (changes != 0) {
+            ProtoLog.v(WM_DEBUG_CONFIGURATION, "Last reported config=%s",
+                    mLastReportedConfiguration);
+        }
 
         setLastReportedConfiguration(getProcessGlobalConfiguration(), newMergedOverrideConfig);
         setLastReportedActivityWindowInfo(newActivityWindowInfo);
@@ -8442,8 +8452,7 @@ final class ActivityRecord extends WindowToken {
         }
 
         if (changes == 0) {
-            ProtoLog.v(WM_DEBUG_CONFIGURATION, "Configuration no differences in %s",
-                    this);
+            ProtoLog.v(WM_DEBUG_CONFIGURATION, "Configuration no differences in %s", this);
             // There are no significant differences, so we won't relaunch but should still deliver
             // the new configuration to the client process.
             if (displayChanged) {
@@ -8457,9 +8466,6 @@ final class ActivityRecord extends WindowToken {
             return true;
         }
 
-        ProtoLog.v(WM_DEBUG_CONFIGURATION, "Configuration changes for %s, "
-                + "allChanges=%s", this, Configuration.configurationDiffToString(changes));
-
         // If the activity isn't currently running, just leave the new configuration and it will
         // pick that up next time it starts.
         if (!attachedToProcess()) {
@@ -8469,7 +8475,7 @@ final class ActivityRecord extends WindowToken {
 
         // Figure out how to handle the changes between the configurations.
         ProtoLog.v(WM_DEBUG_CONFIGURATION, "Checking to restart %s: changed=%s, "
-                + "handles=%s, not-handles=%s, mLastReportedConfiguration=%s", this,
+                + "handles=%s, not-handles=%s, new config=%s", this,
                 Configuration.configurationDiffToString(changes),
                 Configuration.configurationDiffToString(info.getRealConfigChanged()),
                 Configuration.configurationDiffToString(changes & ~(info.getRealConfigChanged())),
