@@ -549,30 +549,10 @@ flag {
 }
 
 flag {
-   name: "faster_unlock_transition"
-   namespace: "systemui"
-   description: "Faster wallpaper unlock transition"
-   bug: "298186160"
-   metadata {
-     purpose: PURPOSE_BUGFIX
-   }
-}
-
-flag {
    name: "confine_notification_touch_to_view_width"
    namespace: "systemui"
    description: "Use notification view width when detecting gestures."
    bug: "335828150"
-}
-
-flag {
-  name: "fix_image_wallpaper_crash_surface_already_released"
-  namespace: "systemui"
-  description: "Make sure ImageWallpaper doesn't return from OnSurfaceDestroyed until any drawing is finished"
-  bug: "337287154"
-  metadata {
-    purpose: PURPOSE_BUGFIX
-  }
 }
 
 flag {
@@ -902,26 +882,6 @@ flag {
     namespace: "systemui"
     description: "Prevents the interactive clipboard UI from appearing when device is locked"
     bug: "317048495"
-    metadata {
-        purpose: PURPOSE_BUGFIX
-    }
-}
-
-flag {
-    name: "use_notif_inflation_thread_for_footer"
-    namespace: "systemui"
-    description: "use the @NotifInflation thread for FooterView and EmptyShadeView inflation"
-    bug: "375320642"
-    metadata {
-        purpose: PURPOSE_BUGFIX
-    }
-}
-
-flag {
-    name: "use_notif_inflation_thread_for_row"
-    namespace: "systemui"
-    description: "use the @NotifInflation thread for ExpandableNotificationRow inflation"
-    bug: "375320642"
     metadata {
         purpose: PURPOSE_BUGFIX
     }
@@ -1275,16 +1235,6 @@ flag {
 }
 
 flag {
-    name: "media_controls_device_manager_background_execution"
-    namespace: "systemui"
-    description: "Sends some instances creation to background thread"
-    bug: "400200474"
-    metadata {
-      purpose: PURPOSE_BUGFIX
-    }
-}
-
-flag {
   name: "media_controls_in_compose"
   namespace: "systemui"
   description: "Runs media controls in compose"
@@ -1417,16 +1367,6 @@ flag {
    namespace: "systemui"
    description: "Make the classic feature flag loading multi user aware."
    bug: "345443431"
-   metadata {
-        purpose: PURPOSE_BUGFIX
-   }
-}
-
-flag {
-   name: "haptics_for_compose_sliders"
-   namespace: "systemui"
-   description: "Adding haptic component infrastructure to sliders in Compose."
-   bug: "341968766"
    metadata {
         purpose: PURPOSE_BUGFIX
    }
@@ -2023,4 +1963,14 @@ flag {
    metadata {
      purpose: PURPOSE_BUGFIX
    }
+}
+
+flag {
+    name: "fix_dialog_launch_animation_jank_logging"
+    namespace: "systemui"
+    description: "Adjust timing of jank logging for dialog launch animations, and attach it to the dialog window instead of the origin view window."
+    bug: "409008342"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
 }

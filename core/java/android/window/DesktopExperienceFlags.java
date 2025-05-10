@@ -121,7 +121,7 @@ public enum DesktopExperienceFlags {
     ENABLE_DRAG_TO_MAXIMIZE(Flags::enableDragToMaximize, true, Flags.FLAG_ENABLE_DRAG_TO_MAXIMIZE),
     ENABLE_DYNAMIC_RADIUS_COMPUTATION_BUGFIX(Flags::enableDynamicRadiusComputationBugfix, true,
             Flags.FLAG_ENABLE_DYNAMIC_RADIUS_COMPUTATION_BUGFIX),
-    ENABLE_EMPTY_DESK_ON_MINIMIZE(Flags::enableEmptyDeskOnMinimize, false,
+    ENABLE_EMPTY_DESK_ON_MINIMIZE(Flags::enableEmptyDeskOnMinimize, true,
             Flags.FLAG_ENABLE_EMPTY_DESK_ON_MINIMIZE),
     ENABLE_FORCE_CLOSE_TOP_TRANSPARENT_FULLSCREEN_TASK(
             Flags::forceCloseTopTransparentFullscreenTask, false,
@@ -158,6 +158,8 @@ public enum DesktopExperienceFlags {
             Flags.FLAG_ENABLE_PERSISTING_DISPLAY_SIZE_FOR_CONNECTED_DISPLAYS),
     ENABLE_PER_DISPLAY_DESKTOP_WALLPAPER_ACTIVITY(Flags::enablePerDisplayDesktopWallpaperActivity,
             true, Flags.FLAG_ENABLE_PER_DISPLAY_DESKTOP_WALLPAPER_ACTIVITY),
+    ENABLE_PINNING_APP_WITH_CONTEXT_MENU(Flags::enablePinningAppWithContextMenu, false,
+            Flags.FLAG_ENABLE_PINNING_APP_WITH_CONTEXT_MENU),
     ENABLE_PRESENTATION_FOR_CONNECTED_DISPLAYS(Flags::enablePresentationForConnectedDisplays, true,
             Flags.FLAG_ENABLE_PRESENTATION_FOR_CONNECTED_DISPLAYS),
     ENABLE_PROJECTED_DISPLAY_DESKTOP_MODE(Flags::enableProjectedDisplayDesktopMode, true,
@@ -179,7 +181,7 @@ public enum DesktopExperienceFlags {
             Flags.FLAG_ENABLE_TASKBAR_CONNECTED_DISPLAYS),
     ENABLE_TILE_RESIZING(Flags::enableTileResizing, true, Flags.FLAG_ENABLE_TILE_RESIZING),
     ENABLE_WINDOWING_TASK_STACK_ORDER_BUGFIX(
-            Flags::enableWindowingTaskStackOrderBugfix, false,
+            Flags::enableWindowingTaskStackOrderBugfix, true,
             Flags.FLAG_ENABLE_WINDOWING_TASK_STACK_ORDER_BUGFIX),
     ENABLE_WINDOWING_TRANSITION_HANDLERS_OBSERVERS(
             Flags::enableWindowingTransitionHandlersObservers, true,
