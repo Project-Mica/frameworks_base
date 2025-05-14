@@ -53,6 +53,7 @@ import com.android.server.SystemService.TargetUser
 import com.android.server.pm.UserManagerInternal
 import com.android.server.supervision.SupervisionService.ACTION_CONFIRM_SUPERVISION_CREDENTIALS
 import com.google.common.truth.Truth.assertThat
+import java.nio.file.Files
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
@@ -62,6 +63,8 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 /**
@@ -103,6 +106,11 @@ class SupervisionServiceTest {
         service = SupervisionService(context)
         lifecycle = SupervisionService.Lifecycle(context, service)
         lifecycle.registerProfileOwnerListener()
+
+
+        // Creating a temporary folder to enable access to SupervisionSettings.
+        SupervisionSettings.getInstance().changeDirForTesting(
+            Files.createTempDirectory("tempSupervisionFolder").toFile())
     }
 
     @Test
@@ -259,6 +267,20 @@ class SupervisionServiceTest {
     }
 
     @Test
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_REMOVE_POLICIES_ON_SUPERVISION_DISABLE)
+    fun setSupervisionEnabledForUser_removesPoliciesWhenDisabling() {
+        assertThat(service.isSupervisionEnabledForUser(USER_ID)).isFalse()
+        service.setSupervisionEnabledForUser(USER_ID, true)
+        assertThat(service.isSupervisionEnabledForUser(USER_ID)).isTrue()
+
+        service.setSupervisionEnabledForUser(USER_ID, false)
+
+        assertThat(service.isSupervisionEnabledForUser(USER_ID)).isFalse()
+        verify(mockDpmInternal)
+            .removePoliciesForAdmins(eq(systemSupervisionPackage), eq(USER_ID))
+    }
+
+    @Test
     fun setSupervisionEnabledForUser_internal() {
         putSecureSetting(BROWSER_CONTENT_FILTERS_ENABLED, 1)
         putSecureSetting(SEARCH_CONTENT_FILTERS_ENABLED, 0)
@@ -364,7 +386,6 @@ class SupervisionServiceTest {
     }
 
     @Test
-    @Ignore("Failing with IOException when trying to create a directory")
     @RequiresFlagsEnabled(Flags.FLAG_PERSISTENT_SUPERVISION_SETTINGS)
     fun setSupervisionRecoveryInfo() {
         assertThat(service.supervisionRecoveryInfo).isNull()
