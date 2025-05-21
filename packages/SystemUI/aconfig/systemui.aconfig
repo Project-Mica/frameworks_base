@@ -677,6 +677,16 @@ flag {
 }
 
 flag {
+    name: "thin_screen_recording_service"
+    namespace: "systemui"
+    description: "Fix screen recording on hsum enabled devices"
+    bug: "368579013"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
+flag {
     name: "clipboard_overlay_multiuser"
     namespace: "systemui"
     description: "Fix clipboard overlay for secondary users"
@@ -966,6 +976,13 @@ flag {
     metadata {
       purpose: PURPOSE_BUGFIX
     }
+}
+
+flag {
+    name: "qs_edit_mode_tabs"
+    namespace: "systemui"
+    description: "Splits the Quick Settings edit mode in tabs. This feature is for the compose version of Quick Settings."
+    bug: "416236871"
 }
 
 flag {
@@ -1958,6 +1975,16 @@ flag {
     metadata {
         purpose: PURPOSE_BUGFIX
     }
+}
+
+flag {
+   name: "new_dozing_keyguard_states"
+   namespace: "systemui"
+   description: "Adds new dozing keyguard states for more robust animations to/from dozing."
+   bug: "415704030"
+   metadata {
+        purpose: PURPOSE_BUGFIX
+   }
 }
 
 flag {

@@ -13,17 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.android.systemui.statusbar.notification
 
-package com.android.wm.shell.functional
-
-import android.platform.test.annotations.Postsubmit
-import android.platform.test.rule.ScreenRecordRule
-import com.android.wm.shell.scenarios.OpenAppFromTaskbar
-import org.junit.runner.RunWith
-import org.junit.runners.BlockJUnit4ClassRunner
-
-/* Functional test for [OpenAppsInDesktopMode]. */
-@RunWith(BlockJUnit4ClassRunner::class)
-@Postsubmit
-@ScreenRecordRule.ScreenRecord
-class OpenAppFromTaskbarTest : OpenAppFromTaskbar()
+/** Thrown when a custom notification view exceeds memory limit. */
+class CustomViewMemorySizeExceededException(error: String) : InflationException(error)

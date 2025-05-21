@@ -52,6 +52,7 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.stub
+import org.mockito.kotlin.verifyNoInteractions
 
 /**
  * Unit tests of [BubblesTransitionObserver].
@@ -68,6 +69,7 @@ class BubblesTransitionObserverTest : ShellTestCase() {
     private val bubbleData = mock<BubbleData> {
         on { isExpanded } doReturn true
         on { selectedBubble } doReturn bubble
+        on { hasBubbles() } doReturn true
     }
     private val bubbleController = mock<BubbleController> {
         on { isStackAnimating } doReturn false
@@ -151,6 +153,7 @@ class BubblesTransitionObserverTest : ShellTestCase() {
         transitionObserver.onTransitionReady(mock(), tc.info, mock(), mock())
 
         verify(bubbleData, never()).setExpanded(false)
+        verifyNoInteractions(splitScreenController)
     }
 
     @Test
@@ -237,6 +240,18 @@ class BubblesTransitionObserverTest : ShellTestCase() {
             taskInfo.token.asBinder(), /* captionInsetsOwner */
             null,
         )
+    }
+
+    @EnableFlags(FLAG_ENABLE_CREATE_ANY_BUBBLE)
+    @Test
+    fun testOnTransitionReady_noBubbles_doesNotCheckForSplitState() {
+        bubbleData.stub {
+            on { hasBubbles() } doReturn false
+        }
+        val info = createTaskTransition(TRANSIT_TO_FRONT, taskId = 1)
+        transitionObserver.onTransitionReady(mock(), info, mock(), mock())
+
+        verifyNoInteractions(splitScreenController)
     }
 
     // Transits that aren't opening.
