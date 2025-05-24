@@ -1917,7 +1917,7 @@ flag {
     name: "enable_suggested_device_ui"
     namespace: "systemui"
     description: "Enables the UI for the suggested devices feature."
-    bug: "411452237"
+    bug: "392942321"
 }
 
 flag {
@@ -1998,6 +1998,16 @@ flag {
 }
 
 flag {
+   name: "bouncer_lifecycle_fix"
+   namespace: "systemui"
+   description: "Don't resume the Bouncer InputView when the view is inflated."
+   bug: "417307529"
+   metadata {
+     purpose: PURPOSE_BUGFIX
+   }
+}
+
+flag {
    name: "qs_compose_fragment_early_expansion"
    namespace: "systemui"
    description: "Start expansion from QQS into QS early when touching the shade."
@@ -2005,4 +2015,18 @@ flag {
    metadata {
      purpose: PURPOSE_BUGFIX
    }
+}
+
+flag {
+   name: "enable_desktop_growth"
+   namespace: "systemui"
+   description: "Enables the growth framework for desktop."
+   bug: "383601076"
+}
+
+flag {
+    name: "enable_minmode"
+    namespace: "systemui"
+    description: "Enables MinMode feature"
+    bug: "411746510"
 }
