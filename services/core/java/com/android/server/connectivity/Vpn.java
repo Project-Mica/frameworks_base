@@ -607,8 +607,9 @@ public class Vpn {
          *
          * <p>This method is only called when {@link collectVpnMetrics} is true.
          */
-        public VpnConnectivityMetrics makeVpnConnectivityMetrics(int userId) {
-            return new VpnConnectivityMetrics(userId);
+        public VpnConnectivityMetrics makeVpnConnectivityMetrics(int userId,
+                ConnectivityManager cm) {
+            return new VpnConnectivityMetrics(userId, cm);
         }
     }
 
@@ -666,8 +667,8 @@ public class Vpn {
         mPackage = VpnConfig.LEGACY_VPN;
         mOwnerUID = getAppUid(mContext, mPackage, mUserId);
         mIsPackageTargetingAtLeastQ = doesPackageTargetAtLeastQ(mPackage);
-        mVpnConnectivityMetrics =
-                collectVpnMetrics() ? mDeps.makeVpnConnectivityMetrics(userId) : null;
+        mVpnConnectivityMetrics = collectVpnMetrics()
+                ? mDeps.makeVpnConnectivityMetrics(userId, mConnectivityManager) : null;
 
         try {
             netService.registerObserver(mObserver);
@@ -2288,6 +2289,24 @@ public class Vpn {
         return success;
     }
 
+    private void setMtu(int mtu) {
+        synchronized (Vpn.this) {
+            mConfig.mtu = mtu;
+            if (mVpnConnectivityMetrics != null) {
+                mVpnConnectivityMetrics.setMtu(mtu);
+            }
+        }
+    }
+
+    private void setUnderlyingNetworksAndMetrics(@NonNull Network[] networks) {
+        synchronized (Vpn.this) {
+            mConfig.underlyingNetworks = networks;
+            if (mVpnConnectivityMetrics != null) {
+                mVpnConnectivityMetrics.setUnderlyingNetwork(mConfig.underlyingNetworks);
+            }
+        }
+    }
+
     /**
      * Updates underlying network set.
      */
@@ -3037,7 +3056,7 @@ public class Vpn {
                     if (mVpnRunner != this) return;
 
                     mInterface = interfaceName;
-                    mConfig.mtu = vpnMtu;
+                    setMtu(vpnMtu);
                     mConfig.interfaze = mInterface;
 
                     mConfig.addresses.clear();
@@ -3050,7 +3069,7 @@ public class Vpn {
                     mConfig.dnsServers.clear();
                     mConfig.dnsServers.addAll(dnsAddrStrings);
 
-                    mConfig.underlyingNetworks = new Network[] {network};
+                    setUnderlyingNetworksAndMetrics(new Network[] {network});
 
                     networkAgent = mNetworkAgent;
 
@@ -3143,9 +3162,8 @@ public class Vpn {
 
                     final LinkProperties oldLp = makeLinkProperties();
 
-                    mConfig.underlyingNetworks = new Network[] {network};
-                    mConfig.mtu = calculateVpnMtu();
-
+                    setUnderlyingNetworksAndMetrics(new Network[] {network});
+                    setMtu(calculateVpnMtu());
                     final LinkProperties newLp = makeLinkProperties();
 
                     // If MTU is < 1280, IPv6 addresses will be removed. If there are no addresses
@@ -4250,6 +4268,11 @@ public class Vpn {
             config.allowBypass = profile.isBypassable;
             config.disallowedApplications = getAppExclusionList(mPackage);
             mConfig = config;
+            if (mVpnConnectivityMetrics != null) {
+                mVpnConnectivityMetrics.setVpnType(VpnManager.TYPE_VPN_PLATFORM);
+                mVpnConnectivityMetrics.setVpnProfileType(profile.type);
+                mVpnConnectivityMetrics.setAllowedAlgorithms(profile.getAllowedAlgorithms());
+            }
 
             switch (profile.type) {
                 case VpnProfile.TYPE_IKEV2_IPSEC_USER_PASS:

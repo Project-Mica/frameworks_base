@@ -65,7 +65,6 @@ public final class MessageQueue {
     private static final String TAG_L = "LegacyMessageQueue";
     private static final String TAG_C = "ConcurrentMessageQueue";
     private static final boolean DEBUG = false;
-    private static final boolean TRACE = false;
 
     // True if the message queue can be quit.
     @UnsupportedAppUsage
@@ -263,7 +262,6 @@ public final class MessageQueue {
         }
     }
 
-    /** @hide */
     private void traceMessageCount() {
         PerfettoTrace.counter(PerfettoTrace.MQ_CATEGORY, mMessageCount.get())
                 .usingThreadCounterTrack(mTid, mThreadName)
@@ -656,8 +654,7 @@ public final class MessageQueue {
 
         while (true) {
             if (DEBUG) {
-                Log.d(TAG_C, "nextMessage loop #" + i);
-                i++;
+                Log.d(TAG_C, "nextMessage loop #" + i++);
             }
 
             mDrainingLock.lock();
@@ -722,20 +719,26 @@ public final class MessageQueue {
             /* Get the first node from each queue */
             MessageNode msgNode = first(mPriorityQueue);
             MessageNode asyncMsgNode = first(mAsyncPriorityQueue);
+            final long now = SystemClock.uptimeMillis();
 
             if (DEBUG) {
                 if (msgNode != null) {
                     Message msg = msgNode.mMessage;
-                    Log.d(TAG_C, "Next found node what: " + msg.what + " when: " + msg.when
-                            + " seq: " + msgNode.mInsertSeq + "barrier: "
-                            + msgNode.isBarrier() + " now: " + SystemClock.uptimeMillis());
+                    Log.d(TAG_C, "Next found node"
+                            + " what: " + msg.what
+                            + " when: " + msg.when
+                            + " seq: " + msgNode.mInsertSeq
+                            + " barrier: " + msgNode.isBarrier()
+                            + " now: " + now);
                 }
                 if (asyncMsgNode != null) {
                     Message msg = asyncMsgNode.mMessage;
-                    Log.d(TAG_C, "Next found async node what: " + msg.what + " when: " + msg.when
-                            + " seq: " + asyncMsgNode.mInsertSeq + "barrier: "
-                            + asyncMsgNode.isBarrier() + " now: "
-                            + SystemClock.uptimeMillis());
+                    Log.d(TAG_C, "Next found async node"
+                            + " what: " + msg.what
+                            + " when: " + msg.when
+                            + " seq: " + asyncMsgNode.mInsertSeq
+                            + " barrier: " + asyncMsgNode.isBarrier()
+                            + " now: " + now);
                 }
             }
 
@@ -751,7 +754,6 @@ public final class MessageQueue {
              */
             MessageNode next = null;
 
-            long now = SystemClock.uptimeMillis();
             /*
              * If we have a barrier we should return the async node (if it exists and is ready)
              */
@@ -781,19 +783,25 @@ public final class MessageQueue {
             if (DEBUG) {
                 if (found != null) {
                     Message msg = found.mMessage;
-                    Log.d(TAG_C, " Will deliver node what: " + msg.what + " when: " + msg.when
-                            + " seq: " + found.mInsertSeq + " barrier: " + found.isBarrier()
-                            + " async: " + found.isAsync() + " now: "
-                            + SystemClock.uptimeMillis());
+                    Log.d(TAG_C, "Will deliver node"
+                            + " what: " + msg.what
+                            + " when: " + msg.when
+                            + " seq: " + found.mInsertSeq
+                            + " barrier: " + found.isBarrier()
+                            + " async: " + found.isAsync()
+                            + " now: " + now);
                 } else {
                     Log.d(TAG_C, "No node to deliver");
                 }
                 if (next != null) {
                     Message msg = next.mMessage;
-                    Log.d(TAG_C, "Next node what: " + msg.what + " when: " + msg.when + " seq: "
-                            + next.mInsertSeq + " barrier: " + next.isBarrier() + " async: "
-                            + next.isAsync()
-                            + " now: " + SystemClock.uptimeMillis());
+                    Log.d(TAG_C, "Next node"
+                            + " what: " + msg.what
+                            + " when: " + msg.when
+                            + " seq: " + next.mInsertSeq
+                            + " barrier: " + next.isBarrier()
+                            + " async: " + next.isAsync()
+                            + " now: " + now);
                 } else {
                     Log.d(TAG_C, "No next node");
                 }
@@ -830,9 +838,10 @@ public final class MessageQueue {
                     mStackStateTimedPark.mWhenToWake = now + mNextPollTimeoutMillis;
                     nextOp = mStackStateTimedPark;
                     if (DEBUG) {
-                        Log.d(TAG_C, "nextMessage next state is StackStateTimedParked timeout ms "
-                                + mNextPollTimeoutMillis + " mWhenToWake: "
-                                + mStackStateTimedPark.mWhenToWake + " now " + now);
+                        Log.d(TAG_C, "nextMessage next state is StackStateTimedParked"
+                                + " timeout ms " + mNextPollTimeoutMillis
+                                + " mWhenToWake: " + mStackStateTimedPark.mWhenToWake
+                                + " now: " + now);
                     }
                 }
             }
@@ -852,9 +861,6 @@ public final class MessageQueue {
                         continue;
                     }
 
-                    if (TRACE) {
-                        Trace.setCounter("MQ.Delivered", mMessagesDelivered.incrementAndGet());
-                    }
                     return found.mMessage;
                 }
                 return null;
@@ -995,9 +1001,6 @@ public final class MessageQueue {
                             mAsyncMessageCount--;
                         }
                         decAndTraceMessageCount();
-                        if (TRACE) {
-                            Trace.setCounter("MQ.Delivered", mMessagesDelivered.incrementAndGet());
-                        }
                         return msg;
                     }
                 } else {
@@ -1460,9 +1463,6 @@ public final class MessageQueue {
                     mAsyncMessageCount--;
                 }
                 decAndTraceMessageCount();
-                if (TRACE) {
-                    Trace.setCounter("MQ.Delivered", mMessagesDelivered.incrementAndGet());
-                }
                 return msg;
             }
         }
@@ -2179,8 +2179,10 @@ public final class MessageQueue {
         Log.d(TAG_C, "* Dump priority queue");
         while (iterator.hasNext()) {
             MessageNode msgNode = iterator.next();
-            Log.d(TAG_C, "** MessageNode what: " + msgNode.mMessage.what + " when "
-                    + msgNode.mMessage.when + " seq: " + msgNode.mInsertSeq);
+            Log.d(TAG_C,
+                    "** MessageNode what: " + msgNode.mMessage.what
+                    + " when " + msgNode.mMessage.when
+                    + " seq: " + msgNode.mInsertSeq);
         }
     }
 
@@ -2907,9 +2909,13 @@ public final class MessageQueue {
         incAndTraceMessageCount(msg, when);
 
         if (DEBUG) {
-            Log.d(TAG_C, "Insert message what: " + msg.what + " when: " + msg.when + " seq: "
-                    + node.mInsertSeq + " barrier: " + node.isBarrier() + " async: "
-                    + node.isAsync() + " now: " + SystemClock.uptimeMillis());
+            Log.d(TAG_C, "Insert message"
+                    + " what: " + msg.what
+                    + " when: " + msg.when
+                    + " seq: " + node.mInsertSeq
+                    + " barrier: " + node.isBarrier()
+                    + " async: " + node.isAsync()
+                    + " now: " + SystemClock.uptimeMillis());
         }
 
         final Looper myLooper = Looper.myLooper();
@@ -2920,6 +2926,7 @@ public final class MessageQueue {
                         msg.target + " sending message to a Handler on a dead thread");
                 Log.w(TAG_C, e.getMessage(), e);
                 msg.recycleUnchecked();
+                decAndTraceMessageCount();
                 return false;
             }
 
