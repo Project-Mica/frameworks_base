@@ -16,22 +16,20 @@
 
 package com.android.server.input;
 
-import static android.Manifest.permission.OVERRIDE_SYSTEM_KEY_BEHAVIOR_IN_FOCUSED_WINDOW;
-import static android.content.PermissionChecker.PERMISSION_GRANTED;
-import static android.content.PermissionChecker.PID_UNKNOWN;
 import static android.os.IServiceManager.DUMP_FLAG_PRIORITY_CRITICAL;
 import static android.provider.DeviceConfig.NAMESPACE_INPUT_NATIVE_BOOT;
 import static android.view.KeyEvent.KEYCODE_UNKNOWN;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 
 import static com.android.hardware.input.Flags.enableCustomizableInputGestures;
-import static com.android.hardware.input.Flags.fixSearchModifierFallbacks;
+import static com.android.hardware.input.Flags.fixKeyboardInterceptorPolicyCall;
 import static com.android.hardware.input.Flags.keyEventActivityDetection;
 import static com.android.hardware.input.Flags.touchpadVisualizer;
 import static com.android.server.policy.WindowManagerPolicy.ACTION_PASS_TO_USER;
 
 import android.Manifest;
 import android.annotation.EnforcePermission;
+import android.annotation.LongDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.SuppressLint;
@@ -43,7 +41,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.PermissionChecker;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.graphics.PointF;
@@ -54,7 +51,6 @@ import android.hardware.display.DisplayManagerInternal;
 import android.hardware.display.DisplayTopologyGraph;
 import android.hardware.display.DisplayViewport;
 import android.hardware.input.AidlInputGestureData;
-import android.hardware.input.AppLaunchData;
 import android.hardware.input.HostUsiVersion;
 import android.hardware.input.IInputDeviceBatteryListener;
 import android.hardware.input.IInputDeviceBatteryState;
@@ -125,7 +121,6 @@ import android.view.PointerIcon;
 import android.view.Surface;
 import android.view.SurfaceControl;
 import android.view.VerifiedInputEvent;
-import android.view.ViewConfiguration;
 import android.view.WindowManager;
 import android.view.WindowManagerPolicyConstants;
 import android.view.inputmethod.InputMethodInfo;
@@ -137,7 +132,6 @@ import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.inputmethod.InputMethodSubtypeHandle;
 import com.android.internal.os.SomeArgs;
 import com.android.internal.policy.IShortcutService;
-import com.android.internal.policy.KeyInterceptionInfo;
 import com.android.internal.protolog.ProtoLog;
 import com.android.internal.protolog.ProtoLogGroup;
 import com.android.internal.protolog.common.IProtoLogGroup;
@@ -152,7 +146,6 @@ import com.android.server.input.InputManagerInternal.LidSwitchCallback;
 import com.android.server.input.debug.FocusEventDebugView;
 import com.android.server.input.debug.TouchpadDebugViewController;
 import com.android.server.policy.WindowManagerPolicy;
-import com.android.server.wm.WindowManagerInternal;
 
 import libcore.io.IoUtils;
 
@@ -204,8 +197,6 @@ public class InputManagerService extends IInputManager.Stub
     private final Context mContext;
     private final InputManagerHandler mHandler;
     private DisplayManagerInternal mDisplayManagerInternal;
-
-    private WindowManagerInternal mWindowManagerInternal;
 
     private final File mDoubleTouchGestureEnableFile;
 
@@ -627,7 +618,6 @@ public class InputManagerService extends IInputManager.Stub
         }
 
         mDisplayManagerInternal = LocalServices.getService(DisplayManagerInternal.class);
-        mWindowManagerInternal = LocalServices.getService(WindowManagerInternal.class);
 
         mSettingsObserver.registerAndUpdate();
 
@@ -2673,46 +2663,8 @@ public class InputManagerService extends IInputManager.Stub
 
     // Native callback.
     @SuppressWarnings("unused")
-    @VisibleForTesting
     long interceptKeyBeforeDispatching(IBinder focus, KeyEvent event, int policyFlags) {
-        final long keyNotConsumedGoFallback = -2;
-        final long keyConsumed = -1;
-        final long keyNotConsumed = 0;
-        long value = keyNotConsumed;
-        // TODO(b/358569822) Remove below once we have nicer API for listening to shortcuts
-        if ((event.isMetaPressed() || KeyEvent.isMetaKey(event.getKeyCode()))
-                && shouldInterceptShortcuts(focus)) {
-            return keyNotConsumed;
-        }
-        value = mKeyGestureController.interceptKeyBeforeDispatching(focus, event, policyFlags);
-        if (value == keyNotConsumed) {
-            value = mWindowManagerCallbacks.interceptKeyBeforeDispatching(focus, event,
-                    policyFlags);
-        }
-        if (value == keyNotConsumed && event.isMetaPressed()) {
-            if (fixSearchModifierFallbacks() ) {
-                // If the key has not been consumed and includes the meta key, do not send the event
-                // to the app and attempt to generate a fallback.
-                final KeyCharacterMap kcm = event.getKeyCharacterMap();
-                final KeyCharacterMap.FallbackAction fallbackAction =
-                        kcm.getFallbackAction(event.getKeyCode(), event.getMetaState());
-                if (fallbackAction != null) {
-                    return keyNotConsumedGoFallback;
-                }
-            }
-            return keyConsumed;
-        }
-        return value;
-    }
-
-    private boolean shouldInterceptShortcuts(IBinder focusedToken) {
-        KeyInterceptionInfo info =
-                mWindowManagerInternal.getKeyInterceptionInfoFromToken(focusedToken);
-        boolean hasInterceptWindowFlag = info != null && (info.layoutParamsPrivateFlags
-                & WindowManager.LayoutParams.PRIVATE_FLAG_ALLOW_ACTION_KEY_EVENTS) != 0;
-        return hasInterceptWindowFlag && PermissionChecker.checkPermissionForDataDelivery(mContext,
-                OVERRIDE_SYSTEM_KEY_BEHAVIOR_IN_FOCUSED_WINDOW, PID_UNKNOWN, info.windowOwnerUid,
-                null, null, null) == PERMISSION_GRANTED;
+        return mKeyGestureController.interceptKeyBeforeDispatching(focus, event, policyFlags);
     }
 
     // Native callback.
@@ -3022,30 +2974,6 @@ public class InputManagerService extends IInputManager.Stub
 
     // Native callback.
     @SuppressWarnings("unused")
-    private int getHoverTapTimeout() {
-        return ViewConfiguration.getHoverTapTimeout();
-    }
-
-    // Native callback.
-    @SuppressWarnings("unused")
-    private int getHoverTapSlop() {
-        return ViewConfiguration.getHoverTapSlop();
-    }
-
-    // Native callback.
-    @SuppressWarnings("unused")
-    private int getDoubleTapTimeout() {
-        return ViewConfiguration.getDoubleTapTimeout();
-    }
-
-    // Native callback.
-    @SuppressWarnings("unused")
-    private int getLongPressTimeout() {
-        return ViewConfiguration.getLongPressTimeout();
-    }
-
-    // Native callback.
-    @SuppressWarnings("unused")
     private int getPointerLayer() {
         return mWindowManagerCallbacks.getPointerLayer();
     }
@@ -3346,13 +3274,9 @@ public class InputManagerService extends IInputManager.Stub
          * key.
          * @param token the window token that's about to receive this event
          * @param event the key event that's being dispatched
-         * @param policyFlags the policy flags
-         * @return -1 if the key should be skipped (not sent to the app). -2 if the key should not
-         * be sent to the app, but it should still generate a fallback.
-         * 0 if the key should proceed getting dispatched to the app. positive value to indicate the
-         * additional time delay, in nanoseconds, to wait before sending this key to the app.
+         * @return {@code true} if consumed, and {@code false} otherwise.
          */
-        long interceptKeyBeforeDispatching(IBinder token, KeyEvent event, int policyFlags);
+        boolean interceptKeyBeforeDispatching(IBinder token, KeyEvent event);
 
         /**
          * Intercept unhandled key
@@ -3869,6 +3793,19 @@ public class InputManagerService extends IInputManager.Stub
         public void registerAccessibilityPointerMotionFilter(
                 AccessibilityPointerMotionFilter filter) {
             InputManagerService.this.registerAccessibilityPointerMotionFilter(filter);
+        }
+
+        @Override
+        public long interceptKeyCombinationBeforeAccessibility(@NonNull KeyEvent event) {
+            if (fixKeyboardInterceptorPolicyCall()) {
+                return mKeyGestureController.interceptKeyBeforeDispatching(/* focusedToken= */null,
+                        event, /* policyFlags= */0);
+            } else {
+                return mWindowManagerCallbacks.interceptKeyBeforeDispatching(
+                        /* focusedToken= */null, event)
+                        ? KeyGestureController.KEY_INTERCEPT_RESULT_CONSUMED
+                        : KeyGestureController.KEY_INTERCEPT_RESULT_NOT_CONSUMED;
+            }
         }
     }
 

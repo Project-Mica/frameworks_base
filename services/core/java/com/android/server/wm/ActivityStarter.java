@@ -78,7 +78,6 @@ import static com.android.server.wm.ActivityTaskManagerDebugConfig.POSTFIX_USER_
 import static com.android.server.wm.ActivityTaskManagerDebugConfig.TAG_ATM;
 import static com.android.server.wm.ActivityTaskManagerDebugConfig.TAG_WITH_CLASS_NAME;
 import static com.android.server.wm.ActivityTaskManagerService.ANIMATE;
-import static com.android.server.wm.ActivityTaskManagerService.isPip2ExperimentEnabled;
 import static com.android.server.wm.ActivityTaskSupervisor.DEFER_RESUME;
 import static com.android.server.wm.ActivityTaskSupervisor.ON_TOP;
 import static com.android.server.wm.BackgroundActivityStartController.BAL_ALLOW_DEFAULT;
@@ -2038,10 +2037,8 @@ class ActivityStarter {
             }
         }
 
-        if (com.android.window.flags.Flags.earlyLaunchHint()) {
-            mRootWindowContainer.startPowerModeLaunchIfNeeded(
-                    false /* forceSend */, mStartActivity);
-        }
+        mRootWindowContainer.startPowerModeLaunchIfNeeded(
+                false /* forceSend */, mStartActivity);
 
         if (mTargetRootTask == null) {
             mTargetRootTask = getOrCreateRootTask(mStartActivity, mLaunchFlags, targetTask,
@@ -2120,11 +2117,6 @@ class ActivityStarter {
 
         mStartActivity.getTaskFragment().clearLastPausedActivity();
 
-        if (!com.android.window.flags.Flags.earlyLaunchHint()) {
-            mRootWindowContainer.startPowerModeLaunchIfNeeded(
-                    false /* forceSend */, mStartActivity);
-        }
-
         final boolean isTaskSwitch = startedTask != prevTopTask;
         mTargetRootTask.startActivityLocked(mStartActivity, topRootTask, newTask, isTaskSwitch,
                 mOptions, sourceRecord);
@@ -2175,12 +2167,8 @@ class ActivityStarter {
         if (mOptions != null && mOptions.isLaunchIntoPip()
                 && sourceRecord != null && sourceRecord.getTask() == mStartActivity.getTask()
                 && balVerdict.allows()) {
-            if (isPip2ExperimentEnabled()) {
-                mService.setPipCandidateIfNeeded(mStartActivity);
-            } else {
-                mRootWindowContainer.moveActivityToPinnedRootTask(mStartActivity,
-                        sourceRecord, "launch-into-pip", null /* bounds */);
-            }
+            mRootWindowContainer.moveActivityToPinnedRootTask(mStartActivity,
+                    sourceRecord, "launch-into-pip", null /* bounds */);
         }
 
         mSupervisor.getBackgroundActivityLaunchController()
