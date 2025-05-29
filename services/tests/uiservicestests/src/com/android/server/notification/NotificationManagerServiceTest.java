@@ -2066,6 +2066,38 @@ public class NotificationManagerServiceTest extends UiServiceTestCase {
     }
 
     @Test
+    public void testEnqueueNotificationWithTag_inheritsPostedInstanceId() throws Exception {
+        final String tag = "testEnqueueNotificationWithTag_inheritsPostedInstanceId";
+        Notification original = new Notification.Builder(mContext,
+                mTestNotificationChannel.getId())
+                .setSmallIcon(android.R.drawable.sym_def_app_icon).build();
+        mBinderService.enqueueNotificationWithTag(mPkg, mPkg, tag, 0, original, mUserId);
+        // wait for the notification to get fully posted first rather than updating while still
+        // enqueued
+        waitForIdle();
+
+        // then update
+        Notification update = new Notification.Builder(mContext,
+                mTestNotificationChannel.getId())
+                .setSmallIcon(android.R.drawable.sym_def_app_icon)
+                .setCategory(Notification.CATEGORY_ALARM).build();
+        mBinderService.enqueueNotificationWithTag(mPkg, mPkg, tag, 0, update, mUserId);
+        waitForIdle();
+        assertEquals(2, mNotificationRecordLogger.numCalls());
+
+        assertTrue(mNotificationRecordLogger.get(0).wasLogged);
+        assertEquals(NOTIFICATION_POSTED, mNotificationRecordLogger.event(0));
+        assertEquals(1, mNotificationRecordLogger.get(0).getInstanceId());
+        assertThat(mNotificationRecordLogger.get(0).postDurationMillisLogged).isGreaterThan(0);
+
+        assertTrue(mNotificationRecordLogger.get(1).wasLogged);
+        assertEquals(NOTIFICATION_UPDATED, mNotificationRecordLogger.event(1));
+        // Instance ID doesn't change on update of an active notification
+        assertEquals(1, mNotificationRecordLogger.get(1).getInstanceId());
+        assertThat(mNotificationRecordLogger.get(1).postDurationMillisLogged).isGreaterThan(0);
+    }
+
+    @Test
     public void testEnqueueNotificationWithTag_DoesNotLogOnMinorUpdate() throws Exception {
         final String tag = "testEnqueueNotificationWithTag_DoesNotLogOnMinorUpdate";
         mBinderService.enqueueNotificationWithTag(mPkg, mPkg, tag, 0,
@@ -6163,6 +6195,7 @@ public class NotificationManagerServiceTest extends UiServiceTestCase {
                 any(), anyInt(), anyBoolean(), anyBoolean(), anyBoolean());
     }
 
+
     @Test
     public void testSetAssistantAccess() throws Exception {
         List<UserInfo> uis = new ArrayList<>();
@@ -6205,6 +6238,29 @@ public class NotificationManagerServiceTest extends UiServiceTestCase {
                 c.flattenToString(), ui.id, false, true);
         verify(mConditionProviders, times(1)).setPackageOrComponentEnabled(
                 c.flattenToString(), ui10.id, false, true);
+        verify(mListeners, never()).setPackageOrComponentEnabled(
+                any(), anyInt(), anyBoolean(), anyBoolean());
+    }
+
+    @Test
+    public void testSetAssistantAccess_sameAsCurrentNas() throws Exception {
+        List<UserInfo> uis = new ArrayList<>();
+        UserInfo ui = new UserInfo();
+        ui.id = mContext.getUserId();
+        uis.add(ui);
+        when(mUm.getEnabledProfiles(ui.id)).thenReturn(uis);
+        ComponentName c = ComponentName.unflattenFromString("package/Component");
+        ArrayList<ComponentName> componentList = new ArrayList<>();
+        componentList.add(c);
+        when(mAssistants.getAllowedComponents(anyInt())).thenReturn(componentList);
+
+        mBinderService.setNotificationAssistantAccessGranted(c, true);
+        mBinderService.setNotificationAssistantAccessGranted(c, true);
+
+        verify(mAssistants, never()).setPackageOrComponentEnabled(
+                c.flattenToString(), ui.id, true, true, true);
+        verify(mConditionProviders, never()).setPackageOrComponentEnabled(
+                c.flattenToString(), ui.id, false, true);
         verify(mListeners, never()).setPackageOrComponentEnabled(
                 any(), anyInt(), anyBoolean(), anyBoolean());
     }

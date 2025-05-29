@@ -97,6 +97,8 @@ public enum DesktopExperienceFlags {
             Flags.FLAG_ENABLE_DESKTOP_FIRST_BASED_DEFAULT_TO_DESKTOP_BUGFIX),
     ENABLE_DESKTOP_FIRST_BASED_DRAG_TO_MAXIMIZE(Flags::enableDesktopFirstBasedDragToMaximize, true,
             Flags.FLAG_ENABLE_DESKTOP_FIRST_BASED_DRAG_TO_MAXIMIZE),
+    ENABLE_DESKTOP_FIRST_LISTENER(Flags::enableDesktopFirstListener, false,
+            Flags.FLAG_ENABLE_DESKTOP_FIRST_LISTENER),
     ENABLE_DESKTOP_IME_BUGFIX(Flags::enableDesktopImeBugfix, true,
             Flags.FLAG_ENABLE_DESKTOP_IME_BUGFIX),
     ENABLE_DESKTOP_TAB_TEARING_LAUNCH_ANIMATION(
@@ -177,6 +179,9 @@ public enum DesktopExperienceFlags {
     ENABLE_REJECT_HOME_TRANSITION(
             Flags::enableRejectHomeTransition, true,
             Flags.FLAG_ENABLE_REJECT_HOME_TRANSITION),
+    ENABLE_REQUEST_FULLSCREEN_REFACTOR(
+            Flags::enableRequestFullscreenRefactor, false,
+            Flags.FLAG_ENABLE_REQUEST_FULLSCREEN_REFACTOR),
     ENABLE_RESTART_MENU_FOR_CONNECTED_DISPLAYS(Flags::enableRestartMenuForConnectedDisplays, true,
             Flags.FLAG_ENABLE_RESTART_MENU_FOR_CONNECTED_DISPLAYS),
     ENABLE_RESTRICT_FREEFORM_HIDDEN_SYSTEM_BARS_TO_FILLING_TASKS(

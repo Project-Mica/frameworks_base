@@ -29,7 +29,6 @@ import static com.android.server.policy.WindowManagerPolicy.ACTION_PASS_TO_USER;
 
 import android.Manifest;
 import android.annotation.EnforcePermission;
-import android.annotation.LongDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.SuppressLint;
@@ -63,6 +62,7 @@ import android.hardware.input.IKeyGestureHandler;
 import android.hardware.input.IKeyboardBacklightListener;
 import android.hardware.input.IStickyModifierStateListener;
 import android.hardware.input.ITabletModeChangedListener;
+import android.hardware.input.IVirtualInputDevice;
 import android.hardware.input.InputDeviceIdentifier;
 import android.hardware.input.InputGestureData;
 import android.hardware.input.InputManager;
@@ -73,6 +73,13 @@ import android.hardware.input.KeyGlyphMap;
 import android.hardware.input.KeyboardLayout;
 import android.hardware.input.KeyboardLayoutSelectionResult;
 import android.hardware.input.TouchCalibration;
+import android.hardware.input.VirtualDpadConfig;
+import android.hardware.input.VirtualKeyboardConfig;
+import android.hardware.input.VirtualMouseConfig;
+import android.hardware.input.VirtualNavigationTouchpadConfig;
+import android.hardware.input.VirtualRotaryEncoderConfig;
+import android.hardware.input.VirtualStylusConfig;
+import android.hardware.input.VirtualTouchscreenConfig;
 import android.hardware.lights.Light;
 import android.hardware.lights.LightState;
 import android.media.AudioManager;
@@ -357,6 +364,9 @@ public class InputManagerService extends IInputManager.Stub
     // Manages Keyboard microphone mute led
     private final KeyboardLedController mKeyboardLedController;
 
+    // Manages virtual input devices
+    private final VirtualInputDeviceController mVirtualInputDeviceController;
+
     // Manages Keyboard modifier keys remapping
     private final KeyRemapper mKeyRemapper;
 
@@ -414,6 +424,9 @@ public class InputManagerService extends IInputManager.Stub
     /** Switch code: Headphone/Microphone Jack.  When set, something is inserted. */
     public static final int SW_JACK_PHYSICAL_INSERT = 0x07;
 
+    /** Switch code: Video Jack.  When set, something is inserted. */
+    public static final int SW_VIDEOOUT_INSERT = 0x08;
+
     /** Switch code: Camera lens cover. When set the lens is covered. */
     public static final int SW_CAMERA_LENS_COVER = 0x09;
 
@@ -427,8 +440,10 @@ public class InputManagerService extends IInputManager.Stub
     public static final int SW_MICROPHONE_INSERT_BIT = 1 << SW_MICROPHONE_INSERT;
     public static final int SW_LINEOUT_INSERT_BIT = 1 << SW_LINEOUT_INSERT;
     public static final int SW_JACK_PHYSICAL_INSERT_BIT = 1 << SW_JACK_PHYSICAL_INSERT;
-    public static final int SW_JACK_BITS =
-            SW_HEADPHONE_INSERT_BIT | SW_MICROPHONE_INSERT_BIT | SW_JACK_PHYSICAL_INSERT_BIT | SW_LINEOUT_INSERT_BIT;
+    public static final int SW_VIDEOOUT_INSERT_BIT = 1 << SW_VIDEOOUT_INSERT;
+    public static final int SW_JACK_BITS = SW_HEADPHONE_INSERT_BIT | SW_MICROPHONE_INSERT_BIT
+                                           | SW_JACK_PHYSICAL_INSERT_BIT | SW_LINEOUT_INSERT_BIT
+                                           | SW_VIDEOOUT_INSERT_BIT;
     public static final int SW_CAMERA_LENS_COVER_BIT = 1 << SW_CAMERA_LENS_COVER;
     public static final int SW_MUTE_DEVICE_BIT = 1 << SW_MUTE_DEVICE;
 
@@ -441,6 +456,9 @@ public class InputManagerService extends IInputManager.Stub
     // system gestures (e.g. navigation bar, edge-back, etc) while there is an active
     // handwriting session.
     public static final int INPUT_OVERLAY_LAYER_HANDWRITING_SURFACE = 2;
+    // The layer where the pointer event dispatcher is added by WindowManager to get an
+    // uninterrupted stream of all pointer events on each display.
+    public static final int INPUT_OVERLAY_POINTER_EVENT_DISPATCHER = Integer.MAX_VALUE;
 
 
     private final String mVelocityTrackerStrategy;
@@ -541,6 +559,8 @@ public class InputManagerService extends IInputManager.Stub
                 injector.getIoLooper(), mInputDataStore);
         mKeyboardLedController = new KeyboardLedController(mContext, injector.getLooper(),
                 mNative);
+        mVirtualInputDeviceController = new VirtualInputDeviceController(
+                mContext.getMainThreadHandler(), this);
         mKeyRemapper = new KeyRemapper(mContext, mNative, mDataStore, injector.getLooper());
         mKeyboardGlyphManager = new KeyboardGlyphManager(mContext, injector.getLooper());
         mPointerIconCache = new PointerIconCache(mContext, mNative);
@@ -797,19 +817,23 @@ public class InputManagerService extends IInputManager.Stub
     }
 
     /**
-     * Creates an input channel that will receive all input from the input dispatcher.
+     * Creates an input channel that will receive all non-pointer input going to focused windows
+     * from the input dispatcher.
+     *
+     * This API is intended to be used only for creating debugging tools to visualize focus input.
+     *
      * @param inputChannelName The input channel name.
      * @param displayId Target display id.
      * @return The input channel.
      */
-    public InputChannel monitorInput(@NonNull String inputChannelName, int displayId) {
+    public InputChannel monitorFocusInput(@NonNull String inputChannelName, int displayId) {
         Objects.requireNonNull(inputChannelName, "inputChannelName not be null");
 
         if (displayId < Display.DEFAULT_DISPLAY) {
             throw new IllegalArgumentException("displayId must >= 0.");
         }
 
-        return mNative.createInputMonitor(displayId, inputChannelName, Binder.getCallingPid());
+        return mNative.createFocusInputMonitor(displayId, inputChannelName, Binder.getCallingPid());
     }
 
     @NonNull
@@ -828,10 +852,7 @@ public class InputManagerService extends IInputManager.Stub
                     new GestureMonitorSpyWindow(monitorToken, name, displayId, pid, uid, sc,
                             channel));
         }
-
-        final InputChannel outInputChannel = new InputChannel();
-        channel.copyTo(outInputChannel);
-        return outInputChannel;
+        return channel;
     }
 
     private void removeSpyWindowGestureMonitor(@NonNull IBinder inputChannelToken) {
@@ -1863,7 +1884,7 @@ public class InputManagerService extends IInputManager.Stub
         mNative.changeTypeAssociation();
     }
 
-    private void addKeyboardLayoutAssociation(@NonNull String inputPort,
+    void addKeyboardLayoutAssociation(@NonNull String inputPort,
             @NonNull String languageTag, @NonNull String layoutType) {
         Objects.requireNonNull(inputPort);
         Objects.requireNonNull(languageTag);
@@ -1876,7 +1897,7 @@ public class InputManagerService extends IInputManager.Stub
         mNative.changeKeyboardLayoutAssociation();
     }
 
-    private void removeKeyboardLayoutAssociation(@NonNull String inputPort) {
+    void removeKeyboardLayoutAssociation(@NonNull String inputPort) {
         Objects.requireNonNull(inputPort);
         synchronized (mAssociationsLock) {
             mKeyboardLayoutAssociations.remove(inputPort);
@@ -2219,6 +2240,7 @@ public class InputManagerService extends IInputManager.Stub
         mKeyboardLedController.dump(ipw);
         mKeyboardGlyphManager.dump(ipw);
         mKeyGestureController.dump(ipw);
+        mVirtualInputDeviceController.dump(ipw);
     }
 
     private void dumpAssociations(IndentingPrintWriter pw) {
@@ -3806,6 +3828,89 @@ public class InputManagerService extends IInputManager.Stub
                         ? KeyGestureController.KEY_INTERCEPT_RESULT_CONSUMED
                         : KeyGestureController.KEY_INTERCEPT_RESULT_NOT_CONSUMED;
             }
+        }
+
+        @NonNull
+        @Override
+        public IVirtualInputDevice createVirtualKeyboard(@NonNull IBinder token,
+                @NonNull VirtualKeyboardConfig config) {
+            return mVirtualInputDeviceController.createKeyboard(config.getInputDeviceName(),
+                    config.getVendorId(), config.getProductId(), token,
+                    getTargetDisplayIdForInput(config.getAssociatedDisplayId()),
+                    config.getLanguageTag(), config.getLayoutType());
+        }
+
+        @NonNull
+        @Override
+        public IVirtualInputDevice createVirtualMouse(@NonNull IBinder token,
+                @NonNull VirtualMouseConfig config) {
+            return mVirtualInputDeviceController.createMouse(config.getInputDeviceName(),
+                    config.getVendorId(), config.getProductId(), token,
+                    config.getAssociatedDisplayId());
+        }
+
+        @NonNull
+        @Override
+        public IVirtualInputDevice createVirtualTouchscreen(@NonNull IBinder token,
+                @NonNull VirtualTouchscreenConfig config) {
+            return mVirtualInputDeviceController.createTouchscreen(config.getInputDeviceName(),
+                    config.getVendorId(), config.getProductId(), token,
+                    config.getAssociatedDisplayId(), config.getHeight(), config.getWidth());
+        }
+
+        @NonNull
+        @Override
+        public IVirtualInputDevice createVirtualNavigationTouchpad(@NonNull IBinder token,
+                @NonNull VirtualNavigationTouchpadConfig config) {
+            return mVirtualInputDeviceController.createNavigationTouchpad(
+                    config.getInputDeviceName(), config.getVendorId(),
+                    config.getProductId(), token,
+                    getTargetDisplayIdForInput(config.getAssociatedDisplayId()),
+                    config.getHeight(), config.getWidth());
+        }
+
+        @NonNull
+        @Override
+        public IVirtualInputDevice createVirtualDpad(@NonNull IBinder token,
+                @NonNull VirtualDpadConfig config) {
+            return mVirtualInputDeviceController.createDpad(config.getInputDeviceName(),
+                    config.getVendorId(), config.getProductId(), token,
+                    getTargetDisplayIdForInput(config.getAssociatedDisplayId()));
+        }
+
+        @NonNull
+        @Override
+        public IVirtualInputDevice createVirtualStylus(@NonNull IBinder token,
+                @NonNull VirtualStylusConfig config) {
+            return mVirtualInputDeviceController.createStylus(config.getInputDeviceName(),
+                    config.getVendorId(), config.getProductId(), token,
+                    config.getAssociatedDisplayId(), config.getHeight(), config.getWidth());
+        }
+
+        @NonNull
+        @Override
+        public IVirtualInputDevice createVirtualRotaryEncoder(
+                @NonNull IBinder token,
+                @NonNull VirtualRotaryEncoderConfig config) {
+            return mVirtualInputDeviceController.createRotaryEncoder(config.getInputDeviceName(),
+                    config.getVendorId(), config.getProductId(), token,
+                    getTargetDisplayIdForInput(config.getAssociatedDisplayId()));
+        }
+
+        @Override
+        public void closeVirtualInputDevice(IBinder token) {
+            mVirtualInputDeviceController.unregisterInputDevice(token);
+        }
+
+        // For display mirroring, we want to dispatch all key events to the source (default)
+        // display, as the virtual display doesn't have any focused windows. Hence, call this for
+        // associating any input device to the source display if the input device emits any key
+        // events.
+        private int getTargetDisplayIdForInput(int displayId) {
+            DisplayManagerInternal displayManager = LocalServices.getService(
+                    DisplayManagerInternal.class);
+            int mirroredDisplayId = displayManager.getDisplayIdToMirror(displayId);
+            return mirroredDisplayId == Display.INVALID_DISPLAY ? displayId : mirroredDisplayId;
         }
     }
 
