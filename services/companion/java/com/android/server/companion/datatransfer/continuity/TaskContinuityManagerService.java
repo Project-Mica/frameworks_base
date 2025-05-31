@@ -16,7 +16,11 @@
 
 package com.android.server.companion.datatransfer.continuity;
 
+import android.annotation.NonNull;
+import android.companion.CompanionDeviceManager;
 import android.companion.datatransfer.continuity.ITaskContinuityManager;
+import android.companion.datatransfer.continuity.IRemoteTaskListener;
+import android.companion.datatransfer.continuity.RemoteTask;
 import android.content.Context;
 import android.util.Slog;
 
@@ -25,6 +29,10 @@ import com.android.server.companion.datatransfer.continuity.messages.TaskContinu
 import com.android.server.companion.datatransfer.continuity.tasks.RemoteTaskStore;
 
 import com.android.server.SystemService;
+import com.android.server.companion.datatransfer.continuity.connectivity.ConnectedAssociationStore;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Service to handle task continuity features
@@ -38,14 +46,20 @@ public final class TaskContinuityManagerService extends SystemService {
 
     private TaskContinuityManagerServiceImpl mTaskContinuityManagerService;
     private TaskBroadcaster mTaskBroadcaster;
+    private ConnectedAssociationStore mConnectedAssociationStore;
     private TaskContinuityMessageReceiver mTaskContinuityMessageReceiver;
     private RemoteTaskStore mRemoteTaskStore;
 
     public TaskContinuityManagerService(Context context) {
         super(context);
-        mTaskBroadcaster = new TaskBroadcaster(context);
+        mConnectedAssociationStore = new ConnectedAssociationStore(context);
+
+        mTaskBroadcaster = new TaskBroadcaster(
+            context,
+            mConnectedAssociationStore);
+
         mTaskContinuityMessageReceiver = new TaskContinuityMessageReceiver(context);
-        mRemoteTaskStore = new RemoteTaskStore();
+        mRemoteTaskStore = new RemoteTaskStore(mConnectedAssociationStore);
     }
 
     @Override
@@ -57,7 +71,18 @@ public final class TaskContinuityManagerService extends SystemService {
     }
 
     private final class TaskContinuityManagerServiceImpl extends ITaskContinuityManager.Stub {
+        @Override
+        public List<RemoteTask> getRemoteTasks() {
+            return new ArrayList<>();
+        }
 
+        @Override
+        public void registerRemoteTaskListener(@NonNull IRemoteTaskListener listener) {
+        }
+
+        @Override
+        public void unregisterRemoteTaskListener(@NonNull IRemoteTaskListener listener) {
+        }
     }
 
     private void onTaskContinuityMessageReceived(
@@ -68,10 +93,8 @@ public final class TaskContinuityManagerService extends SystemService {
 
         switch (taskContinuityMessage.getData()) {
             case ContinuityDeviceConnected continuityDeviceConnected:
-                // TODO: joeantonetti - Extract a readable device name and pass it to the store.
-                mRemoteTaskStore.registerDevice(
+                mRemoteTaskStore.setTasks(
                     associationId,
-                    String.format("device-%d", associationId),
                     continuityDeviceConnected.getRemoteTasks());
                 break;
             default:

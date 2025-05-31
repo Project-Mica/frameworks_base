@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.android.wm.shell.functional
+package android.companion.datatransfer.continuity;
 
-import android.platform.test.annotations.Postsubmit
-import com.android.wm.shell.scenarios.ScaleDensityForExternalDisplay
-import org.junit.runner.RunWith
-import org.junit.runners.BlockJUnit4ClassRunner
+import android.companion.datatransfer.continuity.RemoteTask;
 
-/* Functional test for [ScaleDensityForExternalDisplay]. */
-@RunWith(BlockJUnit4ClassRunner::class)
-@Postsubmit
-class ScaleDensityForExternalDisplayTest : ScaleDensityForExternalDisplay()
+/**
+ * {@hide}
+ */
+oneway interface IRemoteTaskListener {
+    void onRemoteTasksChanged(in List<RemoteTask> remoteTasks);
+}

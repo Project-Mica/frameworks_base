@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 The Android Open Source Project
+ * Copyright (C) 2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package android.app;
 
-package com.android.wm.shell.functional
+import android.content.Context;
 
-import android.platform.test.annotations.Postsubmit
-import android.platform.test.rule.ScreenRecordRule
-import com.android.wm.shell.scenarios.ResizeAppCornerMultiWindow
-import org.junit.runner.RunWith
-import org.junit.runners.BlockJUnit4ClassRunner
-
-/* Functional test for [ResizeAppCornerMultiWindow]. */
-@RunWith(BlockJUnit4ClassRunner::class)
-@Postsubmit
-@ScreenRecordRule.ScreenRecord
-class ResizeAppCornerMultiWindowTest : ResizeAppCornerMultiWindow()
+/**
+ * Used on Ravenwood to access {@link Application}'s package private APIs.
+ *
+ * Unlike the name suggests, this is not used as a @RavenwoodRedirect class.
+ * It's more of a "reverse" redirect class.
+ */
+public class Application_ravenwood {
+    /** Calls {@link Application#attach} */
+    public static void attach(Application application, Context context) {
+        application.attach(context);
+    }
+}

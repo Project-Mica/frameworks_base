@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 The Android Open Source Project
+ * Copyright (C) 2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.android.server.locksettings;
 
-package com.android.wm.shell.functional
+import android.platform.test.annotations.Presubmit;
 
-import android.platform.test.annotations.Postsubmit
-import android.platform.test.rule.ScreenRecordRule
-import com.android.wm.shell.scenarios.SnapResizeAppWindowWithDrag
-import org.junit.runner.RunWith
-import org.junit.runners.BlockJUnit4ClassRunner
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
-/* Functional test for [SnapResizeAppWindowWithDrag]. */
-@RunWith(BlockJUnit4ClassRunner::class)
-@Postsubmit
-@ScreenRecordRule.ScreenRecord
-class SnapResizeAppWindowWithDragTest : SnapResizeAppWindowWithDrag()
+import org.junit.Before;
+import org.junit.runner.RunWith;
+
+@SmallTest
+@Presubmit
+@RunWith(AndroidJUnit4.class)
+public class WeaverAidlBasedSyntheticPasswordTests extends WeaverBasedSyntheticPasswordTests {
+
+    @Before
+    public void setup() {
+        mSpManager.enableWeaverAidl();
+    }
+}

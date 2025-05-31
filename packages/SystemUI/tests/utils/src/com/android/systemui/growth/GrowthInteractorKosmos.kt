@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package com.android.wm.shell.functional
+package com.android.systemui.growth.domain.interactor
 
-import android.platform.test.annotations.Postsubmit
-import android.platform.test.rule.ScreenRecordRule
-import com.android.wm.shell.scenarios.RestartAppInDesktopMode
-import org.junit.runner.RunWith
-import org.junit.runners.BlockJUnit4ClassRunner
+import android.content.res.mainResources
+import com.android.systemui.broadcast.mockBroadcastSender
+import com.android.systemui.deviceentry.domain.interactor.deviceEntryInteractor
+import com.android.systemui.kosmos.Kosmos
+import com.android.systemui.kosmos.Kosmos.Fixture
 
-/** Functional test of [RestartAppInDesktopMode] for a size-compat app. */
-@RunWith(BlockJUnit4ClassRunner::class)
-@ScreenRecordRule.ScreenRecord
-@Postsubmit
-class RestartSizeCompatAppInDesktopMode :
-    RestartAppInDesktopMode(isResizable = false, isLandscapeApp = false)
+var Kosmos.growthInteractor: GrowthInteractor by
+Kosmos.Fixture {
+    GrowthInteractor(
+        resources = mainResources,
+        deviceEntryInteractor = { deviceEntryInteractor },
+        broadcastSender = mockBroadcastSender,
+    )
+}

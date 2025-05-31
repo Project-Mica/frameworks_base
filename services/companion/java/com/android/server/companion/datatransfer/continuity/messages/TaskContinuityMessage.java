@@ -18,7 +18,6 @@ package com.android.server.companion.datatransfer.continuity.messages;
 
 import android.util.proto.ProtoInputStream;
 import android.util.proto.ProtoOutputStream;
-import android.util.proto.ProtoParseException;
 
 import java.io.IOException;
 
@@ -34,8 +33,7 @@ public final class TaskContinuityMessage {
         mData = builder.mData;
     }
 
-    public TaskContinuityMessage(byte[] data)
-        throws IOException, ProtoParseException {
+    public TaskContinuityMessage(byte[] data) throws IOException {
 
         ProtoInputStream pis = new ProtoInputStream(data);
         while (pis.nextField() != ProtoInputStream.NO_MORE_FIELDS) {
@@ -55,6 +53,13 @@ public final class TaskContinuityMessage {
 
                     mData = new RemoteTaskAddedMessage(pis);
                     pis.end(remoteTaskAddedMessageToken);
+                    break;
+                case (int) android.companion.TaskContinuityMessage.REMOTE_TASK_REMOVED:
+                    final long remoteTaskRemovedToken = pis.start(
+                        android.companion.TaskContinuityMessage.REMOTE_TASK_REMOVED
+                    );
+                    mData = RemoteTaskRemovedMessage.readFromProto(pis);
+                    pis.end(remoteTaskRemovedToken);
                     break;
             }
         }
@@ -88,6 +93,13 @@ public final class TaskContinuityMessage {
 
                 remoteTaskAddedMessage.writeToProto(pos);
                 pos.end(remoteTaskAddedMessageToken);
+                break;
+            case RemoteTaskRemovedMessage remoteTaskRemovedMessage:
+                long remoteTaskRemovedToken = pos.start(
+                    android.companion.TaskContinuityMessage.REMOTE_TASK_REMOVED
+                );
+                remoteTaskRemovedMessage.writeToProto(pos);
+                pos.end(remoteTaskRemovedToken);
                 break;
             default:
                 break;

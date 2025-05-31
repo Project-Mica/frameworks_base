@@ -49,7 +49,6 @@ import android.util.SparseArray;
 
 import com.android.internal.R;
 import com.android.internal.annotations.GuardedBy;
-import com.android.server.media.BluetoothRouteController.NoOpBluetoothRouteController;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,9 +60,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Maintains a list of all available routes and supports transfers to any of them.
- *
- * <p>This implementation is intended for use in conjunction with {@link
- * NoOpBluetoothRouteController}, as it manages bluetooth devices directly.
  *
  * <p>This implementation obtains and manages all routes via {@link AudioManager}, with the
  * exception of {@link AudioManager#handleBluetoothActiveDeviceChanged inactive bluetooth} routes
@@ -181,7 +177,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
         mBluetoothRouteController =
                 new BluetoothDeviceRoutesManager(
-                        mContext, mHandler, btAdapter, this::rebuildAvailableRoutesAndNotify);
+                        mContext,
+                        mHandler,
+                        looper,
+                        btAdapter,
+                        this::rebuildAvailableRoutesAndNotify);
         // Just build routes but don't notify. The caller may not expect the listener to be invoked
         // before this constructor has finished executing.
         rebuildAvailableRoutes();

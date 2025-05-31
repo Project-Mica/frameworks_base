@@ -13,6 +13,7 @@ android.accounts.Account
 android.app.ActivityManager
 android.app.ActivityOptions
 android.app.AppCompatCallbacks
+android.app.Application
 android.app.ApplicationPackageManager
 android.app.BroadcastOptions
 android.app.ComponentOptions
@@ -26,6 +27,7 @@ android.app.WindowConfiguration
 android.content.ClipData
 android.content.ClipDescription
 android.content.ClipboardManager
+android.content.ComponentCallbacksController
 android.content.ComponentName
 android.content.ContentProvider
 android.content.ContentUris
@@ -100,7 +102,6 @@ android.graphics.BLASTBufferQueue
 android.graphics.BaseCanvas
 android.graphics.BaseRecordingCanvas
 android.graphics.Bitmap
-android.graphics.Bitmap$Config
 android.graphics.BitmapFactory
 android.graphics.BitmapRegionDecoder
 android.graphics.BitmapShader
@@ -216,6 +217,7 @@ android.hardware.SerialManagerInternal
 android.metrics.LogMaker
 
 android.os.AggregateBatteryConsumer
+android.os.AsyncTask
 android.os.BadParcelableException
 android.os.BadTypeParcelableException
 android.os.BaseBundle
@@ -236,7 +238,6 @@ android.os.DeadSystemException
 android.os.FileUtils
 android.os.Handler
 android.os.HandlerExecutor
-android.os.HandlerExecutor
 android.os.HandlerThread
 android.os.IBinder
 android.os.IpcDataCache
@@ -252,9 +253,7 @@ android.os.ParcelUuid
 android.os.Parcelable
 android.os.PatternMatcher
 android.os.PerfettoTrace
-android.os.PerfettoTrace$Category
 android.os.PerfettoTrackEventExtra
-android.os.PerfettoTrackEventExtra$NoOpBuilder
 android.os.PermissionEnforcer
 android.os.PersistableBundle
 android.os.PowerComponents
@@ -441,7 +440,6 @@ android.util.AtomicFileBufferedPrintWriter
 android.util.AtomicFileOutputStream
 android.util.AtomicFilePrintWriter
 android.util.BackupUtils
-android.util.BackupUtils
 android.util.Base64
 android.util.Base64DataException
 android.util.Base64InputStream
@@ -460,14 +458,12 @@ android.util.FloatMath
 android.util.FloatProperty
 android.util.Half
 android.util.IndentingPrintWriter
-android.util.IndentingPrintWriter
 android.util.IntArray
 android.util.IntProperty
 android.util.JsonReader
 android.util.JsonWriter
 android.util.KeyValueListParser
 android.util.ListenerGroup
-android.util.LocalLog
 android.util.LocalLog
 android.util.Log
 android.util.LogPrinter
@@ -491,7 +487,6 @@ android.util.MutableLong
 android.util.MutableShort
 android.util.NoSuchPropertyException
 android.util.Pair
-android.util.Pair
 android.util.Patterns
 android.util.Pools
 android.util.PrefixPrintWriter
@@ -501,7 +496,6 @@ android.util.PrintWriterPrinter
 android.util.Printer
 android.util.Property
 android.util.Range
-android.util.Rational
 android.util.Rational
 android.util.RecurrenceRule
 android.util.ReflectiveProperty
@@ -565,7 +559,6 @@ com.android.internal.os.BinderLatencyBuckets
 com.android.internal.os.BinderfsStatsReader
 com.android.internal.os.CachedDeviceState
 com.android.internal.os.Clock
-com.android.internal.os.Clock
 com.android.internal.os.CpuScalingPolicies
 com.android.internal.os.CpuScalingPolicyReader
 com.android.internal.os.KernelCpuThreadReader
@@ -573,7 +566,6 @@ com.android.internal.os.LoggingPrintStream
 com.android.internal.os.LongArrayMultiStateCounter
 com.android.internal.os.LongMultiStateCounter
 com.android.internal.os.LooperStats
-com.android.internal.os.MonotonicClock
 com.android.internal.os.MonotonicClock
 com.android.internal.os.PowerProfile
 com.android.internal.os.PowerStats
@@ -606,16 +598,13 @@ com.android.internal.util.DumpableContainer
 com.android.internal.util.FastMath
 com.android.internal.util.FastPrintWriter
 com.android.internal.util.FileRotator
-com.android.internal.util.FileRotator
 com.android.internal.util.GrowingArrayUtils
 com.android.internal.util.HeavyHitterSketch
-com.android.internal.util.HexDump
 com.android.internal.util.HexDump
 com.android.internal.util.IndentingPrintWriter
 com.android.internal.util.IntPair
 com.android.internal.util.LineBreakBufferedWriter
 com.android.internal.util.LocalLog
-com.android.internal.util.MessageUtils
 com.android.internal.util.MessageUtils
 com.android.internal.util.ObjectUtils
 com.android.internal.util.Parcelling
@@ -626,7 +615,6 @@ com.android.internal.util.RateLimitingCache
 com.android.internal.util.RingBuffer
 com.android.internal.util.SizedInputStream
 com.android.internal.util.StringPool
-com.android.internal.util.TokenBucket
 com.android.internal.util.TokenBucket
 com.android.internal.util.XmlPullParserWrapper
 com.android.internal.util.XmlSerializerWrapper

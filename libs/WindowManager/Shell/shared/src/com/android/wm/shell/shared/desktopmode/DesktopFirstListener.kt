@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 The Android Open Source Project
+ * Copyright (C) 2025 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package com.android.wm.shell.functional
+package com.android.wm.shell.shared.desktopmode
 
-import android.platform.test.annotations.Postsubmit
-import android.platform.test.rule.ScreenRecordRule
-import com.android.wm.shell.scenarios.SnapResizeAppWindowWithButton
-import org.junit.runner.RunWith
-import org.junit.runners.BlockJUnit4ClassRunner
-
-/* Functional test for [SnapResizeAppWindowWithButton]. */
-@RunWith(BlockJUnit4ClassRunner::class)
-@Postsubmit
-@ScreenRecordRule.ScreenRecord
-class SnapResizeAppWindowWithButtonTest : SnapResizeAppWindowWithButton()
+/**
+ * A listener that will receive callbacks about desktop-first state.
+ */
+fun interface DesktopFirstListener {
+    /**
+     * Called when the desktop-first state changes.
+     */
+    fun onStateChanged(displayId: Int, isDesktopFirstEnabled: Boolean)
+}

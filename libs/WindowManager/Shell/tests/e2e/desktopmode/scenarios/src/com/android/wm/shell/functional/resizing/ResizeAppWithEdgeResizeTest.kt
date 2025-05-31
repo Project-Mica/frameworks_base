@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package com.android.wm.shell.functional
+package com.android.wm.shell.functional.resizing
 
 import android.platform.test.annotations.Postsubmit
 import android.platform.test.rule.ScreenRecordRule
-import com.android.wm.shell.scenarios.ResizeAppWithCornerResize
+import com.android.server.wm.flicker.helpers.MotionEventHelper
+import com.android.wm.shell.scenarios.ResizeAppWithEdgeResize
 import org.junit.runner.RunWith
 import org.junit.runners.BlockJUnit4ClassRunner
 
-/* Functional test for [ResizeAppWithCornerResize]. */
+/* Functional test for [ResizeAppWithEdgeResize]. */
 @RunWith(BlockJUnit4ClassRunner::class)
 @Postsubmit
 @ScreenRecordRule.ScreenRecord
-class ResizeAppWithCornerResizeTest : ResizeAppWithCornerResize()
+class ResizeAppWithEdgeResizeTest :
+  ResizeAppWithEdgeResize(MotionEventHelper.InputMethod.TOUCHPAD)

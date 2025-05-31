@@ -67,16 +67,6 @@ flag {
 }
 
 flag {
-   name: "notification_row_is_removed_fix"
-   namespace: "systemui"
-   description: "Fix incorrect isRemoved value in ExpandableNotificationRow"
-   bug: "417457086"
-   metadata {
-        purpose: PURPOSE_BUGFIX
-   }
-}
-
-flag {
    name: "notification_ambient_suppression_after_inflation"
    namespace: "systemui"
    description: "Move the DND visual effects filter to the finalize stage of the pipeline when it is doze-dependent, but keep it in the pre-group stage when it is doze-independent."
@@ -2040,3 +2030,14 @@ flag {
      purpose: PURPOSE_BUGFIX
    }
 }
+
+flag {
+    name: "remember_view_model_off_main_thread"
+    namespace: "systemui"
+    description: "View-models are remembered off the main thread"
+    bug: "421000550"
+    metadata {
+        purpose: PURPOSE_BUGFIX
+    }
+}
+
