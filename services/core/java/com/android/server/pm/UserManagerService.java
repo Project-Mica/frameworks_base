@@ -1588,16 +1588,15 @@ public class UserManagerService extends IUserManager.Stub {
     @Override
     public @NonNull List<UserInfo> getUsers(boolean excludeDying) {
         checkCreateUsersPermission("query users");
-        return getUsersInternal(/* excludePartial= */ true, excludeDying, /* excludePreCreated= */
-                true, /* resolveNullNames= */ true);
+        return getUsersInternal(/* excludePartial= */ true, excludeDying,
+                /* resolveNullNames= */ true);
     }
 
     // Used by cmd users
     @NonNull List<UserInfo> getUsersWithUnresolvedNames(boolean excludePartial,
-            boolean excludeDying, boolean excludePreCreated) {
+            boolean excludeDying) {
         checkCreateUsersPermission("get users with unresolved names");
-        return getUsersInternal(excludePartial, excludeDying, excludePreCreated,
-                /* resolveNullNames= */ false);
+        return getUsersInternal(excludePartial, excludeDying, /* resolveNullNames= */ false);
     }
 
     /**
@@ -1606,7 +1605,7 @@ public class UserManagerService extends IUserManager.Stub {
     @Deprecated
     @VisibleForTesting
     List<UserInfo> getUsersInternal(boolean excludePartial, boolean excludeDying,
-            boolean excludePreCreated, boolean resolveNullNames) {
+            boolean resolveNullNames) {
         synchronized (mUsersLock) {
             ArrayList<UserInfo> users = new ArrayList<>(mUsers.size());
             final int userSize = mUsers.size();
@@ -1614,7 +1613,8 @@ public class UserManagerService extends IUserManager.Stub {
                 UserInfo ui = mUsers.valueAt(i).info;
                 if ((excludePartial && ui.partial)
                         || (excludeDying && mRemovingUserIds.get(ui.id))
-                        || (excludePreCreated && ui.preCreated)) {
+                        // NOTE: preCreated users are not supported anymore
+                        || ui.preCreated) {
                     continue;
                 }
                 var user = resolveNullNames ? userWithName(ui) : ui;
@@ -5309,8 +5309,7 @@ public class UserManagerService extends IUserManager.Stub {
     /** Returns the oldest Full Admin user, or null is if there none. */
     private @Nullable UserInfo getEarliestCreatedFullUser() {
         List<UserInfo> users = getUsersInternal(/* excludePartial= */ true,
-                /* excludeDying= */ true, /* excludePreCreated= */ true,
-                /* resolveNullNames= */ false);
+                /* excludeDying= */ true, /* resolveNullNames= */ false);
         UserInfo earliestUser = null;
         long earliestCreationTime = Long.MAX_VALUE;
         for (int i = 0; i < users.size(); i++) {
@@ -6622,8 +6621,7 @@ public class UserManagerService extends IUserManager.Stub {
     private int onPullAtom(int atomTag, List<StatsEvent> data) {
         if (atomTag == FrameworkStatsLog.USER_INFO) {
             final List<UserInfo> users = getUsersInternal(/* excludePartial= */ true,
-                    /* excludeDying= */ true, /* excludePreCreated= */ true,
-                    /* resolveNullNames= */ false);
+                    /* excludeDying= */ true, /* resolveNullNames= */ false);
             final int size = users.size();
             if (size > 1) {
                 for (int idx = 0; idx < size; idx++) {
@@ -6824,11 +6822,12 @@ public class UserManagerService extends IUserManager.Stub {
         if (!isProfile) {
             Pair<Integer, Integer> currentAndTargetUserIds = getCurrentAndTargetUserIds();
             if (userId == currentAndTargetUserIds.first) {
-                Slog.w(LOG_TAG, "Current user cannot be removed.");
+                Slogf.w(LOG_TAG, "Current user (%d) cannot be removed.", userId);
                 return false;
             }
             if (userId == currentAndTargetUserIds.second) {
-                Slog.w(LOG_TAG, "Target user of an ongoing user switch cannot be removed.");
+                Slogf.w(LOG_TAG, "Target user (%d) of an ongoing user switch (from user %d) cannot "
+                        + "be removed.", userId, currentAndTargetUserIds.first);
                 return false;
             }
             for (int i = profileIds.size() - 1; i >= 0; i--) {
@@ -6837,16 +6836,16 @@ public class UserManagerService extends IUserManager.Stub {
                     //Remove the associated profiles first and then remove the user
                     continue;
                 }
-                Slog.i(LOG_TAG, "removing profile:" + profileId
-                        + " associated with user:" + userId);
+                Slogf.i(LOG_TAG, "removing profile: %d associated with user: %d",
+                        profileId, userId);
                 if (!removeUserUnchecked(profileId)) {
                     // If the profile was not immediately removed, make sure it is marked as
                     // ephemeral. Don't mark as disabled since, per UserInfo.FLAG_DISABLED
                     // documentation, an ephemeral user should only be marked as disabled
                     // when its removal is in progress.
-                    Slog.i(LOG_TAG, "Unable to immediately remove profile " + profileId
-                            + "associated with user " + userId + ". User is set as ephemeral "
-                            + "and will be removed on user switch or reboot.");
+                    Slogf.i(LOG_TAG, "Unable to immediately remove profile %d associated with user "
+                            + "%d. User is set as ephemeral and will be removed on user switch or "
+                            + "reboot.", profileId, userId);
                     synchronized (mPackagesLock) {
                         UserData profileData = getUserDataNoChecks(userId);
                         profileData.info.flags |= UserInfo.FLAG_EPHEMERAL;
@@ -8336,14 +8335,8 @@ public class UserManagerService extends IUserManager.Stub {
 
         @Override
         public @NonNull List<UserInfo> getUsers(boolean excludeDying) {
-            return getUsers(/*excludePartial= */ true, excludeDying, /* excludePreCreated= */ true);
-        }
-
-        @Override
-        public @NonNull List<UserInfo> getUsers(boolean excludePartial, boolean excludeDying,
-                boolean excludePreCreated) {
-            return UserManagerService.this.getUsersInternal(excludePartial, excludeDying,
-                    excludePreCreated, /* resolveNullNames= */ true);
+            return UserManagerService.this.getUsersInternal(/*excludePartial= */ true, excludeDying,
+                    /* resolveNullNames= */ true);
         }
 
         @Override

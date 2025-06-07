@@ -456,11 +456,17 @@ class DesktopTasksController(
      * the home activity.
      */
     private fun getFocusedNonDesktopTasks(displayId: Int): List<RunningTaskInfo> =
-        shellTaskOrganizer.getRunningTasks(displayId).filter {
-            it.isFocused &&
-                (it.windowingMode == WINDOWING_MODE_FULLSCREEN ||
-                    it.windowingMode == WINDOWING_MODE_MULTI_WINDOW) &&
-                it.activityType != ACTIVITY_TYPE_HOME
+        shellTaskOrganizer.getRunningTasks(displayId).filter { taskInfo ->
+            val focused = taskInfo.isFocused
+            val isNotDesktop =
+                if (DesktopExperienceFlags.EXCLUDE_DESK_ROOTS_FROM_DESKTOP_TASKS.isTrue) {
+                    !taskRepository.isActiveTask(taskInfo.taskId)
+                } else {
+                    taskInfo.windowingMode == WINDOWING_MODE_FULLSCREEN ||
+                        taskInfo.windowingMode == WINDOWING_MODE_MULTI_WINDOW
+                }
+            val isHome = taskInfo.activityType == ACTIVITY_TYPE_HOME
+            return@filter focused && isNotDesktop && !isHome
         }
 
     /** Returns child task from two focused tasks in split screen mode. */
@@ -1394,7 +1400,7 @@ class DesktopTasksController(
 
     /** Enter fullscreen by moving the focused freeform task in given `displayId` to fullscreen. */
     fun enterFullscreen(displayId: Int, transitionSource: DesktopModeTransitionSource) {
-        getFocusedFreeformTask(displayId)?.let {
+        getFocusedDesktopTask(displayId)?.let {
             snapEventHandler.removeTaskIfTiled(displayId, it.taskId)
             moveToFullscreenWithAnimation(it, it.positionInParent, transitionSource)
         }
@@ -2797,7 +2803,7 @@ class DesktopTasksController(
             TransitionUtil.isOpeningType(request.type) &&
             taskRepository.isActiveTask(triggerTask.taskId))
 
-    /** Returns whether a visible fullscreen task is being relaunched on the same display or not. */
+    /** Returns whether a fullscreen task is being relaunched on the same display or not. */
     private fun isFullscreenRelaunch(
         triggerTask: RunningTaskInfo,
         @WindowManager.TransitionType requestType: Int,
@@ -2809,7 +2815,6 @@ class DesktopTasksController(
         return triggerTask.isFullscreen &&
             TransitionUtil.isOpeningType(requestType) &&
             existingTask.isFullscreen &&
-            existingTask.isVisible &&
             existingTask.displayId == triggerTask.displayId
     }
 
@@ -3246,21 +3251,27 @@ class DesktopTasksController(
         task: RunningTaskInfo,
         @WindowManager.TransitionType requestType: Int,
     ): Boolean {
+        val isDesktopFirst = rootTaskDisplayAreaOrganizer.isDisplayDesktopFirst(task.displayId)
         if (
             DesktopExperienceFlags.ENABLE_DESKTOP_FIRST_FULLSCREEN_REFOCUS_BUGFIX.isTrue &&
+                isDesktopFirst &&
                 isFullscreenRelaunch(task, requestType)
         ) {
-            logV("shouldFullscreenTaskLaunchSwitchToDesktop: no switch as fullscreen relaunch")
+            logV(
+                "shouldFullscreenTaskLaunchSwitchToDesktop: no switch as fullscreen relaunch on" +
+                    " desktop-first display#%s",
+                task.displayId,
+            )
             return false
         }
+
         val isAnyDeskActive = isAnyDeskActive(task.displayId)
-        val forceEnterDesktop = forceEnterDesktop(task.displayId)
         logV(
-            "shouldFullscreenTaskLaunchSwitchToDesktop, isAnyDeskActive=%s, forceEnterDesktop=%s",
+            "shouldFullscreenTaskLaunchSwitchToDesktop, isAnyDeskActive=%s, isDesktopFirst=%s",
             isAnyDeskActive,
-            forceEnterDesktop,
+            isDesktopFirst,
         )
-        return isAnyDeskActive || forceEnterDesktop
+        return isAnyDeskActive || isDesktopFirst
     }
 
     /**
@@ -4159,13 +4170,23 @@ class DesktopTasksController(
 
     /** Enter split by using the focused desktop task in given `displayId`. */
     fun enterSplit(displayId: Int, leftOrTop: Boolean) {
-        getFocusedFreeformTask(displayId)?.let { requestSplit(it, leftOrTop) }
+        getFocusedDesktopTask(displayId)?.let { requestSplit(it, leftOrTop) }
     }
 
-    private fun getFocusedFreeformTask(displayId: Int): RunningTaskInfo? =
-        shellTaskOrganizer.getRunningTasks(displayId).find { taskInfo ->
-            taskInfo.isFocused && taskInfo.windowingMode == WINDOWING_MODE_FREEFORM
+    private fun getFocusedDesktopTask(displayId: Int): RunningTaskInfo? {
+        if (
+            !DesktopExperienceFlags.ENABLE_MULTIPLE_DESKTOPS_BACKEND.isTrue ||
+                !DesktopExperienceFlags.EXCLUDE_DESK_ROOTS_FROM_DESKTOP_TASKS.isTrue
+        ) {
+            return shellTaskOrganizer.getRunningTasks(displayId).find { taskInfo ->
+                taskInfo.isFocused && taskInfo.windowingMode == WINDOWING_MODE_FREEFORM
+            }
         }
+        val deskId = taskRepository.getActiveDeskId(displayId) ?: return null
+        return shellTaskOrganizer.getRunningTasks(displayId).find { taskInfo ->
+            taskInfo.isFocused && taskRepository.isActiveTaskInDesk(taskInfo.taskId, deskId)
+        }
+    }
 
     /**
      * Requests a task be transitioned from desktop to split select. Applies needed windowing

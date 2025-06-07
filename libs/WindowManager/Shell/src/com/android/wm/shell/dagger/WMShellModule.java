@@ -705,14 +705,16 @@ public abstract class WMShellModule {
             Transitions transitions,
             Optional<RecentTasksController> recentTasksController,
             HomeTransitionObserver homeTransitionObserver,
-            DisplayController displayController) {
+            DisplayController displayController,
+            DesksOrganizer desksOrganizer) {
         return new RecentsTransitionHandler(
                 shellInit,
                 shellTaskOrganizer,
                 transitions,
                 recentTasksController.orElse(null),
                 homeTransitionObserver,
-                displayController);
+                displayController,
+                desksOrganizer);
     }
 
     //
@@ -982,11 +984,12 @@ public abstract class WMShellModule {
     @Provides
     static Optional<TaskChangeListener> provideDesktopTaskChangeListener(
             @DynamicOverride DesktopUserRepositories desktopUserRepositories,
-            DesktopState desktopState) {
+            DesktopState desktopState,
+            ShellController shellController) {
         if (ENABLE_WINDOWING_TRANSITION_HANDLERS_OBSERVERS.isTrue()
                 && desktopState.canEnterDesktopMode()) {
             return Optional.of(new DesktopTaskChangeListener(
-                    desktopUserRepositories, desktopState));
+                    desktopUserRepositories, desktopState, shellController));
         }
         return Optional.empty();
     }
@@ -1111,6 +1114,7 @@ public abstract class WMShellModule {
             Context context,
             Optional<DesktopModeWindowDecorViewModel> desktopModeWindowDecorViewModel,
             Optional<DesktopTasksController> desktopTasksController,
+            @DynamicOverride DesktopUserRepositories desktopUserRepositories,
             InputManager inputManager,
             ShellTaskOrganizer shellTaskOrganizer,
             FocusTransitionObserver focusTransitionObserver,
@@ -1122,6 +1126,7 @@ public abstract class WMShellModule {
                 || DesktopModeFlags.ENABLE_TASK_RESIZING_KEYBOARD_SHORTCUTS.isTrue())) {
             return Optional.of(new DesktopModeKeyGestureHandler(context,
                     desktopModeWindowDecorViewModel, desktopTasksController,
+                    desktopUserRepositories,
                     inputManager, shellTaskOrganizer, focusTransitionObserver,
                     mainExecutor, displayController));
         }
