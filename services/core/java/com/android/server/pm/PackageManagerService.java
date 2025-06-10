@@ -995,7 +995,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
     final @NonNull Set<String> mInitialNonStoppedSystemPackages;
     final boolean mShouldStopSystemPackagesByDefault;
     private final @NonNull String mRequiredSdkSandboxPackage;
-    private final @Nullable String mVerificationServiceProviderPackage;
+
     @GuardedBy("mLock")
     private final PackageUsage mPackageUsage = new PackageUsage();
     final CompilerStats mCompilerStats = new CompilerStats();
@@ -1735,8 +1735,8 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
                         pm.mPackageParserCallback) /* preparingPackageParserProducer */,
                 // Prepare a supplier of package parser for the staging manager to parse apex file
                 // during the staging installation.
-                (i, pm, verifierPackage) -> new PackageInstallerService(
-                        i.getContext(), pm, i::getScanningPackageParser, verifierPackage),
+                (i, pm) -> new PackageInstallerService(
+                        i.getContext(), pm, i::getScanningPackageParser),
                 (i, pm, cn) -> new InstantAppResolverConnection(
                         i.getContext(), cn, Intent.ACTION_RESOLVE_INSTANT_APP_PACKAGE),
                 (i, pm) -> new ModuleInfoProvider(i.getContext()),
@@ -1947,7 +1947,6 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
         mRequiredSdkSandboxPackage = testParams.requiredSdkSandboxPackage;
         mInitialNonStoppedSystemPackages = testParams.initialNonStoppedSystemPackages;
         mShouldStopSystemPackagesByDefault = testParams.shouldStopSystemPackagesByDefault;
-        mVerificationServiceProviderPackage = testParams.verificationServiceProviderPackage;
 
         mLiveComputer = createLiveComputer();
         mSnapshotStatistics = null;
@@ -2486,11 +2485,6 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
 
             // Resolve the sdk sandbox package
             mRequiredSdkSandboxPackage = getRequiredSdkSandboxPackageName(computer);
-            // Check that the verification service provider package specified in the config can
-            // indeed be a verifier.
-            mVerificationServiceProviderPackage =
-                    getVerificationServiceProviderPackage(computer, mContext.getString(
-                            R.string.config_verificationServiceProviderPackageName));
 
             // Initialize InstantAppRegistry's Instant App list for all users.
             forEachPackageState(computer, packageState -> {
@@ -2507,8 +2501,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
                 }
             });
 
-            mInstallerService = mInjector.getPackageInstallerService(
-                    mVerificationServiceProviderPackage);
+            mInstallerService = mInjector.getPackageInstallerService();
             final ComponentName instantAppResolverComponent = getInstantAppResolver(computer);
             if (instantAppResolverComponent != null) {
                 if (DEBUG_INSTANT) {
@@ -3745,43 +3738,6 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
                     + matches.size() + ": matches=" + matches);
         }
     }
-
-    @Nullable
-    private static String getVerificationServiceProviderPackage(@NonNull Computer computer,
-            @Nullable String packageName) {
-        if (TextUtils.isEmpty(packageName)) {
-            return null;
-        }
-        final Intent intent = new Intent(PackageManager.ACTION_VERIFY_PACKAGE);
-        intent.setPackage(packageName);
-
-        final List<ResolveInfo> matches = computer.queryIntentServicesInternal(
-                intent,
-                /* resolvedType= */ null,
-                MATCH_SYSTEM_ONLY | MATCH_DIRECT_BOOT_AWARE | MATCH_DIRECT_BOOT_UNAWARE,
-                UserHandle.USER_SYSTEM,
-                /* callingUid= */ Process.myUid(),
-                Process.INVALID_PID,
-                /* includeInstantApps= */ false,
-                /* resolveForStart */ false);
-        if (matches.isEmpty()) {
-            // The package name specified in sysconfig doesn't qualify as a verifier
-            return null;
-        }
-        // There should only be one match since the intent specified the package name
-        ResolveInfo ri = matches.getFirst();
-        if (ri.getComponentInfo() == null || ri.getComponentInfo().applicationInfo == null) {
-            return null;
-        }
-        ApplicationInfo applicationInfo = ri.getComponentInfo().applicationInfo;
-        if (computer.checkUidPermission(
-                android.Manifest.permission.VERIFICATION_AGENT, applicationInfo.uid)
-                != PackageManager.PERMISSION_GRANTED) {
-            return null;
-        }
-        return applicationInfo.packageName;
-    }
-
 
     @Nullable
     private String getRetailDemoPackageName() {
@@ -6809,8 +6765,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
                     COMPANION_PACKAGE_NAME,
                     mRetailDemoPackage,
                     mOverlayConfigSignaturePackage,
-                    mRecentsPackage,
-                    mVerificationServiceProviderPackage);
+                    mRecentsPackage);
             final ArrayMap<String, FeatureInfo> availableFeatures;
             availableFeatures = new ArrayMap<>(mAvailableFeatures);
             final ArraySet<String> protectedBroadcasts;
@@ -8017,8 +7972,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
                 COMPANION_PACKAGE_NAME,
                 mRetailDemoPackage,
                 mOverlayConfigSignaturePackage,
-                mRecentsPackage,
-                mVerificationServiceProviderPackage)
+                mRecentsPackage)
                 .getKnownPackageNames(snapshot, knownPackage, userId);
     }
 
@@ -8338,10 +8292,6 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
 
     void installPackagesTraced(List<InstallRequest> requests, MoveInfo moveInfo) {
         mInstallPackageHelper.installPackagesTraced(requests, moveInfo);
-    }
-
-    void onInstallerPackageDeleted(int installerAppId, int userId) {
-        mInstallerService.onInstallerPackageDeleted(installerAppId, userId);
     }
 
     void restoreAndPostInstall(InstallRequest request) {

@@ -73,10 +73,9 @@ public final class KnownPackages {
     public static final int PACKAGE_RECENTS = 17;
     public static final int PACKAGE_AMBIENT_CONTEXT_DETECTION = 18;
     public static final int PACKAGE_WEARABLE_SENSING = 19;
-    public static final int PACKAGE_VERIFICATION_SERVICE_PROVIDER = 20;
     // Integer value of the last known package ID. Increases as new ID is added to KnownPackage.
     // Please note the numbers should be continuous.
-    public static final int LAST_KNOWN_PACKAGE = PACKAGE_VERIFICATION_SERVICE_PROVIDER;
+    public static final int LAST_KNOWN_PACKAGE = PACKAGE_WEARABLE_SENSING;
 
     static final String SYSTEM_PACKAGE_NAME = "android";
 
@@ -97,7 +96,6 @@ public final class KnownPackages {
     private final String mRetailDemoPackage;
     private final String mOverlayConfigSignaturePackage;
     private final String mRecentsPackage;
-    private final String mVerificationServiceProviderPackage;
 
     KnownPackages(DefaultAppProvider defaultAppProvider, String requiredInstallerPackage,
             String requiredUninstallerPackage, String setupWizardPackage,
@@ -106,8 +104,7 @@ public final class KnownPackages {
             String configuratorPackage, String incidentReportApproverPackage,
             String ambientContextDetectionPackage, String wearableSensingPackage,
             String appPredictionServicePackage, String companionPackageName,
-            String retailDemoPackage, String overlayConfigSignaturePackage, String recentsPackage,
-            String verificationServiceProviderPackage) {
+            String retailDemoPackage, String overlayConfigSignaturePackage, String recentsPackage) {
         mDefaultAppProvider = defaultAppProvider;
         mRequiredInstallerPackage = requiredInstallerPackage;
         mRequiredUninstallerPackage = requiredUninstallerPackage;
@@ -125,7 +122,6 @@ public final class KnownPackages {
         mRetailDemoPackage = retailDemoPackage;
         mOverlayConfigSignaturePackage = overlayConfigSignaturePackage;
         mRecentsPackage = recentsPackage;
-        mVerificationServiceProviderPackage = verificationServiceProviderPackage;
     }
 
     /**
@@ -177,8 +173,6 @@ public final class KnownPackages {
                 return "Ambient Context Detection";
             case PACKAGE_WEARABLE_SENSING:
                 return "Wearable sensing";
-            case PACKAGE_VERIFICATION_SERVICE_PROVIDER:
-                return "Verification service provider";
         }
         return "Unknown";
     }
@@ -222,8 +216,6 @@ public final class KnownPackages {
                 return snapshot.filterOnlySystemPackages(mOverlayConfigSignaturePackage);
             case PACKAGE_RECENTS:
                 return snapshot.filterOnlySystemPackages(mRecentsPackage);
-            case PACKAGE_VERIFICATION_SERVICE_PROVIDER:
-                return snapshot.filterOnlySystemPackages(mVerificationServiceProviderPackage);
             default:
                 return ArrayUtils.emptyArray(String.class);
         }

@@ -81,23 +81,6 @@ public class PackageManagerServiceInjector {
         }
     }
 
-    static class SingletonWithArgument<T, R> {
-        private final ProducerWithArgument<T, R> mProducer;
-        private volatile T mInstance = null;
-
-        SingletonWithArgument(ProducerWithArgument<T, R> producer) {
-            this.mProducer = producer;
-        }
-
-        T get(PackageManagerServiceInjector injector,
-                PackageManagerService packageManagerService, R argument) {
-            if (mInstance == null) {
-                mInstance = mProducer.produce(injector, packageManagerService, argument);
-            }
-            return mInstance;
-        }
-    }
-
     private PackageManagerService mPackageManager;
 
     private final PackageAbiHelper mAbiHelper;
@@ -141,7 +124,7 @@ public class PackageManagerServiceInjector {
             mScanningPackageParserProducer;
     private final Producer<PackageParser2>
             mPreparingPackageParserProducer;
-    private final SingletonWithArgument<PackageInstallerService, String>
+    private final Singleton<PackageInstallerService>
             mPackageInstallerServiceProducer;
 
     private final ProducerWithArgument<InstantAppResolverConnection, ComponentName>
@@ -185,7 +168,7 @@ public class PackageManagerServiceInjector {
             Producer<PackageParser2> scanningCachingPackageParserProducer,
             Producer<PackageParser2> scanningPackageParserProducer,
             Producer<PackageParser2> preparingPackageParserProducer,
-            ProducerWithArgument<PackageInstallerService, String> packageInstallerServiceProducer,
+            Producer<PackageInstallerService> packageInstallerServiceProducer,
             ProducerWithArgument<InstantAppResolverConnection,
                     ComponentName>
                     instantAppResolverConnectionProducer,
@@ -237,7 +220,7 @@ public class PackageManagerServiceInjector {
         mScanningCachingPackageParserProducer = scanningCachingPackageParserProducer;
         mScanningPackageParserProducer = scanningPackageParserProducer;
         mPreparingPackageParserProducer = preparingPackageParserProducer;
-        mPackageInstallerServiceProducer = new SingletonWithArgument<>(
+        mPackageInstallerServiceProducer = new Singleton<>(
                 packageInstallerServiceProducer);
         mInstantAppResolverConnectionProducer = instantAppResolverConnectionProducer;
         mModuleInfoProviderProducer = new Singleton<>(
@@ -399,12 +382,8 @@ public class PackageManagerServiceInjector {
         return mPreparingPackageParserProducer.produce(this, mPackageManager);
     }
 
-    /**
-     * Create a PackageInstallerService instance for the given verifier package name.
-     */
-    public PackageInstallerService getPackageInstallerService(String verifierPackageName) {
-        return mPackageInstallerServiceProducer.get(this, mPackageManager,
-                verifierPackageName);
+    public PackageInstallerService getPackageInstallerService() {
+        return mPackageInstallerServiceProducer.get(this, mPackageManager);
     }
 
     public InstantAppResolverConnection getInstantAppResolverConnection(
