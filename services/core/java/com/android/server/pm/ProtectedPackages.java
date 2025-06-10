@@ -66,10 +66,6 @@ public class ProtectedPackages {
 
     @Nullable
     @GuardedBy("this")
-    private String mVerificationServiceProviderPackage;
-
-    @Nullable
-    @GuardedBy("this")
     private final SparseArray<Set<String>> mOwnerProtectedPackages = new SparseArray<>();
 
     public ProtectedPackages(Context context) {
@@ -99,12 +95,6 @@ public class ProtectedPackages {
         } else {
             mOwnerProtectedPackages.put(userId, new ArraySet<>(packageNames));
         }
-    }
-
-    /** Sets verification service provider package which should be protected. */
-    public synchronized void setVerificationServiceProviderPackage(
-            @Nullable String verificationServiceProviderPackage) {
-        mVerificationServiceProviderPackage = verificationServiceProviderPackage;
     }
 
     private synchronized boolean hasDeviceOwnerOrProfileOwner(int userId, String packageName) {
@@ -142,20 +132,11 @@ public class ProtectedPackages {
      * can modify its data or package state.
      */
     private synchronized boolean isProtectedPackage(@UserIdInt int userId, String packageName) {
-        if (packageName == null) {
-            return false;
-        }
-        if (packageName.equals(mDeviceProvisioningPackage)
-                || isOwnerProtectedPackage(userId, packageName)) {
-            return true;
-        }
-        if (Flags.protectSupervisionPackages() && isSupervisionPackage(userId, packageName)) {
-            return true;
-        }
-        if (packageName.equals(mVerificationServiceProviderPackage)) {
-            return true;
-        }
-        return false;
+        return packageName != null
+                && (packageName.equals(mDeviceProvisioningPackage)
+                        || isOwnerProtectedPackage(userId, packageName)
+                        || (Flags.protectSupervisionPackages()
+                                && isSupervisionPackage(userId, packageName)));
     }
 
     /**
