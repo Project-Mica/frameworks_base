@@ -313,8 +313,7 @@ public class VerifierController {
             Uri stagedPackageUri, SigningInfo signingInfo,
             List<SharedLibraryInfo> declaredLibraries,
             @PackageInstaller.VerificationPolicy int verificationPolicy,
-            @Nullable PersistableBundle extensionParams,
-            PackageInstallerSession.VerifierCallback callback,
+            PersistableBundle extensionParams, PackageInstallerSession.VerifierCallback callback,
             boolean retry) {
         // Try connecting to the verifier if not already connected
         if (!bindToVerifierServiceIfNeeded(snapshotSupplier, userId)) {
