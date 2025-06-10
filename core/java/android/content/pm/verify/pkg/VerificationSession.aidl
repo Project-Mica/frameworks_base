@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.content.pm.verify.developer;
+package android.content.pm.verify.pkg;
 
 /** @hide */
-parcelable DeveloperVerificationStatus;
+parcelable VerificationSession;

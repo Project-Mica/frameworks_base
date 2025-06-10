@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.content.pm.verify.developer;
+package android.content.pm.verify.pkg;
 
 import android.annotation.CurrentTimeMillisLong;
 import android.annotation.DurationMillisLong;
@@ -39,32 +39,32 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * This class is used by the system to describe the details about a developer verification request
- * sent to the verification agent, aka the verifier. It includes the interfaces for the verifier to
- * communicate back to the system.
+ * This class is used by the system to describe the details about a verification request sent to the
+ * verification agent, aka the verifier. It includes the interfaces for the verifier to communicate
+ * back to the system.
  * @hide
  */
 @FlaggedApi(Flags.FLAG_VERIFICATION_SERVICE)
 @SystemApi
-public final class DeveloperVerificationSession implements Parcelable {
+public final class VerificationSession implements Parcelable {
     /**
-     * The developer verification cannot be completed because of unknown reasons.
+     * The verification cannot be completed because of unknown reasons.
      */
-    public static final int DEVELOPER_VERIFICATION_INCOMPLETE_UNKNOWN = 0;
+    public static final int VERIFICATION_INCOMPLETE_UNKNOWN = 0;
     /**
-     * The developer verification cannot be completed because the network is unavailable.
+     * The verification cannot be completed because the network is unavailable.
      */
-    public static final int DEVELOPER_VERIFICATION_INCOMPLETE_NETWORK_UNAVAILABLE = 1;
+    public static final int VERIFICATION_INCOMPLETE_NETWORK_UNAVAILABLE = 1;
 
     /**
      * @hide
      */
-    @IntDef(prefix = {"DEVELOPER_VERIFICATION_INCOMPLETE_"}, value = {
-            DEVELOPER_VERIFICATION_INCOMPLETE_UNKNOWN,
-            DEVELOPER_VERIFICATION_INCOMPLETE_NETWORK_UNAVAILABLE,
+    @IntDef(prefix = {"VERIFICATION_INCOMPLETE_"}, value = {
+            VERIFICATION_INCOMPLETE_UNKNOWN,
+            VERIFICATION_INCOMPLETE_NETWORK_UNAVAILABLE,
     })
     @Retention(RetentionPolicy.SOURCE)
-    public @interface DeveloperVerificationIncompleteReason {
+    public @interface VerificationIncompleteReason {
     }
 
     private final int mId;
@@ -80,27 +80,27 @@ public final class DeveloperVerificationSession implements Parcelable {
     @Nullable
     private final PersistableBundle mExtensionParams;
     @NonNull
-    private final IDeveloperVerificationSessionInterface mSession;
+    private final IVerificationSessionInterface mSession;
     /**
-     * The current policy that is active for the developer verification session. It might not be
+     * The current policy that is active for the session. It might not be
      * the same as the original policy that was initially assigned for this verification session,
      * because the active policy can be overridden by {@link #setVerificationPolicy(int)}.
      * <p>To improve the latency, store the original policy value and any changes made to it,
      * so that {@link #getVerificationPolicy()} does not need to make a binder call to retrieve the
      * currently active policy.</p>
      */
-    private volatile @PackageInstaller.DeveloperVerificationPolicy int mVerificationPolicy;
+    private volatile @PackageInstaller.VerificationPolicy int mVerificationPolicy;
 
     /**
-     * Constructor used by the system to describe the details of a developer verification session.
+     * Constructor used by the system to describe the details of a verification session.
      * @hide
      */
-    public DeveloperVerificationSession(int id, int installSessionId, @NonNull String packageName,
+    public VerificationSession(int id, int installSessionId, @NonNull String packageName,
             @NonNull Uri stagedPackageUri, @NonNull SigningInfo signingInfo,
             @NonNull List<SharedLibraryInfo> declaredLibraries,
             @Nullable PersistableBundle extensionParams,
-            @PackageInstaller.DeveloperVerificationPolicy int defaultPolicy,
-            @NonNull IDeveloperVerificationSessionInterface session) {
+            @PackageInstaller.VerificationPolicy int defaultPolicy,
+            @NonNull IVerificationSessionInterface session) {
         mId = id;
         mInstallSessionId = installSessionId;
         mPackageName = packageName;
@@ -113,7 +113,7 @@ public final class DeveloperVerificationSession implements Parcelable {
     }
 
     /**
-     * A unique identifier tied to this specific developer verification session.
+     * A unique identifier tied to this specific verification session.
      */
     public int getId() {
         return mId;
@@ -127,7 +127,7 @@ public final class DeveloperVerificationSession implements Parcelable {
     }
 
     /**
-     * The id of the installation session associated with the developer verification.
+     * The id of the installation session associated with the verification.
      */
     public int getInstallSessionId() {
         return mInstallSessionId;
@@ -158,7 +158,7 @@ public final class DeveloperVerificationSession implements Parcelable {
     }
 
     /**
-     * Returns any extension params associated with the developer verification request.
+     * Returns any extension params associated with the verification request.
      */
     @NonNull
     public PersistableBundle getExtensionParams() {
@@ -169,7 +169,7 @@ public final class DeveloperVerificationSession implements Parcelable {
     }
 
     /**
-     * Get the value of Clock.elapsedRealtime() at which time this developer verification session
+     * Get the value of Clock.elapsedRealtime() at which time this verification
      * will timeout as incomplete if no other verification response is provided.
      * @throws SecurityException if the caller is not the current verifier bound by the system.
      * @throws IllegalStateException if this is called after the session has finished, because
@@ -185,18 +185,18 @@ public final class DeveloperVerificationSession implements Parcelable {
     }
 
     /**
-     * Return the current policy that is active for this developer verification session.
+     * Return the current policy that is active for this session.
      * <p>If the policy for this session has been changed by {@link #setVerificationPolicy},
      * the return value of this method is the current policy that is active for this session.
      * Otherwise, the return value is the same as the initial policy that was assigned to the
      * session when it was first created.</p>
      */
-    public @PackageInstaller.DeveloperVerificationPolicy int getVerificationPolicy() {
+    public @PackageInstaller.VerificationPolicy int getVerificationPolicy() {
         return mVerificationPolicy;
     }
 
     /**
-     * Override the verification policy for this developer verification session.
+     * Override the verification policy for this session.
      * @return True if the override was successful, False otherwise.
      * @throws SecurityException if the caller is not the current verifier bound by the system.
      * @throws IllegalStateException if this is called after the session has finished, because
@@ -204,7 +204,7 @@ public final class DeveloperVerificationSession implements Parcelable {
      * been called, or because the session has timed out, unless the new policy value is the same
      * as the existing one.
      */
-    public boolean setVerificationPolicy(@PackageInstaller.DeveloperVerificationPolicy int policy) {
+    public boolean setVerificationPolicy(@PackageInstaller.VerificationPolicy int policy) {
         if (mVerificationPolicy == policy) {
             // No effective policy change
             return true;
@@ -222,7 +222,7 @@ public final class DeveloperVerificationSession implements Parcelable {
     }
 
     /**
-     * Extend the timeout for this developer verification session by the provided additionalMs to
+     * Extend the timeout for this session by the provided additionalMs to
      * fetch relevant information over the network or wait for the network.
      * <p>
      * This may be called multiple times. If the request would bypass any max
@@ -240,14 +240,14 @@ public final class DeveloperVerificationSession implements Parcelable {
     }
 
     /**
-     * Report to the system that the developer verification verification could not be completed
-     * along with an approximate reason to pass on to the installer.
+     * Report to the system that verification could not be completed along
+     * with an approximate reason to pass on to the installer.
      * @throws SecurityException if the caller is not the current verifier bound by the system.
      * @throws IllegalStateException if this is called after the session has finished, because
      * this API or {@link #reportVerificationComplete} have already been called once, or because the
      * session has timed out.
      */
-    public void reportVerificationIncomplete(@DeveloperVerificationIncompleteReason int reason) {
+    public void reportVerificationIncomplete(@VerificationIncompleteReason int reason) {
         try {
             mSession.reportVerificationIncomplete(mId, reason);
         } catch (RemoteException e) {
@@ -256,7 +256,7 @@ public final class DeveloperVerificationSession implements Parcelable {
     }
 
     /**
-     * Report to the system that the developer verification verification has completed and the
+     * Report to the system that the verification has completed and the
      * install process may act on that status to either block in the case
      * of failure or continue to process the install in the case of success.
      * @throws SecurityException if the caller is not the current verifier bound by the system.
@@ -264,7 +264,7 @@ public final class DeveloperVerificationSession implements Parcelable {
      * this API or {@link #reportVerificationIncomplete} have already been called once, or because
      * the session has timed out.
      */
-    public void reportVerificationComplete(@NonNull DeveloperVerificationStatus status) {
+    public void reportVerificationComplete(@NonNull VerificationStatus status) {
         try {
             mSession.reportVerificationComplete(mId, status,  /* extensionResponse= */ null);
         } catch (RemoteException e) {
@@ -273,7 +273,7 @@ public final class DeveloperVerificationSession implements Parcelable {
     }
 
     /**
-     * Same as {@link #reportVerificationComplete(DeveloperVerificationStatus)}, but also provide
+     * Same as {@link #reportVerificationComplete(VerificationStatus)}, but also provide
      * a result to the extension params provided in the request, which will be passed to the
      * installer in the installation result.
      * @throws SecurityException if the caller is not the current verifier bound by the system.
@@ -281,7 +281,7 @@ public final class DeveloperVerificationSession implements Parcelable {
      * this API or {@link #reportVerificationIncomplete} have already been called once, or because
      * the session has timed out.
      */
-    public void reportVerificationComplete(@NonNull DeveloperVerificationStatus status,
+    public void reportVerificationComplete(@NonNull VerificationStatus status,
             @NonNull PersistableBundle extensionResponse) {
         try {
             mSession.reportVerificationComplete(mId, status, extensionResponse);
@@ -290,7 +290,7 @@ public final class DeveloperVerificationSession implements Parcelable {
         }
     }
 
-    private DeveloperVerificationSession(@NonNull Parcel in) {
+    private VerificationSession(@NonNull Parcel in) {
         mId = in.readInt();
         mInstallSessionId = in.readInt();
         mPackageName = in.readString8();
@@ -299,7 +299,7 @@ public final class DeveloperVerificationSession implements Parcelable {
         mDeclaredLibraries = in.createTypedArrayList(SharedLibraryInfo.CREATOR);
         mExtensionParams = in.readPersistableBundle(getClass().getClassLoader());
         mVerificationPolicy = in.readInt();
-        mSession = IDeveloperVerificationSessionInterface.Stub.asInterface(in.readStrongBinder());
+        mSession = IVerificationSessionInterface.Stub.asInterface(in.readStrongBinder());
     }
 
     @Override
@@ -321,15 +321,15 @@ public final class DeveloperVerificationSession implements Parcelable {
     }
 
     @NonNull
-    public static final Creator<DeveloperVerificationSession> CREATOR = new Creator<>() {
+    public static final Creator<VerificationSession> CREATOR = new Creator<>() {
         @Override
-        public DeveloperVerificationSession createFromParcel(@NonNull Parcel in) {
-            return new DeveloperVerificationSession(in);
+        public VerificationSession createFromParcel(@NonNull Parcel in) {
+            return new VerificationSession(in);
         }
 
         @Override
-        public DeveloperVerificationSession[] newArray(int size) {
-            return new DeveloperVerificationSession[size];
+        public VerificationSession[] newArray(int size) {
+            return new VerificationSession[size];
         }
     };
 }

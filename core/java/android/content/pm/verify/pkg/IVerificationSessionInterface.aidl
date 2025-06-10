@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package android.content.pm.verify.developer;
+package android.content.pm.verify.pkg;
 
-import android.content.pm.verify.developer.DeveloperVerificationStatus;
+import android.content.pm.verify.pkg.VerificationStatus;
 import android.os.PersistableBundle;
 
 /**
- * Non-oneway interface that allows the developer verifier to communicate with the system.
+ * Non-oneway interface that allows the verifier to communicate with the system.
  * @hide
  */
-interface IDeveloperVerificationSessionInterface {
+interface IVerificationSessionInterface {
     long getTimeoutTime(int verificationId);
     long extendTimeRemaining(int verificationId, long additionalMs);
     boolean setVerificationPolicy(int verificationId, int policy);
     void reportVerificationIncomplete(int verificationId, int reason);
-    void reportVerificationComplete(int verificationId, in DeveloperVerificationStatus status, in @nullable PersistableBundle extensionResponse);
+    void reportVerificationComplete(int verificationId, in VerificationStatus status, in @nullable PersistableBundle extensionResponse);
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.server.pm.verify.developer;
+package com.android.server.pm.verify.pkg;
 
 import android.annotation.CurrentTimeMillisLong;
 import android.annotation.DurationMillisLong;
@@ -27,12 +27,12 @@ import com.android.internal.annotations.VisibleForTesting;
 /**
  * This class keeps record of the current timeout status of a verification request.
  */
-public final class DeveloperVerificationRequestStatusTracker {
+public final class VerificationStatusTracker {
     private final @CurrentTimeMillisLong long mStartTime;
     private @CurrentTimeMillisLong long mTimeoutTime;
     private final @CurrentTimeMillisLong long mMaxTimeoutTime;
     @NonNull
-    private final DeveloperVerifierController.Injector mInjector;
+    private final VerifierController.Injector mInjector;
     private final @UserIdInt int mUserId;
 
     /**
@@ -42,9 +42,9 @@ public final class DeveloperVerificationRequestStatusTracker {
      * can be extended via {@link #extendTimeRemaining} to the maximum allowed.
      */
     @VisibleForTesting(visibility = VisibleForTesting.Visibility.PROTECTED)
-    public DeveloperVerificationRequestStatusTracker(@DurationMillisLong long defaultTimeoutMillis,
+    public VerificationStatusTracker(@DurationMillisLong long defaultTimeoutMillis,
             @DurationMillisLong long maxExtendedTimeoutMillis,
-            @NonNull DeveloperVerifierController.Injector injector, @UserIdInt int userId) {
+            @NonNull VerifierController.Injector injector, @UserIdInt int userId) {
         mStartTime = injector.getCurrentTimeMillis();
         mTimeoutTime = mStartTime + defaultTimeoutMillis;
         mMaxTimeoutTime = mStartTime + maxExtendedTimeoutMillis;
@@ -101,7 +101,7 @@ public final class DeveloperVerificationRequestStatusTracker {
 
     @Override
     public boolean equals(@Nullable Object o) {
-        if (o instanceof DeveloperVerificationRequestStatusTracker that) {
+        if (o instanceof VerificationStatusTracker that) {
             return this.mStartTime == that.mStartTime
                     && this.mTimeoutTime == that.mTimeoutTime
                     && this.mMaxTimeoutTime == that.mMaxTimeoutTime

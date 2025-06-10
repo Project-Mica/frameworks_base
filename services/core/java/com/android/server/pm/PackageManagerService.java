@@ -995,7 +995,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
     final @NonNull Set<String> mInitialNonStoppedSystemPackages;
     final boolean mShouldStopSystemPackagesByDefault;
     private final @NonNull String mRequiredSdkSandboxPackage;
-    private final @Nullable String mDeveloperVerificationServiceProviderPackage;
+    private final @Nullable String mVerificationServiceProviderPackage;
     @GuardedBy("mLock")
     private final PackageUsage mPackageUsage = new PackageUsage();
     final CompilerStats mCompilerStats = new CompilerStats();
@@ -1735,8 +1735,8 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
                         pm.mPackageParserCallback) /* preparingPackageParserProducer */,
                 // Prepare a supplier of package parser for the staging manager to parse apex file
                 // during the staging installation.
-                (i, pm, developerVerifierPackage) -> new PackageInstallerService(
-                        i.getContext(), pm, i::getScanningPackageParser, developerVerifierPackage),
+                (i, pm, verifierPackage) -> new PackageInstallerService(
+                        i.getContext(), pm, i::getScanningPackageParser, verifierPackage),
                 (i, pm, cn) -> new InstantAppResolverConnection(
                         i.getContext(), cn, Intent.ACTION_RESOLVE_INSTANT_APP_PACKAGE),
                 (i, pm) -> new ModuleInfoProvider(i.getContext()),
@@ -1947,8 +1947,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
         mRequiredSdkSandboxPackage = testParams.requiredSdkSandboxPackage;
         mInitialNonStoppedSystemPackages = testParams.initialNonStoppedSystemPackages;
         mShouldStopSystemPackagesByDefault = testParams.shouldStopSystemPackagesByDefault;
-        mDeveloperVerificationServiceProviderPackage =
-                testParams.developerVerificationServiceProviderPackage;
+        mVerificationServiceProviderPackage = testParams.verificationServiceProviderPackage;
 
         mLiveComputer = createLiveComputer();
         mSnapshotStatistics = null;
@@ -2487,13 +2486,13 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
 
             // Resolve the sdk sandbox package
             mRequiredSdkSandboxPackage = getRequiredSdkSandboxPackageName(computer);
-            // Check that the developer verification service provider package specified in the
-            // config can indeed be a verifier.
-            mDeveloperVerificationServiceProviderPackage =
+            // Check that the verification service provider package specified in the config can
+            // indeed be a verifier.
+            mVerificationServiceProviderPackage =
                     getVerificationServiceProviderPackage(computer, mContext.getString(
-                            R.string.config_developerVerificationServiceProviderPackageName));
-            mProtectedPackages.setDeveloperVerificationServiceProviderPackage(
-                    mDeveloperVerificationServiceProviderPackage);
+                            R.string.config_verificationServiceProviderPackageName));
+            mProtectedPackages.setVerificationServiceProviderPackage(
+                    mVerificationServiceProviderPackage);
 
             // Initialize InstantAppRegistry's Instant App list for all users.
             forEachPackageState(computer, packageState -> {
@@ -2511,7 +2510,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
             });
 
             mInstallerService = mInjector.getPackageInstallerService(
-                    mDeveloperVerificationServiceProviderPackage);
+                    mVerificationServiceProviderPackage);
             final ComponentName instantAppResolverComponent = getInstantAppResolver(computer);
             if (instantAppResolverComponent != null) {
                 if (DEBUG_INSTANT) {
@@ -3755,7 +3754,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
         if (TextUtils.isEmpty(packageName)) {
             return null;
         }
-        final Intent intent = new Intent(PackageManager.ACTION_VERIFY_DEVELOPER);
+        final Intent intent = new Intent(PackageManager.ACTION_VERIFY_PACKAGE);
         intent.setPackage(packageName);
 
         final List<ResolveInfo> matches = computer.queryIntentServicesInternal(
@@ -3778,7 +3777,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
         }
         ApplicationInfo applicationInfo = ri.getComponentInfo().applicationInfo;
         if (computer.checkUidPermission(
-                android.Manifest.permission.DEVELOPER_VERIFICATION_AGENT, applicationInfo.uid)
+                android.Manifest.permission.VERIFICATION_AGENT, applicationInfo.uid)
                 != PackageManager.PERMISSION_GRANTED) {
             return null;
         }
@@ -6813,7 +6812,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
                     mRetailDemoPackage,
                     mOverlayConfigSignaturePackage,
                     mRecentsPackage,
-                    mDeveloperVerificationServiceProviderPackage);
+                    mVerificationServiceProviderPackage);
             final ArrayMap<String, FeatureInfo> availableFeatures;
             availableFeatures = new ArrayMap<>(mAvailableFeatures);
             final ArraySet<String> protectedBroadcasts;
@@ -8021,7 +8020,7 @@ public class PackageManagerService implements PackageSender, TestUtilityService 
                 mRetailDemoPackage,
                 mOverlayConfigSignaturePackage,
                 mRecentsPackage,
-                mDeveloperVerificationServiceProviderPackage)
+                mVerificationServiceProviderPackage)
                 .getKnownPackageNames(snapshot, knownPackage, userId);
     }
 

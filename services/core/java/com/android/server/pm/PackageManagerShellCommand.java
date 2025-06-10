@@ -400,12 +400,12 @@ class PackageManagerShellCommand extends ShellCommand {
                     return runUnarchive();
                 case "get-domain-verification-agent":
                     return runGetDomainVerificationAgent();
-                case "get-developer-verification-policy":
-                    return runGetDeveloperVerificationPolicy();
-                case "set-developer-verification-policy":
-                    return runSetDeveloperVerificationPolicy();
-                case "get-developer-verification-service-provider":
-                    return runGetDeveloperVerificationServiceProvider();
+                case "get-verification-policy":
+                    return runGetVerificationPolicy();
+                case "set-verification-policy":
+                    return runSetVerificationPolicy();
+                case "get-verification-service-provider":
+                    return runGetVerificationServiceProvider();
                 default: {
                     if (ART_SERVICE_COMMANDS.contains(cmd)) {
                         return runArtServiceCommand();
@@ -4669,7 +4669,7 @@ class PackageManagerShellCommand extends ShellCommand {
         return 0;
     }
 
-    private int runGetDeveloperVerificationPolicy() throws RemoteException {
+    private int runGetVerificationPolicy() throws RemoteException {
         final PrintWriter pw = getOutPrintWriter();
         int userId = UserHandle.USER_ALL;
 
@@ -4692,11 +4692,10 @@ class PackageManagerShellCommand extends ShellCommand {
             }
         }
         final int translatedUserId =
-                translateUserId(userId, UserHandle.USER_SYSTEM,
-                        "runGetDeveloperVerificationPolicy");
+                translateUserId(userId, UserHandle.USER_SYSTEM, "runGetVerificationPolicy");
         try {
             final IPackageInstaller installer = mInterface.getPackageInstaller();
-            final int policy = installer.getDeveloperVerificationPolicy(translatedUserId);
+            final int policy = installer.getVerificationPolicy(translatedUserId);
             pw.println(policy);
         } catch (Exception e) {
             pw.println("Failure [" + e.getMessage() + "]");
@@ -4705,7 +4704,7 @@ class PackageManagerShellCommand extends ShellCommand {
         return 0;
     }
 
-    private int runSetDeveloperVerificationPolicy() throws RemoteException {
+    private int runSetVerificationPolicy() throws RemoteException {
         final PrintWriter pw = getOutPrintWriter();
         int userId = UserHandle.USER_ALL;
 
@@ -4733,12 +4732,11 @@ class PackageManagerShellCommand extends ShellCommand {
             return 1;
         }
         final int translatedUserId =
-                translateUserId(userId, UserHandle.USER_SYSTEM,
-                        "runSetDeveloperVerificationPolicy");
+                translateUserId(userId, UserHandle.USER_SYSTEM, "runSetVerificationPolicy");
         try {
             final IPackageInstaller installer = mInterface.getPackageInstaller();
-            final boolean success = installer.setDeveloperVerificationPolicy(
-                    Integer.parseInt(policyStr), translatedUserId);
+            final boolean success = installer.setVerificationPolicy(Integer.parseInt(policyStr),
+                    translatedUserId);
             if (!success) {
                 pw.println("Failure setting verification policy.");
                 return 1;
@@ -4750,11 +4748,11 @@ class PackageManagerShellCommand extends ShellCommand {
         return 0;
     }
 
-    private int runGetDeveloperVerificationServiceProvider() {
+    private int runGetVerificationServiceProvider() {
         final PrintWriter pw = getOutPrintWriter();
         try {
             final IPackageInstaller installer = mInterface.getPackageInstaller();
-            final String packageName = installer.getDeveloperVerificationServiceProvider();
+            final String packageName = installer.getVerificationServiceProvider();
             if (TextUtils.isEmpty(packageName)) {
                 pw.println("No verification service provider specified.");
             } else {
