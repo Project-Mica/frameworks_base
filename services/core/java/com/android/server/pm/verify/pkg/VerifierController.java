@@ -22,8 +22,6 @@ import static android.provider.DeviceConfig.NAMESPACE_PACKAGE_MANAGER_SERVICE;
 
 import static com.android.server.pm.PackageInstallerService.isValidPackageName;
 
-import android.annotation.CurrentTimeMillisLong;
-import android.annotation.DurationMillisLong;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.content.Context;
@@ -469,7 +467,7 @@ public class VerifierController {
         }
 
         @Override
-        public @CurrentTimeMillisLong long getTimeoutTime(int verificationId) {
+        public long getTimeoutTime(int verificationId) {
             assertCallerIsCurrentVerifier(getCallingUid());
             synchronized (mVerificationStatus) {
                 final VerificationStatusTracker tracker = mVerificationStatus.get(verificationId);
@@ -482,8 +480,7 @@ public class VerifierController {
         }
 
         @Override
-        public @DurationMillisLong long extendTimeRemaining(int verificationId,
-                @DurationMillisLong long additionalMs) {
+        public long extendTimeRemaining(int verificationId, long additionalMs) {
             assertCallerIsCurrentVerifier(getCallingUid());
             synchronized (mVerificationStatus) {
                 final VerificationStatusTracker tracker = mVerificationStatus.get(verificationId);
