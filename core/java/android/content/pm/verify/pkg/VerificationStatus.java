@@ -26,7 +26,6 @@ import android.os.Parcelable;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Objects;
 
 /**
  * This class is used by the verifier to describe the status of the verification request, whether
@@ -68,32 +67,18 @@ public final class  VerificationStatus implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     public @interface VerifierStatusAsl {}
 
-    private final boolean mIsVerified;
-    private final boolean mIsLite;
-    private final @VerifierStatusAsl int mAslStatus;
+    private boolean mIsVerified;
+    private @VerifierStatusAsl int mAslStatus;
     @NonNull
-    private final String mFailuresMessage;
+    private String mFailuresMessage = "";
 
-    private VerificationStatus(boolean isVerified, boolean isLite, @VerifierStatusAsl int aslStatus,
-            @NonNull String failuresMessage) {
-        mIsVerified = isVerified;
-        mIsLite = isLite;
-        mAslStatus = aslStatus;
-        mFailuresMessage = failuresMessage;
-    }
+    private VerificationStatus() {}
 
     /**
      * @return whether the status is set to verified or not.
      */
     public boolean isVerified() {
         return mIsVerified;
-    }
-
-    /**
-     * @return true when the only the lite variation of the verification was conducted.
-     */
-    public boolean isLite() {
-        return mIsLite;
     }
 
     /**
@@ -115,27 +100,14 @@ public final class  VerificationStatus implements Parcelable {
      * Builder to construct a {@link VerificationStatus} object.
      */
     public static final class Builder {
-        private boolean mIsVerified = false;
-        private boolean mIsLite = false;
-        private @VerifierStatusAsl int mAslStatus = VERIFIER_STATUS_ASL_UNDEFINED;
-        private String mFailuresMessage = "";
+        final VerificationStatus mStatus = new VerificationStatus();
 
         /**
          * Set in the status whether the verification has succeeded or failed.
          */
         @NonNull
-        public Builder setVerified(boolean isVerified) {
-            mIsVerified = isVerified;
-            return this;
-        }
-
-        /**
-         * Set in the status whether the lite variation of the verification was conducted
-         * instead of the full verification.
-         */
-        @NonNull
-        public Builder setLite(boolean isLite) {
-            mIsLite = isLite;
+        public Builder setVerified(boolean verified) {
+            mStatus.mIsVerified = verified;
             return this;
         }
 
@@ -144,8 +116,7 @@ public final class  VerificationStatus implements Parcelable {
          */
         @NonNull
         public Builder setFailureMessage(@NonNull String failureMessage) {
-            Objects.requireNonNull(failureMessage, "failureMessage cannot be null");
-            mFailuresMessage = failureMessage;
+            mStatus.mFailuresMessage = failureMessage;
             return this;
         }
 
@@ -154,7 +125,7 @@ public final class  VerificationStatus implements Parcelable {
          */
         @NonNull
         public Builder setAslStatus(@VerifierStatusAsl int aslStatus) {
-            mAslStatus = aslStatus;
+            mStatus.mAslStatus = aslStatus;
             return this;
         }
 
@@ -163,13 +134,12 @@ public final class  VerificationStatus implements Parcelable {
          */
         @NonNull
         public VerificationStatus build() {
-            return new VerificationStatus(mIsVerified, mIsLite, mAslStatus, mFailuresMessage);
+            return mStatus;
         }
     }
 
     private VerificationStatus(Parcel in) {
         mIsVerified = in.readBoolean();
-        mIsLite = in.readBoolean();
         mAslStatus = in.readInt();
         mFailuresMessage = in.readString8();
     }
@@ -177,7 +147,6 @@ public final class  VerificationStatus implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeBoolean(mIsVerified);
-        dest.writeBoolean(mIsLite);
         dest.writeInt(mAslStatus);
         dest.writeString8(mFailuresMessage);
     }

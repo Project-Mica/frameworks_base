@@ -35,7 +35,6 @@ import org.junit.runner.RunWith;
 @SmallTest
 public class VerificationStatusTest {
     private static final boolean TEST_VERIFIED = true;
-    private static final boolean TEST_LITE = true;
     private static final int TEST_ASL_STATUS = VerificationStatus.VERIFIER_STATUS_ASL_GOOD;
     private static final String TEST_FAILURE_MESSAGE = "test test";
     private static final String TEST_KEY = "test key";
@@ -50,7 +49,6 @@ public class VerificationStatusTest {
                 .setAslStatus(TEST_ASL_STATUS)
                 .setFailureMessage(TEST_FAILURE_MESSAGE)
                 .setVerified(TEST_VERIFIED)
-                .setLite(TEST_LITE)
                 .build();
     }
 
@@ -59,7 +57,6 @@ public class VerificationStatusTest {
         assertThat(mStatus.isVerified()).isEqualTo(TEST_VERIFIED);
         assertThat(mStatus.getAslStatus()).isEqualTo(TEST_ASL_STATUS);
         assertThat(mStatus.getFailureMessage()).isEqualTo(TEST_FAILURE_MESSAGE);
-        assertThat(mStatus.isLite()).isEqualTo(TEST_LITE);
     }
 
     @Test
@@ -71,6 +68,5 @@ public class VerificationStatusTest {
         assertThat(statusFromParcel.isVerified()).isEqualTo(TEST_VERIFIED);
         assertThat(statusFromParcel.getAslStatus()).isEqualTo(TEST_ASL_STATUS);
         assertThat(statusFromParcel.getFailureMessage()).isEqualTo(TEST_FAILURE_MESSAGE);
-        assertThat(statusFromParcel.isLite()).isEqualTo(TEST_LITE);
     }
 }

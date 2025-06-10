@@ -16,8 +16,6 @@
 
 package com.android.server.pm.verify.pkg;
 
-import static android.content.pm.verify.pkg.VerificationSession.VERIFICATION_INCOMPLETE_NETWORK_UNAVAILABLE;
-import static android.content.pm.verify.pkg.VerificationSession.VERIFICATION_INCOMPLETE_UNKNOWN;
 import static android.os.Process.INVALID_UID;
 import static android.os.Process.SYSTEM_UID;
 import static android.provider.DeviceConfig.NAMESPACE_PACKAGE_MANAGER_SERVICE;
@@ -595,14 +593,8 @@ public class VerifierController {
         }
 
         @Override
-        public void reportVerificationIncomplete(int id,
-                @VerificationSession.VerificationIncompleteReason int reason) {
+        public void reportVerificationIncomplete(int id, int reason) {
             assertCallerIsCurrentVerifier(getCallingUid());
-            if (reason < VERIFICATION_INCOMPLETE_UNKNOWN
-                    || reason > VERIFICATION_INCOMPLETE_NETWORK_UNAVAILABLE) {
-                throw new IllegalArgumentException("Verification session " + id
-                        + " reported invalid incomplete_reason code " + reason);
-            }
             final VerificationStatusTracker tracker;
             synchronized (mVerificationStatusTrackers) {
                 tracker = mVerificationStatusTrackers.get(id);
