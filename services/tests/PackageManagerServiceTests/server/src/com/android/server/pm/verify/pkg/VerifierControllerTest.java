@@ -177,9 +177,9 @@ public class VerifierControllerTest {
         assertThat(mVerifierController.bindToVerifierServiceIfNeeded(mSnapshotSupplier, 0))
                 .isFalse();
         // Test that nothing crashes if the verifier is available even though there's no bound
-        mVerifierController.notifyPackageNameAvailable(TEST_PACKAGE_NAME, 0);
-        mVerifierController.notifyVerificationCancelled(TEST_PACKAGE_NAME, 0);
-        mVerifierController.notifyVerificationTimeout(-1, 0);
+        mVerifierController.notifyPackageNameAvailable(TEST_PACKAGE_NAME);
+        mVerifierController.notifyVerificationCancelled(TEST_PACKAGE_NAME);
+        mVerifierController.notifyVerificationTimeout(-1);
         // Since there was no bound, no call is made to the verifier
         verifyNoMoreInteractions(mMockService);
     }
@@ -200,9 +200,9 @@ public class VerifierControllerTest {
         callbacks.onBinderDied();
         // Test that nothing crashes if the service connection is lost
         assertThat(mVerifierController.getVerifierPackageName()).isNotNull();
-        mVerifierController.notifyPackageNameAvailable(TEST_PACKAGE_NAME, 0);
-        mVerifierController.notifyVerificationCancelled(TEST_PACKAGE_NAME, 0);
-        mVerifierController.notifyVerificationTimeout(TEST_ID, 0);
+        mVerifierController.notifyPackageNameAvailable(TEST_PACKAGE_NAME);
+        mVerifierController.notifyVerificationCancelled(TEST_PACKAGE_NAME);
+        mVerifierController.notifyVerificationTimeout(TEST_ID);
         verifyNoMoreInteractions(mMockService);
         assertThat(mVerifierController.startVerificationSession(
                 mSnapshotSupplier, 0, TEST_ID, TEST_PACKAGE_NAME, TEST_PACKAGE_URI,
@@ -212,7 +212,7 @@ public class VerifierControllerTest {
                 mSnapshotSupplier, 0, TEST_ID, TEST_PACKAGE_NAME, TEST_PACKAGE_URI,
                 TEST_SIGNING_INFO, mTestDeclaredLibraries, TEST_POLICY, mTestExtensionParams,
                 mSessionCallback, /* retry= */ true)).isTrue();
-        mVerifierController.notifyVerificationTimeout(TEST_ID, 0);
+        mVerifierController.notifyVerificationTimeout(TEST_ID);
         verify(mMockService, times(1)).onVerificationTimeout(eq(TEST_ID));
     }
 
@@ -222,7 +222,7 @@ public class VerifierControllerTest {
                 mSnapshotSupplier, 0, TEST_ID, TEST_PACKAGE_NAME, TEST_PACKAGE_URI,
                 TEST_SIGNING_INFO, mTestDeclaredLibraries, TEST_POLICY, mTestExtensionParams,
                 mSessionCallback, /* retry= */ false)).isTrue();
-        mVerifierController.notifyPackageNameAvailable(TEST_PACKAGE_NAME, 0);
+        mVerifierController.notifyPackageNameAvailable(TEST_PACKAGE_NAME);
         verify(mMockService).onPackageNameAvailable(eq(TEST_PACKAGE_NAME));
     }
 
@@ -232,7 +232,7 @@ public class VerifierControllerTest {
                 mSnapshotSupplier, 0, TEST_ID, TEST_PACKAGE_NAME, TEST_PACKAGE_URI,
                 TEST_SIGNING_INFO, mTestDeclaredLibraries, TEST_POLICY, mTestExtensionParams,
                 mSessionCallback, /* retry= */ false)).isTrue();
-        mVerifierController.notifyVerificationCancelled(TEST_PACKAGE_NAME, 0);
+        mVerifierController.notifyVerificationCancelled(TEST_PACKAGE_NAME);
         verify(mMockService).onVerificationCancelled(eq(TEST_PACKAGE_NAME));
     }
 
@@ -298,7 +298,7 @@ public class VerifierControllerTest {
                 mSnapshotSupplier, 0, TEST_ID, TEST_PACKAGE_NAME, TEST_PACKAGE_URI,
                 TEST_SIGNING_INFO, mTestDeclaredLibraries, TEST_POLICY, mTestExtensionParams,
                 mSessionCallback, /* retry= */ true)).isTrue();
-        mVerifierController.notifyVerificationTimeout(TEST_ID, 0);
+        mVerifierController.notifyVerificationTimeout(TEST_ID);
         verify(mMockService).onVerificationTimeout(eq(TEST_ID));
     }
 
