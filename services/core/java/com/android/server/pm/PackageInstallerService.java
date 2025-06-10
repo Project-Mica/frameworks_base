@@ -1392,13 +1392,6 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
         if (info == null) {
             return false;
         }
-        if (Flags.verificationService() && mVerifierController.getVerifierPackageName() != null) {
-            // Developer verifier can always access session infos
-            if (snapshot.getPackageUid(mVerifierController.getVerifierPackageName(), /* flags= */ 0,
-                    UserHandle.getUserId(uid)) == uid) {
-                return false;
-            }
-        }
         return uid != info.getInstallerUid()
                 && !snapshot.canQueryPackage(uid, info.getAppPackageName());
     }
