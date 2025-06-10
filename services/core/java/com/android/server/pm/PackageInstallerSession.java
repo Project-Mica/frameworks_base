@@ -3028,8 +3028,7 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
             // the installation can proceed.
             final VerifierCallback verifierCallback = new VerifierCallback();
             if (!mVerifierController.startVerificationSession(mPm::snapshotComputer, userId,
-                    sessionId, getPackageName(),
-                    stageDir == null ? Uri.EMPTY : Uri.fromFile(stageDir), signingInfo,
+                    sessionId, getPackageName(), Uri.fromFile(stageDir), signingInfo,
                     declaredLibraries, mCurrentVerificationPolicy.get(),
                     /* extensionParams= */ params.extensionParams,
                     verifierCallback, /* retry= */ false)) {
@@ -3080,8 +3079,7 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
         // the installation can proceed.
         final VerifierCallback verifierCallback = new VerifierCallback();
         if (!mVerifierController.startVerificationSession(snapshotSupplier, userId,
-                sessionId, getPackageName(),
-                stageDir == null ? Uri.EMPTY : Uri.fromFile(stageDir), signingInfo,
+                sessionId, getPackageName(), Uri.fromFile(stageDir), signingInfo,
                 declaredLibraries, mCurrentVerificationPolicy.get(), /* extensionParams= */ null,
                 verifierCallback, retry)) {
             // A verifier is installed but cannot be connected.
