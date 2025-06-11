@@ -5074,8 +5074,8 @@ public class NotificationManagerService extends SystemService {
         public NotificationChannel getConversationNotificationChannel(String callingPkg, int userId,
                 String targetPkg, String channelId, boolean returnParentIfNoConversationChannel,
                 String conversationId) {
-            if (isCallerSystemOrSystemUiOrShell()
-                    || canNotifyAsPackage(callingPkg, targetPkg, userId)) {
+            if (canNotifyAsPackage(callingPkg, targetPkg, userId)
+                    || isCallerSystemOrSystemUiOrShell()) {
                 int targetUid = -1;
                 try {
                     targetUid = mPackageManagerClient.getPackageUidAsUser(targetPkg, userId);
@@ -6456,7 +6456,7 @@ public class NotificationManagerService extends SystemService {
                 String wellbeingPackage = getContext().getResources().getString(
                         com.android.internal.R.string.config_systemWellbeing);
                 boolean isCallerWellbeing = !TextUtils.isEmpty(wellbeingPackage)
-                        && isCallerSameApp(wellbeingPackage, uid, userId);
+                        && mPackageManagerInternal.isSameApp(wellbeingPackage, uid, userId);
                 if (!isCallerWellbeing) {
                     throw new IllegalArgumentException(
                             "Only the 'Wellbeing' package can use AutomaticZenRules with "
@@ -6739,7 +6739,7 @@ public class NotificationManagerService extends SystemService {
                     ? mEffectsSuppressors.get(0)
                     : null;
             if (isCallerSystemOrSystemUiOrShell() || suppressor == null
-                    || isCallerSameApp(suppressor.getPackageName(),
+                    || mPackageManagerInternal.isSameApp(suppressor.getPackageName(),
                     Binder.getCallingUid(), UserHandle.getUserId(Binder.getCallingUid()))) {
                 return suppressor;
             }
@@ -12062,7 +12062,7 @@ public class NotificationManagerService extends SystemService {
         if (uid == Process.ROOT_UID && ROOT_PKG.equals(pkg)) {
             return;
         }
-        if (!UserHandle.isSameApp(uid, mPackageManagerInternal.getPackageUid(pkg, 0L, userId))) {
+        if (!mPackageManagerInternal.isSameApp(pkg, uid, userId)) {
             throw new SecurityException("Package " + pkg + " is not owned by uid " + uid);
         }
     }
