@@ -49,11 +49,11 @@
     <string name="accessibility_action_divider_swap_vertical" msgid="8673406394251984853">"Inverser l\'appli du haut avec celle du bas, en conservant la division actuelle"</string>
     <string name="accessibility_action_divider_swap_horizontal" msgid="588604748596242580">"Inverser l\'appli de gauche avec celle de droite, en conservant la division actuelle"</string>
     <string name="accessibility_action_divider_top_full" msgid="3986693999427747701">"Afficher l\'appli du haut en mode plein écran"</string>
-    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"Haut : 10 %. Bas : 90 %."</string>
-    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"Haut : 30 %. Bas : 70 %."</string>
-    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"Haut : 50 %. Bas : 50 %."</string>
-    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"Haut : 70 %. Bas : 30 %."</string>
-    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"Haut : 90 %. Bas : 10 %."</string>
+    <string name="accessibility_action_divider_top_10" formatted="false" msgid="6898920573675831044">"Haut 10 % | Bas 90 %"</string>
+    <string name="accessibility_action_divider_top_30" formatted="false" msgid="6515643651303176050">"Haut 30 % | Bas 70 %"</string>
+    <string name="accessibility_action_divider_top_50" formatted="false" msgid="1038204315880066213">"Haut 50 % | Bas 50 %"</string>
+    <string name="accessibility_action_divider_top_70" formatted="false" msgid="5125673390883238862">"Haut 70 % | Bas 30 %"</string>
+    <string name="accessibility_action_divider_top_90" formatted="false" msgid="7662868544020662698">"Haut 90 % | Bas 10 %"</string>
     <string name="accessibility_action_divider_bottom_full" msgid="6437134983210745664">"Afficher l\'appli du bas en mode plein écran"</string>
     <string name="accessibility_split_left" msgid="1713683765575562458">"Diviser à gauche"</string>
     <string name="accessibility_split_right" msgid="8441001008181296837">"Diviser à droite"</string>
