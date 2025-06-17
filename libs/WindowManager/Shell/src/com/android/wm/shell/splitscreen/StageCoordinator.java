@@ -42,7 +42,7 @@ import static com.android.wm.shell.Flags.enableEnterSplitRemoveBubble;
 import static com.android.wm.shell.Flags.enableFlexibleSplit;
 import static com.android.wm.shell.Flags.enableFlexibleTwoAppSplit;
 import static com.android.wm.shell.common.split.SplitLayout.PARALLAX_ALIGN_CENTER;
-import static com.android.wm.shell.common.split.SplitLayout.PARALLAX_FLEX_HYBRID;
+import static com.android.wm.shell.common.split.SplitLayout.PARALLAX_FLEX;
 import static com.android.wm.shell.common.split.SplitLayout.RESTING_DIM_LAYER;
 import static com.android.wm.shell.common.split.SplitScreenUtils.reverseSplitPosition;
 import static com.android.wm.shell.common.split.SplitScreenUtils.splitFailureMessage;
@@ -2331,8 +2331,7 @@ public class StageCoordinator implements SplitLayout.SplitLayoutHandler,
         mSplitMultiDisplayHelper.setDisplayRootTaskLeash(taskInfo.displayId, leash);
 
         if (mSplitLayout == null) {
-            int parallaxType =
-                    enableFlexibleTwoAppSplit() ? PARALLAX_FLEX_HYBRID : PARALLAX_ALIGN_CENTER;
+            int parallaxType = enableFlexibleTwoAppSplit() ? PARALLAX_FLEX : PARALLAX_ALIGN_CENTER;
             mSplitLayout = new SplitLayout(TAG + "SplitDivider", mContext,
                     taskInfo.configuration, this, mParentContainerCallbacks,
                     mDisplayController, mDisplayImeController, mTaskOrganizer, parallaxType,
@@ -4356,7 +4355,7 @@ public class StageCoordinator implements SplitLayout.SplitLayoutHandler,
      * They're only added if there is at least one offscreen app.
      */
     private void addAllDimLayersToTransition(@NonNull TransitionInfo info, boolean show) {
-        if (!mSplitState.currentStateHasOffscreenApps()) {
+        if (!mSplitState.currentStateSupportsOffscreenApps()) {
             return;
         }
         int displayId = SplitMultiDisplayHelper.getTransitionDisplayId(info);
