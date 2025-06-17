@@ -210,6 +210,12 @@
     <string name="biometric_dialog_use_pin" msgid="8385294115283000709">"Gunakan PIN"</string>
     <string name="biometric_dialog_use_pattern" msgid="2315593393167211194">"Gunakan pola"</string>
     <string name="biometric_dialog_use_password" msgid="3445033859393474779">"Gunakan sandi"</string>
+    <string name="biometric_dialog_enter_pin" msgid="8625265944863623975">"Masukkan PIN"</string>
+    <string name="biometric_dialog_enter_password" msgid="200503318983048202">"Masukkan sandi"</string>
+    <string name="biometric_dialog_enter_pattern" msgid="3065746760277739487">"Masukkan pola"</string>
+    <string name="biometric_dialog_recovery_pin" msgid="5798389437594195177">"PIN diperlukan untuk memulihkan biometrik setelah terlalu banyak upaya gagal"</string>
+    <string name="biometric_dialog_recovery_pattern" msgid="382786088892502550">"Pola diperlukan untuk memulihkan biometrik setelah terlalu banyak upaya gagal"</string>
+    <string name="biometric_dialog_recovery_password" msgid="8288127966207678230">"Sandi diperlukan untuk memulihkan biometrik setelah terlalu banyak upaya gagal"</string>
     <string name="biometric_dialog_wrong_pin" msgid="1878539073972762803">"PIN salah"</string>
     <string name="biometric_dialog_wrong_pattern" msgid="8954812279840889029">"Pola salah"</string>
     <string name="biometric_dialog_wrong_password" msgid="69477929306843790">"Sandi salah"</string>
@@ -300,12 +306,9 @@
     <string name="accessibility_quick_settings_less_time" msgid="9110364286464977870">"Lebih cepat."</string>
     <string name="accessibility_casting_turned_off" msgid="1387906158563374962">"Transmisi layar berhenti."</string>
     <string name="accessibility_brightness" msgid="5391187016177823721">"Kecerahan tampilan"</string>
-    <!-- no translation found for accessibility_camera_in_use (1090160655874262911) -->
-    <skip />
-    <!-- no translation found for accessibility_microphone_in_use (1921058214238108340) -->
-    <skip />
-    <!-- no translation found for accessibility_camera_and_microphone_in_use (1250516397875447442) -->
-    <skip />
+    <string name="accessibility_camera_in_use" msgid="1090160655874262911">"Kamera sedang digunakan"</string>
+    <string name="accessibility_microphone_in_use" msgid="1921058214238108340">"Mikrofon sedang digunakan"</string>
+    <string name="accessibility_camera_and_microphone_in_use" msgid="1250516397875447442">"Kamera dan mikrofon sedang digunakan"</string>
     <string name="data_usage_disabled_dialog_mobile_title" msgid="2286843518689837719">"Data seluler dijeda"</string>
     <string name="data_usage_disabled_dialog_title" msgid="9131615296036724838">"Data dijeda"</string>
     <string name="data_usage_disabled_dialog" msgid="7933201635215099780">"Batas kuota yang Anda tetapkan telah tercapai. Anda tidak menggunakan data seluler lagi.\n\nJika Anda melanjutkan, tarif penggunaan data mungkin berlaku."</string>
@@ -655,8 +658,7 @@
     <string name="go_to_adaptive_notification_settings" msgid="2423690125178298479">"Nonaktifkan"</string>
     <string name="unlock_to_see_notif_text" msgid="7439033907167561227">"Buka kunci untuk melihat notifikasi lama"</string>
     <string name="quick_settings_disclosure_parental_controls" msgid="2114102871438223600">"Perangkat ini dikelola oleh orang tuamu"</string>
-    <!-- no translation found for quick_settings_disclosure_pin_protection (9219481515114868267) -->
-    <skip />
+    <string name="quick_settings_disclosure_pin_protection" msgid="9219481515114868267">"Beberapa setelan perangkat dilindungi dengan PIN."</string>
     <string name="quick_settings_disclosure_management_monitoring" msgid="8231336875820702180">"Organisasi Anda memiliki perangkat ini dan mungkin memantau traffic jaringan"</string>
     <string name="quick_settings_disclosure_named_management_monitoring" msgid="2831423806103479812">"<xliff:g id="ORGANIZATION_NAME">%1$s</xliff:g> memiliki perangkat ini dan mungkin memantau traffic jaringan"</string>
     <string name="quick_settings_financed_disclosure_named_management" msgid="2307703784594859524">"Perangkat ini disediakan oleh <xliff:g id="ORGANIZATION_NAME">%s</xliff:g>"</string>
@@ -697,8 +699,7 @@
     <string name="monitoring_description_vpn_settings_separator" msgid="8292589617720435430">" "</string>
     <string name="monitoring_description_vpn_settings" msgid="5264167033247632071">"Buka setelan VPN"</string>
     <string name="monitoring_description_parental_controls" msgid="8184693528917051626">"Perangkat ini dikelola oleh orang tuamu. Orang tuamu bisa melihat dan mengelola berbagai informasi, seperti aplikasi yang kamu gunakan, lokasimu, dan lama pemakaian perangkat."</string>
-    <!-- no translation found for monitoring_description_pin_protection (1983580207046670355) -->
-    <skip />
+    <string name="monitoring_description_pin_protection" msgid="1983580207046670355">"Beberapa kontrol di perangkat Anda, seperti batas harian &amp; periode nonaktif, hanya dapat diubah dengan PIN."</string>
     <string name="legacy_vpn_name" msgid="4174223520162559145">"VPN"</string>
     <string name="keyguard_indication_trust_unlocked" msgid="7395154975733744547">"Tetap terbuka kuncinya oleh TrustAgent"</string>
     <string name="kg_prompt_after_adaptive_auth_lock" msgid="2587481497846342760">"Perangkat dikunci, terlalu banyak upaya autentikasi"</string>
@@ -802,8 +803,7 @@
     <string name="status_bar_work" msgid="5238641949837091056">"Profil kerja"</string>
     <string name="status_bar_airplane" msgid="4848702508684541009">"Mode pesawat"</string>
     <string name="status_bar_supervision" msgid="6735015942701134125">"Kontrol orang tua"</string>
-    <!-- no translation found for status_bar_pin_supervision (4376576498566645782) -->
-    <skip />
+    <string name="status_bar_pin_supervision" msgid="4376576498566645782">"Perlindungan PIN untuk beberapa kontrol perangkat"</string>
     <string name="zen_alarm_warning" msgid="7844303238486849503">"Anda tidak akan mendengar alarm berikutnya <xliff:g id="WHEN">%1$s</xliff:g>"</string>
     <string name="alarm_template" msgid="2234991538018805736">"pukul <xliff:g id="WHEN">%1$s</xliff:g>"</string>
     <string name="alarm_template_far" msgid="3561752195856839456">"pada <xliff:g id="WHEN">%1$s</xliff:g>"</string>
@@ -814,8 +814,7 @@
     <string name="accessibility_status_bar_satellite_available" msgid="6514855015496916829">"Satelit, koneksi tersedia"</string>
     <string name="satellite_connected_carrier_text" msgid="118524195198532589">"SOS via Satelit"</string>
     <string name="satellite_emergency_only_carrier_text" msgid="9103913890116841786">"Panggilan darurat atau SOS saja"</string>
-    <!-- no translation found for satellite_network_title_text (4825315858295910999) -->
-    <skip />
+    <string name="satellite_network_title_text" msgid="4825315858295910999">"Jaringan satelit"</string>
     <string name="accessibility_phone_string_format" msgid="7798841417881811812">"<xliff:g id="CARRIER_NAME">%1$s</xliff:g>, <xliff:g id="SIGNAL_STRENGTH_DESCRIPTION">%2$s</xliff:g>."</string>
     <string name="accessibility_no_signal" msgid="7052827511409250167">"tidak ada sinyal"</string>
     <string name="accessibility_one_bar" msgid="5342012847647834506">"satu batang"</string>
@@ -1437,7 +1436,6 @@
     <string name="dream_overlay_status_bar_alarm_set" msgid="566707328356590886">"Alarm disetel"</string>
     <string name="dream_overlay_status_bar_camera_off" msgid="5273073778969890823">"Kamera nonaktif"</string>
     <string name="dream_overlay_status_bar_mic_off" msgid="8366534415013819396">"Mikrofon nonaktif"</string>
-    <string name="dream_overlay_status_bar_camera_mic_off" msgid="3199425257833773569">"Kamera dan mikrofon nonaktif"</string>
     <string name="dream_overlay_status_bar_notification_indicator" msgid="8091389255691081711">"{count,plural, =1{# notifikasi}other{# notifikasi}}"</string>
     <string name="dream_overlay_weather_complication_desc" msgid="824503662089783824">"<xliff:g id="WEATHER_CONDITION">%1$s</xliff:g>, <xliff:g id="TEMPERATURE">%2$s</xliff:g>"</string>
     <string name="note_task_button_label" msgid="230135078402003532">"Pembuatan catatan"</string>

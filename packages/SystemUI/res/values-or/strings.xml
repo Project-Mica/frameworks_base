@@ -210,6 +210,12 @@
     <string name="biometric_dialog_use_pin" msgid="8385294115283000709">"PIN ବ୍ୟବହାର କରନ୍ତୁ"</string>
     <string name="biometric_dialog_use_pattern" msgid="2315593393167211194">"ପାଟର୍ନ ବ୍ୟବହାର କରନ୍ତୁ"</string>
     <string name="biometric_dialog_use_password" msgid="3445033859393474779">"ପାସ୍‌ୱାର୍ଡ୍ ବ୍ୟବହାର କରନ୍ତୁ"</string>
+    <string name="biometric_dialog_enter_pin" msgid="8625265944863623975">"ଆପଣଙ୍କ PIN ଲେଖନ୍ତୁ"</string>
+    <string name="biometric_dialog_enter_password" msgid="200503318983048202">"ଆପଣଙ୍କ ପାସୱାର୍ଡ ଲେଖନ୍ତୁ"</string>
+    <string name="biometric_dialog_enter_pattern" msgid="3065746760277739487">"ଆପଣଙ୍କ ପାଟର୍ନ ଲେଖନ୍ତୁ"</string>
+    <string name="biometric_dialog_recovery_pin" msgid="5798389437594195177">"ଅନେକଗୁଡ଼ିଏ ବିଫଳ ପ୍ରଚେଷ୍ଟା ପରେ ବାୟୋମେଟ୍ରିକ୍ସକୁ ରିକଭର କରିବା ପାଇଁ PIN ଆବଶ୍ୟକ"</string>
+    <string name="biometric_dialog_recovery_pattern" msgid="382786088892502550">"ଅନେକଗୁଡ଼ିଏ ବିଫଳ ପ୍ରଚେଷ୍ଟା ପରେ ବାୟୋମେଟ୍ରିକ୍ସକୁ ରିକଭର କରିବା ପାଇଁ ପାଟର୍ନ ଆବଶ୍ୟକ"</string>
+    <string name="biometric_dialog_recovery_password" msgid="8288127966207678230">"ଅନେକଗୁଡ଼ିଏ ବିଫଳ ପ୍ରଚେଷ୍ଟା ପରେ ବାୟୋମେଟ୍ରିକ୍ସକୁ ରିକଭର କରିବା ପାଇଁ ପାସୱାର୍ଡ ଆବଶ୍ୟକ"</string>
     <string name="biometric_dialog_wrong_pin" msgid="1878539073972762803">"ଭୁଲ PIN"</string>
     <string name="biometric_dialog_wrong_pattern" msgid="8954812279840889029">"ଭୁଲ ପାଟର୍ନ"</string>
     <string name="biometric_dialog_wrong_password" msgid="69477929306843790">"ଭୁଲ ପାସ୍‌ୱାର୍ଡ"</string>
@@ -300,12 +306,9 @@
     <string name="accessibility_quick_settings_less_time" msgid="9110364286464977870">"କମ୍ ସମୟ।"</string>
     <string name="accessibility_casting_turned_off" msgid="1387906158563374962">"ସ୍କ୍ରୀନ୍‌ କାଷ୍ଟ କରିବା ରହିଯାଇଛି।"</string>
     <string name="accessibility_brightness" msgid="5391187016177823721">"ଡିସ୍‌ପ୍ଲେ ଉଜ୍ଜ୍ୱଳତା"</string>
-    <!-- no translation found for accessibility_camera_in_use (1090160655874262911) -->
-    <skip />
-    <!-- no translation found for accessibility_microphone_in_use (1921058214238108340) -->
-    <skip />
-    <!-- no translation found for accessibility_camera_and_microphone_in_use (1250516397875447442) -->
-    <skip />
+    <string name="accessibility_camera_in_use" msgid="1090160655874262911">"କେମେରା ବ୍ୟବହାର କରାଯାଉଛି"</string>
+    <string name="accessibility_microphone_in_use" msgid="1921058214238108340">"ମାଇକ୍ରୋଫୋନ ବ୍ୟବହାର କରାଯାଉଛି"</string>
+    <string name="accessibility_camera_and_microphone_in_use" msgid="1250516397875447442">"କେମେରା ଏବଂ ମାଇକ୍ରୋଫୋନକୁ ବ୍ୟବହାର କରାଯାଉଛି"</string>
     <string name="data_usage_disabled_dialog_mobile_title" msgid="2286843518689837719">"ମୋବାଇଲ୍‍ ଡାଟା ପଜ୍‍ କରାଯାଇଛି"</string>
     <string name="data_usage_disabled_dialog_title" msgid="9131615296036724838">"ଡାଟା ପଜ୍‍ କରାଯାଇଛି"</string>
     <string name="data_usage_disabled_dialog" msgid="7933201635215099780">"ଆପଣ ସେଟ୍‍ କରିଥିବା ଡାଟାର ସୀମାରେ ପହଞ୍ଚିଲେ। ଆପଣ ଆଉ ମୋବାଇଲ୍‍ ଡାଟା ବ୍ୟବହାର କରୁନାହାଁନ୍ତି।\n\nଯଦି ଆପଣ ପୁଣି ଆରମ୍ଭ କରନ୍ତି, ଡାଟା ବ୍ୟବହାର ପାଇଁ ଆପଣଙ୍କୁ ଦେୟ ଲାଗୁ କରାଯାଇ ପାରେ।"</string>
@@ -655,8 +658,7 @@
     <string name="go_to_adaptive_notification_settings" msgid="2423690125178298479">"ବନ୍ଦ କରନ୍ତୁ"</string>
     <string name="unlock_to_see_notif_text" msgid="7439033907167561227">"ପୁରୁଣା ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକ ଦେଖିବାକୁ ଅନଲକ କରନ୍ତୁ"</string>
     <string name="quick_settings_disclosure_parental_controls" msgid="2114102871438223600">"ଏହି ଡିଭାଇସ୍ ଆପଣଙ୍କ ବାପାମାଙ୍କ ଦ୍ୱାରା ପରିଚାଳିତ"</string>
-    <!-- no translation found for quick_settings_disclosure_pin_protection (9219481515114868267) -->
-    <skip />
+    <string name="quick_settings_disclosure_pin_protection" msgid="9219481515114868267">"କିଛି ଡିଭାଇସ ସେଟିଂସ PIN ଦ୍ୱାରା ସୁରକ୍ଷିତ ଅଟେ।"</string>
     <string name="quick_settings_disclosure_management_monitoring" msgid="8231336875820702180">"ଏହି ଡିଭାଇସର ମାଲିକାନା ଆପଣଙ୍କ ସଂସ୍ଥା ପାଖରେ ଅଛି ଏବଂ ଏହା ନେଟୱାର୍କ ଟ୍ରାଫିକର ନିରୀକ୍ଷଣ କରିପାରେ"</string>
     <string name="quick_settings_disclosure_named_management_monitoring" msgid="2831423806103479812">"ଏହି ଡିଭାଇସଟି <xliff:g id="ORGANIZATION_NAME">%1$s</xliff:g>ର ଅଟେ ଏବଂ ଏହା ନେଟୱାର୍କ ଟ୍ରାଫିକକୁ ନିରୀକ୍ଷଣ କରିପାରେ"</string>
     <string name="quick_settings_financed_disclosure_named_management" msgid="2307703784594859524">"ଏହି ଡିଭାଇସ୍ <xliff:g id="ORGANIZATION_NAME">%s</xliff:g> ଦ୍ୱାରା ପ୍ରଦାନ କରାଯାଇଛି"</string>
@@ -697,8 +699,7 @@
     <string name="monitoring_description_vpn_settings_separator" msgid="8292589617720435430">" "</string>
     <string name="monitoring_description_vpn_settings" msgid="5264167033247632071">"VPN ସେଟିଂସ୍ ଖୋଲନ୍ତୁ"</string>
     <string name="monitoring_description_parental_controls" msgid="8184693528917051626">"ଏହି ଡିଭାଇସ୍ ଆପଣଙ୍କ ବାପାମାଙ୍କ ଦ୍ୱାରା ପରିଚାଳିତ। ଆପଣଙ୍କ ବାପାମା ଆପଣ ବ୍ୟବହାର କରୁଥିବା ଆପ୍ସ, ଆପଣଙ୍କ ଲୋକେସନ୍ ଓ ସ୍କ୍ରିନ୍ ସମୟ ପରି ସୂଚନା ଦେଖିପାରିବେ ଏବଂ ପରିଚାଳନା କରିପାରିବେ।"</string>
-    <!-- no translation found for monitoring_description_pin_protection (1983580207046670355) -->
-    <skip />
+    <string name="monitoring_description_pin_protection" msgid="1983580207046670355">"ଆପଣଙ୍କ ଡିଭାଇସରେ ଦୈନିକ ସୀମା ଏବଂ ଡାଉନଟାଇମ ପରି କିଛି ନିୟନ୍ତ୍ରଣକୁ କେବଳ ଏକ PIN ମାଧ୍ୟମରେ ପରିବର୍ତ୍ତନ କରାଯାଇପାରିବ।"</string>
     <string name="legacy_vpn_name" msgid="4174223520162559145">"VPN"</string>
     <string name="keyguard_indication_trust_unlocked" msgid="7395154975733744547">"TrustAgent ଦ୍ୱାରା ଅନ୍‌ଲକ୍ ରହିଛି"</string>
     <string name="kg_prompt_after_adaptive_auth_lock" msgid="2587481497846342760">"ଡିଭାଇସ ଲକ କରାଯାଇଛି, ଅନେକଗୁଡ଼ିଏ ପ୍ରମାଣୀକରଣ ପ୍ରଚେଷ୍ଟା କରାଯାଇଛି"</string>
@@ -802,8 +803,7 @@
     <string name="status_bar_work" msgid="5238641949837091056">"ୱର୍କ ପ୍ରୋଫାଇଲ୍‌"</string>
     <string name="status_bar_airplane" msgid="4848702508684541009">"ଏୟାରପ୍ଲେନ ମୋଡ"</string>
     <string name="status_bar_supervision" msgid="6735015942701134125">"ବାପାମାଙ୍କ ନିୟନ୍ତ୍ରଣ"</string>
-    <!-- no translation found for status_bar_pin_supervision (4376576498566645782) -->
-    <skip />
+    <string name="status_bar_pin_supervision" msgid="4376576498566645782">"କିଛି ଡିଭାଇସ ନିୟନ୍ତ୍ରଣ ପାଇଁ PIN ସୁରକ୍ଷା"</string>
     <string name="zen_alarm_warning" msgid="7844303238486849503">"<xliff:g id="WHEN">%1$s</xliff:g>ବେଳେ ଆପଣ ନିଜର ପରବର୍ତ୍ତୀ ଆଲାର୍ମ ଶୁଣିପାରିବେ ନାହିଁ"</string>
     <string name="alarm_template" msgid="2234991538018805736">"<xliff:g id="WHEN">%1$s</xliff:g> ହେଲେ"</string>
     <string name="alarm_template_far" msgid="3561752195856839456">"<xliff:g id="WHEN">%1$s</xliff:g> ବେଳେ"</string>
@@ -814,8 +814,7 @@
     <string name="accessibility_status_bar_satellite_available" msgid="6514855015496916829">"ସାଟେଲାଇଟ, କନେକ୍ସନ ଉପଲବ୍ଧ"</string>
     <string name="satellite_connected_carrier_text" msgid="118524195198532589">"ସେଟେଲାଇଟ SOS"</string>
     <string name="satellite_emergency_only_carrier_text" msgid="9103913890116841786">"କେବଳ ଜରୁରୀକାଳୀନ କଲ କିମ୍ବା SOS"</string>
-    <!-- no translation found for satellite_network_title_text (4825315858295910999) -->
-    <skip />
+    <string name="satellite_network_title_text" msgid="4825315858295910999">"ସେଟେଲାଇଟ ନେଟୱାର୍କ"</string>
     <string name="accessibility_phone_string_format" msgid="7798841417881811812">"<xliff:g id="CARRIER_NAME">%1$s</xliff:g>, <xliff:g id="SIGNAL_STRENGTH_DESCRIPTION">%2$s</xliff:g>।"</string>
     <string name="accessibility_no_signal" msgid="7052827511409250167">"କୌଣସି ସିଗନାଲ ନାହିଁ"</string>
     <string name="accessibility_one_bar" msgid="5342012847647834506">"ଗୋଟିଏ ବାର"</string>
@@ -1437,7 +1436,6 @@
     <string name="dream_overlay_status_bar_alarm_set" msgid="566707328356590886">"ଆଲାରାମ ସେଟ"</string>
     <string name="dream_overlay_status_bar_camera_off" msgid="5273073778969890823">"କ୍ୟାମେରା ବନ୍ଦ ଅଛି"</string>
     <string name="dream_overlay_status_bar_mic_off" msgid="8366534415013819396">"ମାଇକ ବନ୍ଦ ଅଛି"</string>
-    <string name="dream_overlay_status_bar_camera_mic_off" msgid="3199425257833773569">"କ୍ୟାମେରା ଏବଂ ମାଇକ ବନ୍ଦ ଅଛି"</string>
     <string name="dream_overlay_status_bar_notification_indicator" msgid="8091389255691081711">"{count,plural, =1{#ଟି ବିଜ୍ଞପ୍ତି}other{#ଟି ବିଜ୍ଞପ୍ତି}}"</string>
     <string name="dream_overlay_weather_complication_desc" msgid="824503662089783824">"<xliff:g id="WEATHER_CONDITION">%1$s</xliff:g>, <xliff:g id="TEMPERATURE">%2$s</xliff:g>"</string>
     <string name="note_task_button_label" msgid="230135078402003532">"ନୋଟ-ଟେକିଂ"</string>
