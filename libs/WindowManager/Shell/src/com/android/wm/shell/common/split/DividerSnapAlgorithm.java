@@ -443,14 +443,6 @@ public class DividerSnapAlgorithm {
         return mLastSplitTarget != mMiddleTarget;
     }
 
-    public boolean isSecondSplitTargetAvailable() {
-        return mSecondSplitTarget != mMiddleTarget;
-    }
-
-    public boolean isSecondLastSplitTargetAvailable() {
-        return mSecondLastSplitTarget != mMiddleTarget;
-    }
-
     /**
      * Finds the {@link SnapPosition} nearest to the given position.
      */
