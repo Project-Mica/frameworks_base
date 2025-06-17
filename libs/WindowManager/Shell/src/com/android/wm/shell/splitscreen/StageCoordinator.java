@@ -1489,7 +1489,7 @@ public class StageCoordinator implements SplitLayout.SplitLayoutHandler,
                         notifySplitAnimationStatus(false /*animationRunning*/);
 
                         if (enableFlexibleTwoAppSplit() &&
-                                mSplitState.currentStateHasOffscreenApps()) {
+                                mSplitState.currentStateSupportsOffscreenApps()) {
                             // Stages have changed positions, but layout hasn't so update
                             // focus on the same layout type as before. NOTE: this needs to happen
                             // AFTER we make the window's focusable, otherwise it's a no-op
