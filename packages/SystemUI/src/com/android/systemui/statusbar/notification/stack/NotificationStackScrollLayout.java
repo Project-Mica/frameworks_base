@@ -6062,6 +6062,18 @@ public class NotificationStackScrollLayout
         }
     }
 
+    void removeSwipedOutView(View v) {
+        logRemoveSwipedOutView(v);
+        mSwipedOutViews.remove(v);
+    }
+
+    private void logRemoveSwipedOutView(View v) {
+        if (mLogger != null && v instanceof ExpandableNotificationRow row) {
+            mLogger.logRemoveSwipedOutView(row.getLoggingKey(), mClearAllInProgress);
+        }
+    }
+
+
     void onSwipeBegin(View viewSwiped) {
         if (!(viewSwiped instanceof ExpandableNotificationRow)) {
             return;
