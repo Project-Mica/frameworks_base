@@ -63,7 +63,6 @@ import android.content.pm.PackageInstaller.SessionParams;
 import android.content.pm.dex.ArtManager;
 import android.content.pm.parsing.result.ParseResult;
 import android.content.pm.parsing.result.ParseTypeImpl;
-import android.content.pm.verify.developer.DeveloperVerifierService;
 import android.content.pm.verify.domain.DomainVerificationManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -5194,26 +5193,6 @@ public abstract class PackageManager {
     @SystemApi
     public static final String ACTION_REQUEST_PERMISSIONS_FOR_OTHER =
             "android.content.pm.action.REQUEST_PERMISSIONS_FOR_OTHER";
-
-    /**
-     * Used by the system to query a {@link DeveloperVerifierService} provider,
-     * which registers itself via an intent-filter handling this action.
-     *
-     * <p class="note">Only the system can bind to the developer verifier service. This is protected
-     * by the {@link android.Manifest.permission#BIND_DEVELOPER_VERIFICATION_AGENT} permission. The
-     * developer verifier service app should protect the service by adding this permission in the
-     * service declaration in its manifest.
-     * <p>
-     * A developer verifier service must be a privileged app and hold the
-     * {@link android.Manifest.permission#DEVELOPER_VERIFICATION_AGENT} permission.
-     *
-     * @hide
-     */
-    @SystemApi
-    @FlaggedApi(android.content.pm.Flags.FLAG_VERIFICATION_SERVICE)
-    @SdkConstant(SdkConstantType.SERVICE_ACTION)
-    public static final String ACTION_VERIFY_DEVELOPER =
-            "android.content.pm.action.VERIFY_DEVELOPER";
 
     /**
      * The names of the requested permissions.

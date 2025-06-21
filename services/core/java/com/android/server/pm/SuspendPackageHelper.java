@@ -521,9 +521,6 @@ public final class SuspendPackageHelper {
             final String requiredPermissionControllerPackage =
                     getKnownPackageName(snapshot, KnownPackages.PACKAGE_PERMISSION_CONTROLLER,
                             targetUserId);
-            final String requiredDeveloperVerificationServiceProviderPackage = getKnownPackageName(
-                    snapshot, KnownPackages.PACKAGE_DEVELOPER_VERIFICATION_SERVICE_PROVIDER,
-                    targetUserId);
             for (int i = 0; i < packageNames.length; i++) {
                 canSuspend[i] = false;
                 final String packageName = packageNames[i];
@@ -571,11 +568,6 @@ public final class SuspendPackageHelper {
                 if (!isCallerOwner && snapshot.getBlockUninstall(targetUserId, packageName)) {
                     Slog.w(TAG, "Cannot suspend package \"" + packageName
                             + "\": blocked by admin");
-                    continue;
-                }
-                if (packageName.equals(requiredDeveloperVerificationServiceProviderPackage)) {
-                    Slog.w(TAG, "Cannot suspend package \"" + packageName
-                            + "\": required for package verification service");
                     continue;
                 }
 

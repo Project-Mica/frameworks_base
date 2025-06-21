@@ -124,5 +124,4 @@ public final class PackageManagerServiceTestParams {
     public boolean shouldStopSystemPackagesByDefault;
     public FreeStorageHelper freeStorageHelper;
     public PackageMonitorCallbackHelper packageMonitorCallbackHelper;
-    public @Nullable String developerVerificationServiceProviderPackage;
 }

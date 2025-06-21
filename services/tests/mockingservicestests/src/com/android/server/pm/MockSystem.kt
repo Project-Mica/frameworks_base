@@ -76,7 +76,6 @@ import com.android.server.pm.pkg.AndroidPackage
 import com.android.server.pm.resolution.ComponentResolver
 import com.android.server.pm.snapshot.PackageDataSnapshot
 import com.android.server.pm.verify.domain.DomainVerificationManagerInternal
-import com.android.server.pm.verify.developer.DeveloperVerifierController
 import com.android.server.sdksandbox.SdkSandboxManagerLocal
 import com.android.server.testutils.TestHandler
 import com.android.server.testutils.mock
@@ -157,7 +156,6 @@ class MockSystem(withSession: (StaticMockitoSessionBuilder) -> Unit = {}) {
                 .mockStatic(LocalManagerRegistry::class.java)
                 .mockStatic(DeviceConfig::class.java, Mockito.CALLS_REAL_METHODS)
                 .mockStatic(HexEncoding::class.java)
-                .mockStatic(DeveloperVerifierController::class.java)
                 .apply(withSession)
         session = apply.startMocking()
         whenever(mocks.settings.insertPackageSettingLPw(
@@ -315,8 +313,7 @@ class MockSystem(withSession: (StaticMockitoSessionBuilder) -> Unit = {}) {
         whenever(mocks.injector.handler) { mocks.handler }
         whenever(mocks.injector.defaultAppProvider) { mocks.defaultAppProvider }
         whenever(mocks.injector.backgroundHandler) { mocks.backgroundHandler }
-        whenever(mocks.injector.getPackageInstallerService(anyString())) {
-            mocks.packageInstallerService }
+        whenever(mocks.injector.packageInstallerService) { mocks.packageInstallerService }
         whenever(mocks.injector.updateOwnershipHelper) { mocks.updateOwnershipHelper }
         whenever(mocks.injector.getSystemService(AppOpsManager::class.java)) { mocks.appOpsManager }
         wheneverStatic { SystemConfig.getInstance() }.thenReturn(mocks.systemConfig)
