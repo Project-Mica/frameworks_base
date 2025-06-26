@@ -210,6 +210,12 @@
     <string name="biometric_dialog_use_pin" msgid="8385294115283000709">"使用 PIN 码"</string>
     <string name="biometric_dialog_use_pattern" msgid="2315593393167211194">"使用解锁图案"</string>
     <string name="biometric_dialog_use_password" msgid="3445033859393474779">"使用密码"</string>
+    <string name="biometric_dialog_enter_pin" msgid="8625265944863623975">"输入 PIN 码"</string>
+    <string name="biometric_dialog_enter_password" msgid="200503318983048202">"输入密码"</string>
+    <string name="biometric_dialog_enter_pattern" msgid="3065746760277739487">"绘制解锁图案"</string>
+    <string name="biometric_dialog_recovery_pin" msgid="5798389437594195177">"由于生物识别尝试失败次数过多，您需要输入 PIN 码，才能恢复生物识别功能"</string>
+    <string name="biometric_dialog_recovery_pattern" msgid="382786088892502550">"由于生物识别尝试失败次数过多，您需要绘制解锁图案，才能恢复生物识别功能"</string>
+    <string name="biometric_dialog_recovery_password" msgid="8288127966207678230">"由于生物识别尝试失败次数过多，您需要输入密码，才能恢复生物识别功能"</string>
     <string name="biometric_dialog_wrong_pin" msgid="1878539073972762803">"PIN 码错误"</string>
     <string name="biometric_dialog_wrong_pattern" msgid="8954812279840889029">"解锁图案错误"</string>
     <string name="biometric_dialog_wrong_password" msgid="69477929306843790">"密码错误"</string>
@@ -300,12 +306,9 @@
     <string name="accessibility_quick_settings_less_time" msgid="9110364286464977870">"缩短时间。"</string>
     <string name="accessibility_casting_turned_off" msgid="1387906158563374962">"屏幕投放已停止。"</string>
     <string name="accessibility_brightness" msgid="5391187016177823721">"屏幕亮度"</string>
-    <!-- no translation found for accessibility_camera_in_use (1090160655874262911) -->
-    <skip />
-    <!-- no translation found for accessibility_microphone_in_use (1921058214238108340) -->
-    <skip />
-    <!-- no translation found for accessibility_camera_and_microphone_in_use (1250516397875447442) -->
-    <skip />
+    <string name="accessibility_camera_in_use" msgid="1090160655874262911">"摄像头正在使用中"</string>
+    <string name="accessibility_microphone_in_use" msgid="1921058214238108340">"麦克风正在使用中"</string>
+    <string name="accessibility_camera_and_microphone_in_use" msgid="1250516397875447442">"摄像头和麦克风正在使用中"</string>
     <string name="data_usage_disabled_dialog_mobile_title" msgid="2286843518689837719">"已暂停使用移动数据网络"</string>
     <string name="data_usage_disabled_dialog_title" msgid="9131615296036724838">"数据网络已暂停使用"</string>
     <string name="data_usage_disabled_dialog" msgid="7933201635215099780">"您的数据流量消耗已达到所设置的上限，因此已停用移动数据网络。\n\n如果您要继续使用移动数据网络，则可能需要支付相应的流量费用。"</string>
@@ -655,8 +658,7 @@
     <string name="go_to_adaptive_notification_settings" msgid="2423690125178298479">"关闭"</string>
     <string name="unlock_to_see_notif_text" msgid="7439033907167561227">"解锁即可查看旧通知"</string>
     <string name="quick_settings_disclosure_parental_controls" msgid="2114102871438223600">"此设备由您的家长管理"</string>
-    <!-- no translation found for quick_settings_disclosure_pin_protection (9219481515114868267) -->
-    <skip />
+    <string name="quick_settings_disclosure_pin_protection" msgid="9219481515114868267">"部分设备设置受 PIN 码保护。"</string>
     <string name="quick_settings_disclosure_management_monitoring" msgid="8231336875820702180">"贵单位拥有此设备，且可能会监控网络流量"</string>
     <string name="quick_settings_disclosure_named_management_monitoring" msgid="2831423806103479812">"<xliff:g id="ORGANIZATION_NAME">%1$s</xliff:g>拥有此设备，且可能会监控网络流量"</string>
     <string name="quick_settings_financed_disclosure_named_management" msgid="2307703784594859524">"此设备由<xliff:g id="ORGANIZATION_NAME">%s</xliff:g>提供"</string>
@@ -697,8 +699,7 @@
     <string name="monitoring_description_vpn_settings_separator" msgid="8292589617720435430">" "</string>
     <string name="monitoring_description_vpn_settings" msgid="5264167033247632071">"打开 VPN 设置"</string>
     <string name="monitoring_description_parental_controls" msgid="8184693528917051626">"此设备由您的家长管理。您的家长可以查看和管理相关信息，例如您使用的应用、您的位置信息和屏幕使用时间。"</string>
-    <!-- no translation found for monitoring_description_pin_protection (1983580207046670355) -->
-    <skip />
+    <string name="monitoring_description_pin_protection" msgid="1983580207046670355">"设备上的一些控制设置（例如每日上限和休息时间）只能通过输入 PIN 码进行更改。"</string>
     <string name="legacy_vpn_name" msgid="4174223520162559145">"VPN"</string>
     <string name="keyguard_indication_trust_unlocked" msgid="7395154975733744547">"由 TrustAgent 保持解锁状态"</string>
     <string name="kg_prompt_after_adaptive_auth_lock" msgid="2587481497846342760">"尝试验证身份的次数过多，设备已锁定"</string>
@@ -802,8 +803,7 @@
     <string name="status_bar_work" msgid="5238641949837091056">"工作资料"</string>
     <string name="status_bar_airplane" msgid="4848702508684541009">"飞行模式"</string>
     <string name="status_bar_supervision" msgid="6735015942701134125">"家长控制"</string>
-    <!-- no translation found for status_bar_pin_supervision (4376576498566645782) -->
-    <skip />
+    <string name="status_bar_pin_supervision" msgid="4376576498566645782">"为某些设备控制功能设置 PIN 码保护"</string>
     <string name="zen_alarm_warning" msgid="7844303238486849503">"您在<xliff:g id="WHEN">%1$s</xliff:g>将不会听到下次闹钟响铃"</string>
     <string name="alarm_template" msgid="2234991538018805736">"<xliff:g id="WHEN">%1$s</xliff:g>"</string>
     <string name="alarm_template_far" msgid="3561752195856839456">"<xliff:g id="WHEN">%1$s</xliff:g>"</string>
@@ -814,8 +814,7 @@
     <string name="accessibility_status_bar_satellite_available" msgid="6514855015496916829">"卫星，可连接"</string>
     <string name="satellite_connected_carrier_text" msgid="118524195198532589">"卫星紧急呼救"</string>
     <string name="satellite_emergency_only_carrier_text" msgid="9103913890116841786">"仅限紧急呼叫或紧急求救"</string>
-    <!-- no translation found for satellite_network_title_text (4825315858295910999) -->
-    <skip />
+    <string name="satellite_network_title_text" msgid="4825315858295910999">"卫星网络"</string>
     <string name="accessibility_phone_string_format" msgid="7798841417881811812">"<xliff:g id="CARRIER_NAME">%1$s</xliff:g>，<xliff:g id="SIGNAL_STRENGTH_DESCRIPTION">%2$s</xliff:g>。"</string>
     <string name="accessibility_no_signal" msgid="7052827511409250167">"无信号"</string>
     <string name="accessibility_one_bar" msgid="5342012847647834506">"信号强度为一格"</string>
@@ -1183,7 +1182,7 @@
     <string name="magnification_exit_edit_mode_click_label" msgid="1664818325144887117">"退出修改模式"</string>
     <string name="magnification_drag_corner_to_resize" msgid="1249766311052418130">"拖动一角即可调整大小"</string>
     <string name="accessibility_allow_diagonal_scrolling" msgid="3258050349191496398">"允许沿对角线滚动"</string>
-    <string name="accessibility_magnify_typing" msgid="4450037184548427852">"跟随输入移动"</string>
+    <string name="accessibility_magnify_typing" msgid="4450037184548427852">"跟随输入文字"</string>
     <string name="accessibility_magnify_keyboard" msgid="3083531635742744841">"放大键盘"</string>
     <string name="accessibility_resize" msgid="5733759136600611551">"调整大小"</string>
     <string name="accessibility_change_magnification_type" msgid="666000085077432421">"更改放大类型"</string>
@@ -1437,7 +1436,6 @@
     <string name="dream_overlay_status_bar_alarm_set" msgid="566707328356590886">"闹钟已设置"</string>
     <string name="dream_overlay_status_bar_camera_off" msgid="5273073778969890823">"摄像头已关闭"</string>
     <string name="dream_overlay_status_bar_mic_off" msgid="8366534415013819396">"麦克风已关闭"</string>
-    <string name="dream_overlay_status_bar_camera_mic_off" msgid="3199425257833773569">"摄像头和麦克风已关闭"</string>
     <string name="dream_overlay_status_bar_notification_indicator" msgid="8091389255691081711">"{count,plural, =1{# 条通知}other{# 条通知}}"</string>
     <string name="dream_overlay_weather_complication_desc" msgid="824503662089783824">"<xliff:g id="WEATHER_CONDITION">%1$s</xliff:g>，<xliff:g id="TEMPERATURE">%2$s</xliff:g>"</string>
     <string name="note_task_button_label" msgid="230135078402003532">"记事"</string>

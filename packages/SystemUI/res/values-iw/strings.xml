@@ -210,6 +210,12 @@
     <string name="biometric_dialog_use_pin" msgid="8385294115283000709">"שימוש בקוד אימות"</string>
     <string name="biometric_dialog_use_pattern" msgid="2315593393167211194">"שימוש בקו פתיחת נעילה"</string>
     <string name="biometric_dialog_use_password" msgid="3445033859393474779">"שימוש בסיסמה"</string>
+    <string name="biometric_dialog_enter_pin" msgid="8625265944863623975">"צריך להזין קוד אימות"</string>
+    <string name="biometric_dialog_enter_password" msgid="200503318983048202">"צריך להזין סיסמה"</string>
+    <string name="biometric_dialog_enter_pattern" msgid="3065746760277739487">"צריך להזין את קו פתיחת הנעילה"</string>
+    <string name="biometric_dialog_recovery_pin" msgid="5798389437594195177">"אחרי יותר מדי ניסיונות כושלים, נדרש קוד אימות כדי לשחזר את הנתונים הביומטריים"</string>
+    <string name="biometric_dialog_recovery_pattern" msgid="382786088892502550">"אחרי יותר מדי ניסיונות כושלים, נדרש קו פתיחת נעילה כדי לשחזר את הנתונים הביומטריים"</string>
+    <string name="biometric_dialog_recovery_password" msgid="8288127966207678230">"אחרי יותר מדי ניסיונות כושלים, נדרשת סיסמה כדי לשחזר את הנתונים הביומטריים"</string>
     <string name="biometric_dialog_wrong_pin" msgid="1878539073972762803">"קוד אימות שגוי"</string>
     <string name="biometric_dialog_wrong_pattern" msgid="8954812279840889029">"קו פתיחת נעילה שגוי"</string>
     <string name="biometric_dialog_wrong_password" msgid="69477929306843790">"סיסמה שגויה"</string>
@@ -263,10 +269,8 @@
     <string name="accessibility_collapse_group" msgid="1842704016768329517">"כיווץ הקבוצה"</string>
     <string name="accessibility_add_device_to_group" msgid="5446422960697860806">"הוספת מכשיר לקבוצה"</string>
     <string name="accessibility_remove_device_from_group" msgid="3114694270949142228">"הסרת מכשיר מקבוצה"</string>
-    <!-- no translation found for accessibility_add_device_to_group_with_name (1042306202917036858) -->
-    <skip />
-    <!-- no translation found for accessibility_remove_device_from_group_with_name (5582015497111561027) -->
-    <skip />
+    <string name="accessibility_add_device_to_group_with_name" msgid="1042306202917036858">"הוספה של <xliff:g id="DEVICE_NAME">%s</xliff:g> לקבוצה."</string>
+    <string name="accessibility_remove_device_from_group_with_name" msgid="5582015497111561027">"הסרה של <xliff:g id="DEVICE_NAME">%s</xliff:g> מהקבוצה."</string>
     <string name="accessibility_open_application" msgid="1749126077501259712">"פתיחת האפליקציה."</string>
     <string name="accessibility_not_connected" msgid="4061305616351042142">"אין חיבור."</string>
     <string name="data_connection_roaming" msgid="375650836665414797">"נדידה"</string>
@@ -302,12 +306,9 @@
     <string name="accessibility_quick_settings_less_time" msgid="9110364286464977870">"פחות זמן."</string>
     <string name="accessibility_casting_turned_off" msgid="1387906158563374962">"העברת המסך הופסקה."</string>
     <string name="accessibility_brightness" msgid="5391187016177823721">"בהירות תצוגה"</string>
-    <!-- no translation found for accessibility_camera_in_use (1090160655874262911) -->
-    <skip />
-    <!-- no translation found for accessibility_microphone_in_use (1921058214238108340) -->
-    <skip />
-    <!-- no translation found for accessibility_camera_and_microphone_in_use (1250516397875447442) -->
-    <skip />
+    <string name="accessibility_camera_in_use" msgid="1090160655874262911">"המצלמה נמצאת בשימוש"</string>
+    <string name="accessibility_microphone_in_use" msgid="1921058214238108340">"המיקרופון נמצא בשימוש"</string>
+    <string name="accessibility_camera_and_microphone_in_use" msgid="1250516397875447442">"המצלמה והמיקרופון נמצאים בשימוש"</string>
     <string name="data_usage_disabled_dialog_mobile_title" msgid="2286843518689837719">"חבילת הגלישה מושהה"</string>
     <string name="data_usage_disabled_dialog_title" msgid="9131615296036724838">"השימוש בנתונים מושהה"</string>
     <string name="data_usage_disabled_dialog" msgid="7933201635215099780">"הגעת למגבלת הנתונים שהגדרת. כבר לא נעשה שימוש בחבילת הגלישה.\n\nהמשך הפעולה עשוי לגרום לחיובים על שימוש בנתונים."</string>
@@ -657,8 +658,7 @@
     <string name="go_to_adaptive_notification_settings" msgid="2423690125178298479">"השבתה"</string>
     <string name="unlock_to_see_notif_text" msgid="7439033907167561227">"יש לבטל את הנעילה כדי לראות התראות ישנות"</string>
     <string name="quick_settings_disclosure_parental_controls" msgid="2114102871438223600">"המכשיר הזה מנוהל על ידי ההורה שלך"</string>
-    <!-- no translation found for quick_settings_disclosure_pin_protection (9219481515114868267) -->
-    <skip />
+    <string name="quick_settings_disclosure_pin_protection" msgid="9219481515114868267">"חלק מהגדרות המכשיר מוגנות באמצעות קוד אימות."</string>
     <string name="quick_settings_disclosure_management_monitoring" msgid="8231336875820702180">"הארגון שלך הוא הבעלים של המכשיר הזה והוא עשוי לנטר את התנועה ברשת"</string>
     <string name="quick_settings_disclosure_named_management_monitoring" msgid="2831423806103479812">"הארגון <xliff:g id="ORGANIZATION_NAME">%1$s</xliff:g> הוא הבעלים של המכשיר הזה והוא עשוי לנטר את התנועה ברשת"</string>
     <string name="quick_settings_financed_disclosure_named_management" msgid="2307703784594859524">"המכשיר הזה התקבל מ-<xliff:g id="ORGANIZATION_NAME">%s</xliff:g>"</string>
@@ -699,8 +699,7 @@
     <string name="monitoring_description_vpn_settings_separator" msgid="8292589617720435430">" "</string>
     <string name="monitoring_description_vpn_settings" msgid="5264167033247632071">"‏להגדרות ה-VPN"</string>
     <string name="monitoring_description_parental_controls" msgid="8184693528917051626">"מכשיר זה מנוהל על ידי ההורה שלך. להורה שלך יש אפשרות לצפות בפרטים כמו האפליקציות שבשימוש, המיקום וזמן המסך שלך, ולנהל אותם."</string>
-    <!-- no translation found for monitoring_description_pin_protection (1983580207046670355) -->
-    <skip />
+    <string name="monitoring_description_pin_protection" msgid="1983580207046670355">"יש הגדרות במכשיר, כמו מגבלות יומיות ומשך השתקה, שאפשר לשנות רק באמצעות קוד אימות."</string>
     <string name="legacy_vpn_name" msgid="4174223520162559145">"VPN"</string>
     <string name="keyguard_indication_trust_unlocked" msgid="7395154975733744547">"הנעילה נמנעת על ידי סביבה מהימנה"</string>
     <string name="kg_prompt_after_adaptive_auth_lock" msgid="2587481497846342760">"המכשיר ננעל, יותר מדי ניסיונות אימות"</string>
@@ -804,8 +803,7 @@
     <string name="status_bar_work" msgid="5238641949837091056">"פרופיל עבודה"</string>
     <string name="status_bar_airplane" msgid="4848702508684541009">"מצב טיסה"</string>
     <string name="status_bar_supervision" msgid="6735015942701134125">"אמצעי בקרת הורים"</string>
-    <!-- no translation found for status_bar_pin_supervision (4376576498566645782) -->
-    <skip />
+    <string name="status_bar_pin_supervision" msgid="4376576498566645782">"הגנה באמצעות קוד אימות על חלק מההגדרות במכשיר"</string>
     <string name="zen_alarm_warning" msgid="7844303238486849503">"לא ניתן יהיה לשמוע את השעון המעורר הבא שלך <xliff:g id="WHEN">%1$s</xliff:g>"</string>
     <string name="alarm_template" msgid="2234991538018805736">"בשעה <xliff:g id="WHEN">%1$s</xliff:g>"</string>
     <string name="alarm_template_far" msgid="3561752195856839456">"ב-<xliff:g id="WHEN">%1$s</xliff:g>"</string>
@@ -816,8 +814,7 @@
     <string name="accessibility_status_bar_satellite_available" msgid="6514855015496916829">"לוויין, יש חיבור זמין"</string>
     <string name="satellite_connected_carrier_text" msgid="118524195198532589">"תקשורת לוויינית למצב חירום"</string>
     <string name="satellite_emergency_only_carrier_text" msgid="9103913890116841786">"רק שיחות חירום או תקשורת לוויינית למצב חירום"</string>
-    <!-- no translation found for satellite_network_title_text (4825315858295910999) -->
-    <skip />
+    <string name="satellite_network_title_text" msgid="4825315858295910999">"רשת לוויינית"</string>
     <string name="accessibility_phone_string_format" msgid="7798841417881811812">"‫<xliff:g id="CARRIER_NAME">%1$s</xliff:g>, <xliff:g id="SIGNAL_STRENGTH_DESCRIPTION">%2$s</xliff:g>."</string>
     <string name="accessibility_no_signal" msgid="7052827511409250167">"אין קליטה"</string>
     <string name="accessibility_one_bar" msgid="5342012847647834506">"פס אחד"</string>
@@ -1439,7 +1436,6 @@
     <string name="dream_overlay_status_bar_alarm_set" msgid="566707328356590886">"השעון המעורר מוגדר"</string>
     <string name="dream_overlay_status_bar_camera_off" msgid="5273073778969890823">"המצלמה כבויה"</string>
     <string name="dream_overlay_status_bar_mic_off" msgid="8366534415013819396">"המיקרופון כבוי"</string>
-    <string name="dream_overlay_status_bar_camera_mic_off" msgid="3199425257833773569">"המצלמה והמיקרופון כבויים"</string>
     <string name="dream_overlay_status_bar_notification_indicator" msgid="8091389255691081711">"{count,plural, =1{התראה אחת}one{# התראות}two{# התראות}other{# התראות}}"</string>
     <string name="dream_overlay_weather_complication_desc" msgid="824503662089783824">"<xliff:g id="WEATHER_CONDITION">%1$s</xliff:g>, <xliff:g id="TEMPERATURE">%2$s</xliff:g>"</string>
     <string name="note_task_button_label" msgid="230135078402003532">"כתיבת הערות"</string>

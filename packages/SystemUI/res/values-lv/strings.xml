@@ -210,6 +210,12 @@
     <string name="biometric_dialog_use_pin" msgid="8385294115283000709">"Izmantot PIN"</string>
     <string name="biometric_dialog_use_pattern" msgid="2315593393167211194">"Izmantot kombināciju"</string>
     <string name="biometric_dialog_use_password" msgid="3445033859393474779">"Izmantot paroli"</string>
+    <string name="biometric_dialog_enter_pin" msgid="8625265944863623975">"Ievadiet PIN"</string>
+    <string name="biometric_dialog_enter_password" msgid="200503318983048202">"Ievadiet paroli"</string>
+    <string name="biometric_dialog_enter_pattern" msgid="3065746760277739487">"Ievadiet kombināciju"</string>
+    <string name="biometric_dialog_recovery_pin" msgid="5798389437594195177">"Pēc pārāk daudziem nesekmīgiem mēģinājumiem ir jāievada PIN, lai atkoptu biometriskos datus"</string>
+    <string name="biometric_dialog_recovery_pattern" msgid="382786088892502550">"Pēc pārāk daudziem nesekmīgiem mēģinājumiem ir jāievada kombinācija, lai atkoptu biometriskos datus"</string>
+    <string name="biometric_dialog_recovery_password" msgid="8288127966207678230">"Pēc pārāk daudziem nesekmīgiem mēģinājumiem ir jāievada parole, lai atkoptu biometriskos datus"</string>
     <string name="biometric_dialog_wrong_pin" msgid="1878539073972762803">"Nepareizs PIN"</string>
     <string name="biometric_dialog_wrong_pattern" msgid="8954812279840889029">"Nepareiza kombinācija"</string>
     <string name="biometric_dialog_wrong_password" msgid="69477929306843790">"Nepareiza parole"</string>
@@ -300,12 +306,9 @@
     <string name="accessibility_quick_settings_less_time" msgid="9110364286464977870">"Mazāk laika."</string>
     <string name="accessibility_casting_turned_off" msgid="1387906158563374962">"Ekrāna apraidīšana ir apturēta."</string>
     <string name="accessibility_brightness" msgid="5391187016177823721">"Ekrāna spilgtums"</string>
-    <!-- no translation found for accessibility_camera_in_use (1090160655874262911) -->
-    <skip />
-    <!-- no translation found for accessibility_microphone_in_use (1921058214238108340) -->
-    <skip />
-    <!-- no translation found for accessibility_camera_and_microphone_in_use (1250516397875447442) -->
-    <skip />
+    <string name="accessibility_camera_in_use" msgid="1090160655874262911">"Tiek izmantota kamera"</string>
+    <string name="accessibility_microphone_in_use" msgid="1921058214238108340">"Tiek izmantots mikrofons"</string>
+    <string name="accessibility_camera_and_microphone_in_use" msgid="1250516397875447442">"Tiek izmantota kamera un mikrofons"</string>
     <string name="data_usage_disabled_dialog_mobile_title" msgid="2286843518689837719">"Mobilo datu lietojums apturēts"</string>
     <string name="data_usage_disabled_dialog_title" msgid="9131615296036724838">"Datu lietojums ir apturēts"</string>
     <string name="data_usage_disabled_dialog" msgid="7933201635215099780">"Ir sasniegts jūsu iestatītais datu ierobežojums. Jūs vairs neizmantojat mobilos datus.\n\nJa atsāksiet, var tikt piemērota maksa par datu lietojumu."</string>
@@ -1437,7 +1440,6 @@
     <string name="dream_overlay_status_bar_alarm_set" msgid="566707328356590886">"Signāls ir iestatīts"</string>
     <string name="dream_overlay_status_bar_camera_off" msgid="5273073778969890823">"Kamera ir izslēgta"</string>
     <string name="dream_overlay_status_bar_mic_off" msgid="8366534415013819396">"Mikrofons ir izslēgts"</string>
-    <string name="dream_overlay_status_bar_camera_mic_off" msgid="3199425257833773569">"Kamera un mikrofons ir izslēgti"</string>
     <string name="dream_overlay_status_bar_notification_indicator" msgid="8091389255691081711">"{count,plural, =1{# paziņojums}zero{# paziņojumu}one{# paziņojums}other{# paziņojumi}}"</string>
     <string name="dream_overlay_weather_complication_desc" msgid="824503662089783824">"<xliff:g id="WEATHER_CONDITION">%1$s</xliff:g>, <xliff:g id="TEMPERATURE">%2$s</xliff:g>"</string>
     <string name="note_task_button_label" msgid="230135078402003532">"Piezīmju pierakstīšana"</string>

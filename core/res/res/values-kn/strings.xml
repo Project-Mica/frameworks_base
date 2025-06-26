@@ -354,16 +354,12 @@
     <string name="permgroupdesc_sensors" msgid="2610631290633747752">"ನಿಮ್ಮ ಮುಖ್ಯ ಲಕ್ಷಣಗಳ ಕುರಿತು ಸೆನ್ಸಾರ್ ಡೇಟಾವನ್ನು ಪ್ರವೇಶಿಸಿ"</string>
     <string name="permgrouplab_notifications" msgid="5472972361980668884">"ನೋಟಿಫಿಕೇಶನ್‌ಗಳು"</string>
     <string name="permgroupdesc_notifications" msgid="4608679556801506580">"ಅಧಿಸೂಚನೆಗಳನ್ನು ತೋರಿಸಿ"</string>
-    <!-- no translation found for permgrouplab_xr_eye_sensitive (2099659100156643683) -->
-    <skip />
-    <!-- no translation found for permgroupdesc_xr_eye_sensitive (1414121516133760271) -->
-    <skip />
+    <string name="permgrouplab_xr_eye_sensitive" msgid="2099659100156643683">"XR ಸೂಕ್ಷ್ಮ ಐ ಟ್ರ್ಯಾಕಿಂಗ್ ಡೇಟಾ"</string>
+    <string name="permgroupdesc_xr_eye_sensitive" msgid="1414121516133760271">"ಸೂಕ್ಷ್ಮ ಕಣ್ಣಿನ ನೋಟದ ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಿ"</string>
     <string name="permgrouplab_xr_tracking" msgid="7418994009794287471">"XR ಟ್ರ್ಯಾಕಿಂಗ್ ಡೇಟಾ"</string>
     <string name="permgroupdesc_xr_tracking" msgid="6777198859446500821">"ನಿಮ್ಮ ಮತ್ತು ನಿಮ್ಮ ಸುತ್ತಲಿನ ಪರಿಸರದ ಕುರಿತು XR ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಿ"</string>
-    <!-- no translation found for permgrouplab_xr_tracking_sensitive (2993940754322250652) -->
-    <skip />
-    <!-- no translation found for permgroupdesc_xr_tracking_sensitive (8498501397939308918) -->
-    <skip />
+    <string name="permgrouplab_xr_tracking_sensitive" msgid="2993940754322250652">"ಸೂಕ್ಷ್ಮ XR ಟ್ರ್ಯಾಕಿಂಗ್ ಡೇಟಾ"</string>
+    <string name="permgroupdesc_xr_tracking_sensitive" msgid="8498501397939308918">"ನಿಮ್ಮ ಮತ್ತು ನಿಮ್ಮ ಸುತ್ತಲಿನ ಪರಿಸರದ ಬಗ್ಗೆ ಸೂಕ್ಷ್ಮ ಟ್ರ್ಯಾಕಿಂಗ್ ಡೇಟಾವನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಿ"</string>
     <string name="capability_title_canRetrieveWindowContent" msgid="7554282892101587296">"ವಿಂಡೋ ವಿಷಯವನ್ನು ಹಿಂಪಡೆಯುತ್ತದೆ"</string>
     <string name="capability_desc_canRetrieveWindowContent" msgid="6195610527625237661">"ನೀವು ಸಂವಹನ ನಡೆಸುತ್ತಿರುವ ವಿಂಡೋದ ಕಂಟೆಂಟ್ ಅನ್ನು ಪರೀಕ್ಷಿಸಿ."</string>
     <string name="capability_title_canRequestTouchExploration" msgid="327598364696316213">"ಸ್ಪರ್ಶ-ಎಕ್ಸ್‌ಪ್ಲೋರ್ ಆನ್ ಮಾಡುತ್ತದೆ"</string>
@@ -409,7 +405,7 @@
     <string name="permlab_accessLastKnownCellId" msgid="7638226620825665130">"ಕೊನೆಯದಾಗಿ ತಿಳಿದಿರುವ ಸೆಲ್ ಗುರುತನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಿ."</string>
     <string name="permdesc_accessLastKnownCellId" msgid="6664621339249308857">"ಟೆಲಿಫೋನಿ ಒದಗಿಸಿದ ಕೊನೆಯದಾಗಿ ತಿಳಿದಿರುವ ಸೆಲ್ ಗುರುತನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು ಆ್ಯಪ್‌ಗೆ ಅನುಮತಿಸುತ್ತದೆ."</string>
     <string name="permlab_readCellBroadcasts" msgid="5869884450872137693">"ಸೆಲ್ ಪ್ರಸಾರದ ಸಂದೇಶಗಳನ್ನು ಓದಿರಿ"</string>
-    <string name="permdesc_readCellBroadcasts" msgid="672513437331980168">"ನಿಮ್ಮ ಸಾಧನದಿಂದ ಸ್ವೀಕರಿಸಿದ ಸೆಲ್ ಪ್ರಸಾರ ಸಂದೇಶಗಳನ್ನು ರೀಡ್ ಮಾಡಲು ಅಪ್ಲಿಕೇಶನ್‌‌ಗೆ ಅನುಮತಿಸುತ್ತದೆ. ಸೆಲ್ ಪ್ರಸಾರ ಎಚ್ಚರಿಕೆಗಳನ್ನು ತುರ್ತು ಸಂದರ್ಭಗಳಲ್ಲಿ ನಿಮಗೆ ಎಚ್ಚರಿಸುವ ಸಲುವಾಗಿ ಕೆಲವು ಸ್ಥಳಗಳಲ್ಲಿ ವಿತರಿಸಲಾಗುತ್ತದೆ. ದುರುದ್ದೇಶಪೂರಿತ ಅಪ್ಲಿಕೇಶನ್‌‌‌ಗಳು ತುರ್ತು ಸೆಲ್ ಪ್ರಸಾರವನ್ನು ಸ್ವೀಕರಿಸುವಾಗ, ನಿಮ್ಮ ಸಾಧನದ ಕಾರ್ಯಕ್ಷಮತೆ ಇಲ್ಲವೇ ಕಾರ್ಯಾಚರಣೆಯಲ್ಲಿ ಹಸ್ತಕ್ಷೇಪ ಮಾಡಬಹುದು."</string>
+    <string name="permdesc_readCellBroadcasts" msgid="672513437331980168">"ನಿಮ್ಮ ಸಾಧನದಿಂದ ಸ್ವೀಕರಿಸಿದ ಸೆಲ್ ಪ್ರಸಾರ ಸಂದೇಶಗಳನ್ನು ರೀಡ್ ಮಾಡಲು ಆ್ಯಪ್‌ಗೆ ಅನುಮತಿಸುತ್ತದೆ. ಸೆಲ್ ಪ್ರಸಾರ ಎಚ್ಚರಿಕೆಗಳನ್ನು ತುರ್ತು ಸಂದರ್ಭಗಳಲ್ಲಿ ನಿಮಗೆ ಎಚ್ಚರಿಸುವ ಸಲುವಾಗಿ ಕೆಲವು ಸ್ಥಳಗಳಲ್ಲಿ ವಿತರಿಸಲಾಗುತ್ತದೆ. ದುರುದ್ದೇಶಪೂರಿತ ಆ್ಯಪ್‌ಗಳು ತುರ್ತು ಸೆಲ್ ಪ್ರಸಾರವನ್ನು ಸ್ವೀಕರಿಸುವಾಗ, ನಿಮ್ಮ ಸಾಧನದ ಪರ್ಫಾರ್ಮೆನ್ಸ್ ಇಲ್ಲವೇ ಕಾರ್ಯಾಚರಣೆಯಲ್ಲಿ ಹಸ್ತಕ್ಷೇಪ ಮಾಡಬಹುದು."</string>
     <string name="permlab_subscribedFeedsRead" msgid="217624769238425461">"ಚಂದಾದಾರ ಫೀಡ್‌ಗಳನ್ನು ಓದಿ"</string>
     <string name="permdesc_subscribedFeedsRead" msgid="6911349196661811865">"ಪ್ರಸ್ತುತ ಸಿಂಕ್‌ ಮಾಡಲಾದ ಫೀಡ್‌ಗಳ ಕುರಿತು ವಿವರಗಳನ್ನು ಪಡೆಯಲು ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಅನುಮತಿಸುತ್ತದೆ."</string>
     <string name="permlab_sendSms" msgid="7757368721742014252">"SMS ಸಂದೇಶಗಳನ್ನು ಕಳುಹಿಸಲು ಮತ್ತು ನಿರ್ವಹಿಸಲು"</string>

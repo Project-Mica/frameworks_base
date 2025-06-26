@@ -210,6 +210,12 @@
     <string name="biometric_dialog_use_pin" msgid="8385294115283000709">"PIN verwenden"</string>
     <string name="biometric_dialog_use_pattern" msgid="2315593393167211194">"Muster verwenden"</string>
     <string name="biometric_dialog_use_password" msgid="3445033859393474779">"Passwort verwenden"</string>
+    <string name="biometric_dialog_enter_pin" msgid="8625265944863623975">"PIN eingeben"</string>
+    <string name="biometric_dialog_enter_password" msgid="200503318983048202">"Passwort eingeben"</string>
+    <string name="biometric_dialog_enter_pattern" msgid="3065746760277739487">"Muster eingeben"</string>
+    <string name="biometric_dialog_recovery_pin" msgid="5798389437594195177">"Nach einer gewissen Anzahl an Fehlversuchen ist die Eingabe der PIN erforderlich, um die Anmeldung mit biometrischen Daten wiederherzustellen"</string>
+    <string name="biometric_dialog_recovery_pattern" msgid="382786088892502550">"Nach einer gewissen Anzahl an Fehlversuchen ist die Eingabe des Musters erforderlich, um die Anmeldung mit biometrischen Daten wiederherzustellen"</string>
+    <string name="biometric_dialog_recovery_password" msgid="8288127966207678230">"Nach einer gewissen Anzahl an Fehlversuchen ist die Eingabe des Passworts erforderlich, um die Anmeldung mit biometrischen Daten wiederherzustellen"</string>
     <string name="biometric_dialog_wrong_pin" msgid="1878539073972762803">"Falsche PIN"</string>
     <string name="biometric_dialog_wrong_pattern" msgid="8954812279840889029">"Falsches Muster"</string>
     <string name="biometric_dialog_wrong_password" msgid="69477929306843790">"Falsches Passwort"</string>
@@ -300,12 +306,9 @@
     <string name="accessibility_quick_settings_less_time" msgid="9110364286464977870">"Weniger Zeit"</string>
     <string name="accessibility_casting_turned_off" msgid="1387906158563374962">"Die Bildschirmübertragung wurde angehalten."</string>
     <string name="accessibility_brightness" msgid="5391187016177823721">"Helligkeit des Displays"</string>
-    <!-- no translation found for accessibility_camera_in_use (1090160655874262911) -->
-    <skip />
-    <!-- no translation found for accessibility_microphone_in_use (1921058214238108340) -->
-    <skip />
-    <!-- no translation found for accessibility_camera_and_microphone_in_use (1250516397875447442) -->
-    <skip />
+    <string name="accessibility_camera_in_use" msgid="1090160655874262911">"Kamera wird verwendet"</string>
+    <string name="accessibility_microphone_in_use" msgid="1921058214238108340">"Mikrofon wird verwendet"</string>
+    <string name="accessibility_camera_and_microphone_in_use" msgid="1250516397875447442">"Kamera und Mikrofon werden verwendet"</string>
     <string name="data_usage_disabled_dialog_mobile_title" msgid="2286843518689837719">"Mobile Datennutzung pausiert"</string>
     <string name="data_usage_disabled_dialog_title" msgid="9131615296036724838">"Daten pausiert"</string>
     <string name="data_usage_disabled_dialog" msgid="7933201635215099780">"Das von dir festgelegte Datenlimit wurde erreicht. Die mobile Datennutzung wurde deaktiviert.\n\nWenn du weiterhin mobile Daten nutzt, können Gebühren anfallen."</string>
@@ -655,8 +658,7 @@
     <string name="go_to_adaptive_notification_settings" msgid="2423690125178298479">"Deaktivieren"</string>
     <string name="unlock_to_see_notif_text" msgid="7439033907167561227">"Für ältere Benachrichtigungen entsperren"</string>
     <string name="quick_settings_disclosure_parental_controls" msgid="2114102871438223600">"Dieses Gerät wird von deinen Eltern verwaltet"</string>
-    <!-- no translation found for quick_settings_disclosure_pin_protection (9219481515114868267) -->
-    <skip />
+    <string name="quick_settings_disclosure_pin_protection" msgid="9219481515114868267">"Einige Geräteeinstellungen sind durch eine PIN geschützt."</string>
     <string name="quick_settings_disclosure_management_monitoring" msgid="8231336875820702180">"Deine Organisation verwaltet dieses Gerät und kann den Netzwerkverkehr überwachen"</string>
     <string name="quick_settings_disclosure_named_management_monitoring" msgid="2831423806103479812">"<xliff:g id="ORGANIZATION_NAME">%1$s</xliff:g> ist der Eigentümer dieses Geräts und kann den Netzwerkverkehr überwachen"</string>
     <string name="quick_settings_financed_disclosure_named_management" msgid="2307703784594859524">"Dieses Gerät wird von <xliff:g id="ORGANIZATION_NAME">%s</xliff:g> zur Verfügung gestellt"</string>
@@ -697,8 +699,7 @@
     <string name="monitoring_description_vpn_settings_separator" msgid="8292589617720435430">" "</string>
     <string name="monitoring_description_vpn_settings" msgid="5264167033247632071">"VPN-Einstellungen öffnen"</string>
     <string name="monitoring_description_parental_controls" msgid="8184693528917051626">"Dieses Gerät wird von deinen Eltern verwaltet. Sie können unter anderem Informationen über deine genutzten Apps, deinen Standort und deine Bildschirmzeit einsehen und verwalten."</string>
-    <!-- no translation found for monitoring_description_pin_protection (1983580207046670355) -->
-    <skip />
+    <string name="monitoring_description_pin_protection" msgid="1983580207046670355">"Einige Einstellungen auf deinem Gerät, z. B. Tageslimits und Ruhezeit, können nur mit einer PIN geändert werden."</string>
     <string name="legacy_vpn_name" msgid="4174223520162559145">"VPN"</string>
     <string name="keyguard_indication_trust_unlocked" msgid="7395154975733744547">"Durch TrustAgent entsperrt"</string>
     <string name="kg_prompt_after_adaptive_auth_lock" msgid="2587481497846342760">"Das Gerät wurde aufgrund zu vieler Authentifizierungsversuche gesperrt"</string>
@@ -802,8 +803,7 @@
     <string name="status_bar_work" msgid="5238641949837091056">"Arbeitsprofil"</string>
     <string name="status_bar_airplane" msgid="4848702508684541009">"Flugmodus"</string>
     <string name="status_bar_supervision" msgid="6735015942701134125">"Jugendschutzeinstellungen"</string>
-    <!-- no translation found for status_bar_pin_supervision (4376576498566645782) -->
-    <skip />
+    <string name="status_bar_pin_supervision" msgid="4376576498566645782">"PIN-Schutz für einige Geräteeinstellungen"</string>
     <string name="zen_alarm_warning" msgid="7844303238486849503">"Lautloser Weckruf <xliff:g id="WHEN">%1$s</xliff:g>"</string>
     <string name="alarm_template" msgid="2234991538018805736">"um <xliff:g id="WHEN">%1$s</xliff:g>"</string>
     <string name="alarm_template_far" msgid="3561752195856839456">"am <xliff:g id="WHEN">%1$s</xliff:g>"</string>
@@ -814,8 +814,7 @@
     <string name="accessibility_status_bar_satellite_available" msgid="6514855015496916829">"Satellit, Verbindung verfügbar"</string>
     <string name="satellite_connected_carrier_text" msgid="118524195198532589">"Notruf über Satellit"</string>
     <string name="satellite_emergency_only_carrier_text" msgid="9103913890116841786">"Nur Notrufe oder SOS"</string>
-    <!-- no translation found for satellite_network_title_text (4825315858295910999) -->
-    <skip />
+    <string name="satellite_network_title_text" msgid="4825315858295910999">"Satellitennetz"</string>
     <string name="accessibility_phone_string_format" msgid="7798841417881811812">"<xliff:g id="CARRIER_NAME">%1$s</xliff:g>, <xliff:g id="SIGNAL_STRENGTH_DESCRIPTION">%2$s</xliff:g>."</string>
     <string name="accessibility_no_signal" msgid="7052827511409250167">"kein Empfang"</string>
     <string name="accessibility_one_bar" msgid="5342012847647834506">"ein Balken"</string>
@@ -1437,7 +1436,6 @@
     <string name="dream_overlay_status_bar_alarm_set" msgid="566707328356590886">"Wecker gestellt"</string>
     <string name="dream_overlay_status_bar_camera_off" msgid="5273073778969890823">"Kamera ist deaktiviert"</string>
     <string name="dream_overlay_status_bar_mic_off" msgid="8366534415013819396">"Mikrofon ist deaktiviert"</string>
-    <string name="dream_overlay_status_bar_camera_mic_off" msgid="3199425257833773569">"Kamera und Mikrofon ausgeschaltet"</string>
     <string name="dream_overlay_status_bar_notification_indicator" msgid="8091389255691081711">"{count,plural, =1{# Benachrichtigung}other{# Benachrichtigungen}}"</string>
     <string name="dream_overlay_weather_complication_desc" msgid="824503662089783824">"<xliff:g id="WEATHER_CONDITION">%1$s</xliff:g>, <xliff:g id="TEMPERATURE">%2$s</xliff:g>"</string>
     <string name="note_task_button_label" msgid="230135078402003532">"Notizen"</string>

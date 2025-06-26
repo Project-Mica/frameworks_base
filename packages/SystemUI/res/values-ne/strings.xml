@@ -210,6 +210,12 @@
     <string name="biometric_dialog_use_pin" msgid="8385294115283000709">"PIN प्रयोग गर्नुहोस्"</string>
     <string name="biometric_dialog_use_pattern" msgid="2315593393167211194">"प्याटर्न प्रयोग गर्नुहोस्"</string>
     <string name="biometric_dialog_use_password" msgid="3445033859393474779">"पासवर्ड प्रयोग गर्नुहोस्"</string>
+    <string name="biometric_dialog_enter_pin" msgid="8625265944863623975">"आफ्नो PIN हाल्नुहोस्"</string>
+    <string name="biometric_dialog_enter_password" msgid="200503318983048202">"आफ्नो पासवर्ड हाल्नुहोस्"</string>
+    <string name="biometric_dialog_enter_pattern" msgid="3065746760277739487">"आफ्नो प्याटर्न हाल्नुहोस्"</string>
+    <string name="biometric_dialog_recovery_pin" msgid="5798389437594195177">"धेरै पटक प्रयास गर्दा पनि बायोमेट्रिक्स नमिलेका खण्डमा बायोमेट्रिक्स रिकभर गर्न PIN चाहिन्छ"</string>
+    <string name="biometric_dialog_recovery_pattern" msgid="382786088892502550">"धेरै पटक प्रयास गर्दा पनि बायोमेट्रिक्स नमिलेका खण्डमा बायोमेट्रिक्स रिकभर गर्न प्याटर्न चाहिन्छ"</string>
+    <string name="biometric_dialog_recovery_password" msgid="8288127966207678230">"धेरै पटक प्रयास गर्दा पनि बायोमेट्रिक्स नमिलेका खण्डमा बायोमेट्रिक्स रिकभर गर्न पासवर्ड चाहिन्छ"</string>
     <string name="biometric_dialog_wrong_pin" msgid="1878539073972762803">"PIN मिलेन"</string>
     <string name="biometric_dialog_wrong_pattern" msgid="8954812279840889029">"प्याटर्न मिलेन"</string>
     <string name="biometric_dialog_wrong_password" msgid="69477929306843790">"पासवर्ड मिलेन"</string>
@@ -300,12 +306,9 @@
     <string name="accessibility_quick_settings_less_time" msgid="9110364286464977870">"कम समय।"</string>
     <string name="accessibility_casting_turned_off" msgid="1387906158563374962">"स्क्रिन कास्टिङ रोकियो।"</string>
     <string name="accessibility_brightness" msgid="5391187016177823721">"प्रदर्शन चमक"</string>
-    <!-- no translation found for accessibility_camera_in_use (1090160655874262911) -->
-    <skip />
-    <!-- no translation found for accessibility_microphone_in_use (1921058214238108340) -->
-    <skip />
-    <!-- no translation found for accessibility_camera_and_microphone_in_use (1250516397875447442) -->
-    <skip />
+    <string name="accessibility_camera_in_use" msgid="1090160655874262911">"क्यामेरा प्रयोग भइरहेको छ"</string>
+    <string name="accessibility_microphone_in_use" msgid="1921058214238108340">"माइक्रोफोन प्रयोग भइरहेको छ"</string>
+    <string name="accessibility_camera_and_microphone_in_use" msgid="1250516397875447442">"क्यामेरा र माइक्रोफोन प्रयोग भइरहेका छन्"</string>
     <string name="data_usage_disabled_dialog_mobile_title" msgid="2286843518689837719">"मोबाइल डेटा पज गरिएको छ"</string>
     <string name="data_usage_disabled_dialog_title" msgid="9131615296036724838">"डेटा रोकिएको छ"</string>
     <string name="data_usage_disabled_dialog" msgid="7933201635215099780">"तपाईंले सेट गर्नुभएको डेटाको अधिकतम सीमामा पुगिएको छ। तपाईंले अब उप्रान्त मोबाइल डेटाको प्रयोग गर्नुहुने छैन। \n\nतपाईंले प्रयोग जारी राख्नुभयो भने डेटा प्रयोगका शुल्कहरू लाग्न सक्छन्।"</string>
@@ -655,8 +658,7 @@
     <string name="go_to_adaptive_notification_settings" msgid="2423690125178298479">"अफ गर्नुहोस्"</string>
     <string name="unlock_to_see_notif_text" msgid="7439033907167561227">"पुराना सूचनाहरू हेर्न अनलक गर्नुहोस्"</string>
     <string name="quick_settings_disclosure_parental_controls" msgid="2114102871438223600">"यो डिभाइस तपाईंका अभिभावक व्यवस्थापन गर्नुहुन्छ"</string>
-    <!-- no translation found for quick_settings_disclosure_pin_protection (9219481515114868267) -->
-    <skip />
+    <string name="quick_settings_disclosure_pin_protection" msgid="9219481515114868267">"डिभाइसका केही सेटिङ PIN मार्फत सुरक्षित गरिएका छन्।"</string>
     <string name="quick_settings_disclosure_management_monitoring" msgid="8231336875820702180">"यो डिभाइस तपाईंको सङ्गठनको स्वामित्वमा छ र उक्त सङ्गठनले यसको नेटवर्क ट्राफिक अनुगमन गर्न सक्छ"</string>
     <string name="quick_settings_disclosure_named_management_monitoring" msgid="2831423806103479812">"यो डिभाइस <xliff:g id="ORGANIZATION_NAME">%1$s</xliff:g> को स्वामित्वमा छ र उक्त सङ्गठनले यसको नेटवर्क ट्राफिक अनुगमन गर्न सक्छ"</string>
     <string name="quick_settings_financed_disclosure_named_management" msgid="2307703784594859524">"<xliff:g id="ORGANIZATION_NAME">%s</xliff:g> ले यो डिभाइस उपलब्ध गराएको हो"</string>
@@ -697,8 +699,7 @@
     <string name="monitoring_description_vpn_settings_separator" msgid="8292589617720435430">" "</string>
     <string name="monitoring_description_vpn_settings" msgid="5264167033247632071">"VPN सम्बन्धी सेटिङहरू खोल्नुहोस्"</string>
     <string name="monitoring_description_parental_controls" msgid="8184693528917051626">"यो डिभाइस तपाईंका अभिभावक व्यवस्थापन गर्नुहुन्छ। तपाईंका अभिभावक तपाईंले प्रयोग गर्ने एप, तपाईंको स्थान र तपाईंले यन्त्र चलाएर बिताउने समय जस्ता जानकारी हेर्न तथा व्यवस्थापन गर्न सक्नुहुन्छ।"</string>
-    <!-- no translation found for monitoring_description_pin_protection (1983580207046670355) -->
-    <skip />
+    <string name="monitoring_description_pin_protection" msgid="1983580207046670355">"तपाईंको डिभाइसमा सेट गरिएका दैनिक सीमा र डाउनटाइम जस्ता केही कन्ट्रोलहरू PIN प्रयोग गरेर मात्र परिवर्तन गर्न सकिन्छ।"</string>
     <string name="legacy_vpn_name" msgid="4174223520162559145">"VPN"</string>
     <string name="keyguard_indication_trust_unlocked" msgid="7395154975733744547">"TrustAgent ले खुला राखेको"</string>
     <string name="kg_prompt_after_adaptive_auth_lock" msgid="2587481497846342760">"डिभाइस लक गरिएको छ, निकै धेरै पटक प्रमाणीकरण गर्ने प्रयास भएको छ"</string>
@@ -802,8 +803,7 @@
     <string name="status_bar_work" msgid="5238641949837091056">"वर्क प्रोफाइल"</string>
     <string name="status_bar_airplane" msgid="4848702508684541009">"हवाइजहाज मोड"</string>
     <string name="status_bar_supervision" msgid="6735015942701134125">"अभिभावकीय नियन्त्रणहरू"</string>
-    <!-- no translation found for status_bar_pin_supervision (4376576498566645782) -->
-    <skip />
+    <string name="status_bar_pin_supervision" msgid="4376576498566645782">"डिभाइसका केही कन्ट्रोलहरू PIN मार्फत सुरक्षित गरिएका छन्"</string>
     <string name="zen_alarm_warning" msgid="7844303238486849503">"तपाईँले आफ्नो अर्को अलार्म <xliff:g id="WHEN">%1$s</xliff:g> सुन्नुहुने छैन"</string>
     <string name="alarm_template" msgid="2234991538018805736">"<xliff:g id="WHEN">%1$s</xliff:g> मा"</string>
     <string name="alarm_template_far" msgid="3561752195856839456">"<xliff:g id="WHEN">%1$s</xliff:g> मा"</string>
@@ -814,8 +814,7 @@
     <string name="accessibility_status_bar_satellite_available" msgid="6514855015496916829">"स्याटलाइट, कनेक्सन उपलब्ध छ"</string>
     <string name="satellite_connected_carrier_text" msgid="118524195198532589">"स्याटलाइट SOS"</string>
     <string name="satellite_emergency_only_carrier_text" msgid="9103913890116841786">"आपत्‌कालीन कल वा SOS मात्र"</string>
-    <!-- no translation found for satellite_network_title_text (4825315858295910999) -->
-    <skip />
+    <string name="satellite_network_title_text" msgid="4825315858295910999">"स्याटलाइट नेटवर्क"</string>
     <string name="accessibility_phone_string_format" msgid="7798841417881811812">"<xliff:g id="CARRIER_NAME">%1$s</xliff:g>, <xliff:g id="SIGNAL_STRENGTH_DESCRIPTION">%2$s</xliff:g>।"</string>
     <string name="accessibility_no_signal" msgid="7052827511409250167">"सिग्नल छैन"</string>
     <string name="accessibility_one_bar" msgid="5342012847647834506">"एउटा बार"</string>
@@ -876,7 +875,7 @@
     <string name="notification_unblockable_call_desc" msgid="5907328164696532169">"कलसम्बन्धी सूचनाहरू परिमार्जन गर्न मिल्दैन।"</string>
     <string name="notification_multichannel_desc" msgid="7414593090056236179">"यहाँबाट सूचनाहरूको यो समूह कन्फिगर गर्न सकिँदैन"</string>
     <string name="notification_delegate_header" msgid="1264510071031479920">"प्रोक्सीमार्फत आउने सूचना"</string>
-    <string name="notification_channel_dialog_title" msgid="6856514143093200019">"<xliff:g id="APP_NAME">%1$s</xliff:g> सम्बन्धी सबै सूचनाहरू"</string>
+    <string name="notification_channel_dialog_title" msgid="6856514143093200019">"<xliff:g id="APP_NAME">%1$s</xliff:g>  सम्बन्धी सबै नोटिफिकेसनहरू"</string>
     <string name="see_more_title" msgid="7409317011708185729">"थप हेर्नुहोस्"</string>
     <string name="feedback_alerted" msgid="5192459808484271208">"सिस्टमले स्वतः यस सूचनालाई &lt;b&gt;महत्त्वपूर्ण ठानी डिफल्ट मोडमा&lt;/b&gt; सेट गरिदियो।"</string>
     <string name="feedback_silenced" msgid="9116540317466126457">"सिस्टमले स्वतः यस सूचनालाई &lt;b&gt;कम महत्त्वपूर्ण ठानी साइलेन्ट मोडमा&lt;/b&gt; सेट गरिदियो।"</string>
@@ -1437,7 +1436,6 @@
     <string name="dream_overlay_status_bar_alarm_set" msgid="566707328356590886">"अलार्म सेट गरिएको छ"</string>
     <string name="dream_overlay_status_bar_camera_off" msgid="5273073778969890823">"क्यामेरा अफ छ"</string>
     <string name="dream_overlay_status_bar_mic_off" msgid="8366534415013819396">"माइक अफ छ"</string>
-    <string name="dream_overlay_status_bar_camera_mic_off" msgid="3199425257833773569">"क्यामेरा र माइक अफ छन्"</string>
     <string name="dream_overlay_status_bar_notification_indicator" msgid="8091389255691081711">"{count,plural, =1{# वटा सूचना}other{# वटा सूचनाहरू}}"</string>
     <string name="dream_overlay_weather_complication_desc" msgid="824503662089783824">"<xliff:g id="WEATHER_CONDITION">%1$s</xliff:g>, <xliff:g id="TEMPERATURE">%2$s</xliff:g>"</string>
     <string name="note_task_button_label" msgid="230135078402003532">"नोट लेख्ने कार्य"</string>

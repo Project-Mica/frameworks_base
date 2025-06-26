@@ -210,6 +210,12 @@
     <string name="biometric_dialog_use_pin" msgid="8385294115283000709">"Naudoti PIN kodą"</string>
     <string name="biometric_dialog_use_pattern" msgid="2315593393167211194">"Naudoti atrakinimo piešinį"</string>
     <string name="biometric_dialog_use_password" msgid="3445033859393474779">"Naudoti slaptažodį"</string>
+    <string name="biometric_dialog_enter_pin" msgid="8625265944863623975">"Įveskite PIN kodą"</string>
+    <string name="biometric_dialog_enter_password" msgid="200503318983048202">"Įveskite slaptažodį"</string>
+    <string name="biometric_dialog_enter_pattern" msgid="3065746760277739487">"Nubrėžkite atrakinimo piešinį"</string>
+    <string name="biometric_dialog_recovery_pin" msgid="5798389437594195177">"Norint atkurti biometrinius duomenis po per daug nesėkmingų bandymų reikia įvesti PIN kodą"</string>
+    <string name="biometric_dialog_recovery_pattern" msgid="382786088892502550">"Norint atkurti biometrinius duomenis po per daug nesėkmingų bandymų reikia nubrėžti atrakinimo piešinį"</string>
+    <string name="biometric_dialog_recovery_password" msgid="8288127966207678230">"Norint atkurti biometrinius duomenis po per daug nesėkmingų bandymų reikia įvesti slaptažodį"</string>
     <string name="biometric_dialog_wrong_pin" msgid="1878539073972762803">"Netinkamas PIN kodas"</string>
     <string name="biometric_dialog_wrong_pattern" msgid="8954812279840889029">"Netinkamas atrakinimo piešinys"</string>
     <string name="biometric_dialog_wrong_password" msgid="69477929306843790">"Netinkamas slaptažodis"</string>
@@ -300,12 +306,9 @@
     <string name="accessibility_quick_settings_less_time" msgid="9110364286464977870">"Mažiau laiko."</string>
     <string name="accessibility_casting_turned_off" msgid="1387906158563374962">"Ekrano perdavimas sustabdytas."</string>
     <string name="accessibility_brightness" msgid="5391187016177823721">"Ekrano šviesumas"</string>
-    <!-- no translation found for accessibility_camera_in_use (1090160655874262911) -->
-    <skip />
-    <!-- no translation found for accessibility_microphone_in_use (1921058214238108340) -->
-    <skip />
-    <!-- no translation found for accessibility_camera_and_microphone_in_use (1250516397875447442) -->
-    <skip />
+    <string name="accessibility_camera_in_use" msgid="1090160655874262911">"Naudojama vaizdo kamera"</string>
+    <string name="accessibility_microphone_in_use" msgid="1921058214238108340">"Naudojamas mikrofonas"</string>
+    <string name="accessibility_camera_and_microphone_in_use" msgid="1250516397875447442">"Naudojami vaizdo kamera ir mikrofonas"</string>
     <string name="data_usage_disabled_dialog_mobile_title" msgid="2286843518689837719">"Mobiliojo ryšio duomenys pristabdyti"</string>
     <string name="data_usage_disabled_dialog_title" msgid="9131615296036724838">"Duomenys pristabdyti"</string>
     <string name="data_usage_disabled_dialog" msgid="7933201635215099780">"Pasiektas nustatytas duomenų limitas. Nebenaudojate mobiliojo ryšio duomenų.\n\nJei tęsite, gali būti taikomi duomenų naudojimo mokesčiai."</string>
@@ -655,8 +658,7 @@
     <string name="go_to_adaptive_notification_settings" msgid="2423690125178298479">"Išjungti"</string>
     <string name="unlock_to_see_notif_text" msgid="7439033907167561227">"Atrakinę matykite senesnius pranešimus"</string>
     <string name="quick_settings_disclosure_parental_controls" msgid="2114102871438223600">"Šį įrenginį tvarko vienas iš tavo tėvų"</string>
-    <!-- no translation found for quick_settings_disclosure_pin_protection (9219481515114868267) -->
-    <skip />
+    <string name="quick_settings_disclosure_pin_protection" msgid="9219481515114868267">"Kai kurie įrenginio nustatymai apsaugoti PIN kodu."</string>
     <string name="quick_settings_disclosure_management_monitoring" msgid="8231336875820702180">"Šis įrenginys priklauso jūsų organizacijai ir ji gali stebėti tinklo srautą"</string>
     <string name="quick_settings_disclosure_named_management_monitoring" msgid="2831423806103479812">"Šis įrenginys priklauso „<xliff:g id="ORGANIZATION_NAME">%1$s</xliff:g>“ ir ji gali stebėti tinklo srautą"</string>
     <string name="quick_settings_financed_disclosure_named_management" msgid="2307703784594859524">"Šį įrenginį teikia „<xliff:g id="ORGANIZATION_NAME">%s</xliff:g>“"</string>
@@ -697,8 +699,7 @@
     <string name="monitoring_description_vpn_settings_separator" msgid="8292589617720435430">" "</string>
     <string name="monitoring_description_vpn_settings" msgid="5264167033247632071">"Atidaryti VPN nustatymus"</string>
     <string name="monitoring_description_parental_controls" msgid="8184693528917051626">"Šį įrenginį tvarko vienas iš tavo tėvų. Jis gali peržiūrėti ir tvarkyti informaciją, pvz., tavo naudojamas programas, vietovę ir įrenginio naudojimo laiką."</string>
-    <!-- no translation found for monitoring_description_pin_protection (1983580207046670355) -->
-    <skip />
+    <string name="monitoring_description_pin_protection" msgid="1983580207046670355">"Kai kuriuos įrenginio valdiklius, pvz., dienos apribojimus ir neaktyvumo laiką, galima keisti tik naudojant PIN kodą."</string>
     <string name="legacy_vpn_name" msgid="4174223520162559145">"VPN"</string>
     <string name="keyguard_indication_trust_unlocked" msgid="7395154975733744547">"Atrakinta taikant „TrustAgent“"</string>
     <string name="kg_prompt_after_adaptive_auth_lock" msgid="2587481497846342760">"Įrenginys užrakintas, nes atlikta per daug bandymų autentifikuoti"</string>
@@ -802,8 +803,7 @@
     <string name="status_bar_work" msgid="5238641949837091056">"Darbo profilis"</string>
     <string name="status_bar_airplane" msgid="4848702508684541009">"Lėktuvo režimas"</string>
     <string name="status_bar_supervision" msgid="6735015942701134125">"Tėvų kontrolė"</string>
-    <!-- no translation found for status_bar_pin_supervision (4376576498566645782) -->
-    <skip />
+    <string name="status_bar_pin_supervision" msgid="4376576498566645782">"Kai kurių įrenginio valdiklių apsauga PIN kodu"</string>
     <string name="zen_alarm_warning" msgid="7844303238486849503">"Negirdėsite kito signalo <xliff:g id="WHEN">%1$s</xliff:g>"</string>
     <string name="alarm_template" msgid="2234991538018805736">"<xliff:g id="WHEN">%1$s</xliff:g>"</string>
     <string name="alarm_template_far" msgid="3561752195856839456">"<xliff:g id="WHEN">%1$s</xliff:g>"</string>
@@ -814,8 +814,7 @@
     <string name="accessibility_status_bar_satellite_available" msgid="6514855015496916829">"Palydovas, pasiekiamas ryšys"</string>
     <string name="satellite_connected_carrier_text" msgid="118524195198532589">"Prisijungimas prie palydovo kritiniu atveju"</string>
     <string name="satellite_emergency_only_carrier_text" msgid="9103913890116841786">"Tik skambučiai pagalbos numeriu arba prisijungimas prie palydovo kritiniu atveju"</string>
-    <!-- no translation found for satellite_network_title_text (4825315858295910999) -->
-    <skip />
+    <string name="satellite_network_title_text" msgid="4825315858295910999">"Palydovinis tinklas"</string>
     <string name="accessibility_phone_string_format" msgid="7798841417881811812">"„<xliff:g id="CARRIER_NAME">%1$s</xliff:g>“, <xliff:g id="SIGNAL_STRENGTH_DESCRIPTION">%2$s</xliff:g>."</string>
     <string name="accessibility_no_signal" msgid="7052827511409250167">"nėra signalo"</string>
     <string name="accessibility_one_bar" msgid="5342012847647834506">"viena juosta"</string>
@@ -1437,7 +1436,6 @@
     <string name="dream_overlay_status_bar_alarm_set" msgid="566707328356590886">"Signalas nustatytas"</string>
     <string name="dream_overlay_status_bar_camera_off" msgid="5273073778969890823">"Fotoaparatas išjungtas"</string>
     <string name="dream_overlay_status_bar_mic_off" msgid="8366534415013819396">"Mikrofonas išjungtas"</string>
-    <string name="dream_overlay_status_bar_camera_mic_off" msgid="3199425257833773569">"Vaizdo kamera ir mikrofonas išjungti"</string>
     <string name="dream_overlay_status_bar_notification_indicator" msgid="8091389255691081711">"{count,plural, =1{# pranešimas}one{# pranešimas}few{# pranešimai}many{# pranešimo}other{# pranešimų}}"</string>
     <string name="dream_overlay_weather_complication_desc" msgid="824503662089783824">"<xliff:g id="WEATHER_CONDITION">%1$s</xliff:g>, <xliff:g id="TEMPERATURE">%2$s</xliff:g>"</string>
     <string name="note_task_button_label" msgid="230135078402003532">"Užrašų kūrimas"</string>

@@ -210,6 +210,12 @@
     <string name="biometric_dialog_use_pin" msgid="8385294115283000709">"Folosește PIN-ul"</string>
     <string name="biometric_dialog_use_pattern" msgid="2315593393167211194">"Folosește modelul"</string>
     <string name="biometric_dialog_use_password" msgid="3445033859393474779">"Folosește parola"</string>
+    <string name="biometric_dialog_enter_pin" msgid="8625265944863623975">"Introdu codul PIN"</string>
+    <string name="biometric_dialog_enter_password" msgid="200503318983048202">"Introdu parola"</string>
+    <string name="biometric_dialog_enter_pattern" msgid="3065746760277739487">"Introdu modelul"</string>
+    <string name="biometric_dialog_recovery_pin" msgid="5798389437594195177">"PIN-ul este necesar pentru a recupera datele biometrice după prea multe încercări nereușite"</string>
+    <string name="biometric_dialog_recovery_pattern" msgid="382786088892502550">"Modelul este necesar pentru a recupera datele biometrice după prea multe încercări nereușite"</string>
+    <string name="biometric_dialog_recovery_password" msgid="8288127966207678230">"Parola este necesară pentru a recupera datele biometrice după prea multe încercări nereușite"</string>
     <string name="biometric_dialog_wrong_pin" msgid="1878539073972762803">"PIN greșit"</string>
     <string name="biometric_dialog_wrong_pattern" msgid="8954812279840889029">"Model greșit"</string>
     <string name="biometric_dialog_wrong_password" msgid="69477929306843790">"Parolă greșită"</string>
@@ -300,12 +306,9 @@
     <string name="accessibility_quick_settings_less_time" msgid="9110364286464977870">"Mai puțin timp."</string>
     <string name="accessibility_casting_turned_off" msgid="1387906158563374962">"Transmiterea ecranului a fost oprită."</string>
     <string name="accessibility_brightness" msgid="5391187016177823721">"Luminozitatea ecranului"</string>
-    <!-- no translation found for accessibility_camera_in_use (1090160655874262911) -->
-    <skip />
-    <!-- no translation found for accessibility_microphone_in_use (1921058214238108340) -->
-    <skip />
-    <!-- no translation found for accessibility_camera_and_microphone_in_use (1250516397875447442) -->
-    <skip />
+    <string name="accessibility_camera_in_use" msgid="1090160655874262911">"Se folosește camera foto"</string>
+    <string name="accessibility_microphone_in_use" msgid="1921058214238108340">"Microfonul este în uz"</string>
+    <string name="accessibility_camera_and_microphone_in_use" msgid="1250516397875447442">"Camera foto și microfonul sunt în uz"</string>
     <string name="data_usage_disabled_dialog_mobile_title" msgid="2286843518689837719">"Datele mobile sunt întrerupte"</string>
     <string name="data_usage_disabled_dialog_title" msgid="9131615296036724838">"Conexiunea de date este întreruptă"</string>
     <string name="data_usage_disabled_dialog" msgid="7933201635215099780">"A fost atinsă limita de date setată. Datele mobile nu mai sunt folosite.\n\nDacă reiei, se pot aplica taxe pentru utilizarea datelor."</string>
@@ -655,8 +658,7 @@
     <string name="go_to_adaptive_notification_settings" msgid="2423690125178298479">"Dezactivează"</string>
     <string name="unlock_to_see_notif_text" msgid="7439033907167561227">"Deblochează ca să vezi notificări vechi"</string>
     <string name="quick_settings_disclosure_parental_controls" msgid="2114102871438223600">"Dispozitivul este gestionat de unul dintre părinți"</string>
-    <!-- no translation found for quick_settings_disclosure_pin_protection (9219481515114868267) -->
-    <skip />
+    <string name="quick_settings_disclosure_pin_protection" msgid="9219481515114868267">"Unele setări ale dispozitivului sunt protejate prin PIN."</string>
     <string name="quick_settings_disclosure_management_monitoring" msgid="8231336875820702180">"Organizația ta deține acest dispozitiv și poate monitoriza traficul de rețea"</string>
     <string name="quick_settings_disclosure_named_management_monitoring" msgid="2831423806103479812">"<xliff:g id="ORGANIZATION_NAME">%1$s</xliff:g> deține acest dispozitiv și poate monitoriza traficul din rețea"</string>
     <string name="quick_settings_financed_disclosure_named_management" msgid="2307703784594859524">"Acest dispozitiv este oferit de <xliff:g id="ORGANIZATION_NAME">%s</xliff:g>"</string>
@@ -697,8 +699,7 @@
     <string name="monitoring_description_vpn_settings_separator" msgid="8292589617720435430">" "</string>
     <string name="monitoring_description_vpn_settings" msgid="5264167033247632071">"Deschide Setări VPN"</string>
     <string name="monitoring_description_parental_controls" msgid="8184693528917051626">"Dispozitivul este gestionat de unul dintre părinți. Părintele poate să vadă și să gestioneze informații cum ar fi aplicațiile pe care le folosești, locația ta și durata de folosire a dispozitivului."</string>
-    <!-- no translation found for monitoring_description_pin_protection (1983580207046670355) -->
-    <skip />
+    <string name="monitoring_description_pin_protection" msgid="1983580207046670355">"Unele comenzi de pe dispozitiv, cum ar fi limitele zilnice și inactivitatea, pot fi modificate numai cu un cod PIN."</string>
     <string name="legacy_vpn_name" msgid="4174223520162559145">"VPN"</string>
     <string name="keyguard_indication_trust_unlocked" msgid="7395154975733744547">"Deblocat de TrustAgent"</string>
     <string name="kg_prompt_after_adaptive_auth_lock" msgid="2587481497846342760">"Dispozitivul a fost blocat. Prea multe încercări de autentificare."</string>
@@ -802,8 +803,7 @@
     <string name="status_bar_work" msgid="5238641949837091056">"Profil de serviciu"</string>
     <string name="status_bar_airplane" msgid="4848702508684541009">"Mod Avion"</string>
     <string name="status_bar_supervision" msgid="6735015942701134125">"Control parental"</string>
-    <!-- no translation found for status_bar_pin_supervision (4376576498566645782) -->
-    <skip />
+    <string name="status_bar_pin_supervision" msgid="4376576498566645782">"Protecție prin PIN pentru unele comenzi ale dispozitivului"</string>
     <string name="zen_alarm_warning" msgid="7844303238486849503">"Nu vei auzi următoarea alarmă <xliff:g id="WHEN">%1$s</xliff:g>"</string>
     <string name="alarm_template" msgid="2234991538018805736">"la <xliff:g id="WHEN">%1$s</xliff:g>"</string>
     <string name="alarm_template_far" msgid="3561752195856839456">"<xliff:g id="WHEN">%1$s</xliff:g>"</string>
@@ -814,8 +814,7 @@
     <string name="accessibility_status_bar_satellite_available" msgid="6514855015496916829">"Satelit, conexiune disponibilă"</string>
     <string name="satellite_connected_carrier_text" msgid="118524195198532589">"SOS prin satelit"</string>
     <string name="satellite_emergency_only_carrier_text" msgid="9103913890116841786">"Numai apeluri de urgență sau SOS"</string>
-    <!-- no translation found for satellite_network_title_text (4825315858295910999) -->
-    <skip />
+    <string name="satellite_network_title_text" msgid="4825315858295910999">"Rețea prin satelit"</string>
     <string name="accessibility_phone_string_format" msgid="7798841417881811812">"<xliff:g id="CARRIER_NAME">%1$s</xliff:g>, <xliff:g id="SIGNAL_STRENGTH_DESCRIPTION">%2$s</xliff:g>."</string>
     <string name="accessibility_no_signal" msgid="7052827511409250167">"fără semnal"</string>
     <string name="accessibility_one_bar" msgid="5342012847647834506">"o bară"</string>
@@ -838,7 +837,7 @@
     <string name="notification_guts_bundle_title" msgid="5252530007273079591">"Dezactivează sunetul și grupează"</string>
     <string name="notification_guts_single_bundle_notif_title" msgid="3186784466618443494">"Folosește Organizatorul de notificări"</string>
     <string name="notification_guts_bundle_summary" msgid="3971530802237393600">"Pentru <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
-    <string name="notification_guts_promotions_summary" msgid="1565750619813325885">"Vânzări, funcții noi și altele"</string>
+    <string name="notification_guts_promotions_summary" msgid="1565750619813325885">"Reduceri, funcții noi și altele"</string>
     <string name="notification_guts_news_summary" msgid="638697931043407835">"Cele mai populare subiecte, editoriale și altele"</string>
     <string name="notification_guts_social_summary" msgid="3749147631983977040">"Aprecieri, postări și altele"</string>
     <string name="notification_guts_recs_summary" msgid="8391881843238947007">"Buletine informative, conținut media recomandat și altele"</string>
@@ -1069,7 +1068,7 @@
     <string name="accessibility_qs_edit_tile_removed" msgid="1175925632436612036">"Cardul a fost eliminat"</string>
     <string name="accessibility_desc_quick_settings_edit" msgid="741658939453595297">"Editorul pentru setări rapide."</string>
     <string name="accessibility_desc_notification_icon" msgid="7331265967584178674">"Notificare <xliff:g id="ID_1">%1$s</xliff:g>: <xliff:g id="ID_2">%2$s</xliff:g>"</string>
-    <string name="accessibility_quick_settings_settings" msgid="7098489591715844713">"Deschide setările."</string>
+    <string name="accessibility_quick_settings_settings" msgid="7098489591715844713">"Deschide setările"</string>
     <string name="accessibility_quick_settings_expand" msgid="2609275052412521467">"Deschide setările rapide."</string>
     <string name="accessibility_quick_settings_collapse" msgid="4674876336725041982">"Închide setările rapide."</string>
     <string name="accessibility_quick_settings_user" msgid="505821942882668619">"Conectat(ă) ca <xliff:g id="ID_1">%s</xliff:g>"</string>
@@ -1437,7 +1436,6 @@
     <string name="dream_overlay_status_bar_alarm_set" msgid="566707328356590886">"Alarmă setată"</string>
     <string name="dream_overlay_status_bar_camera_off" msgid="5273073778969890823">"Camera foto este dezactivată"</string>
     <string name="dream_overlay_status_bar_mic_off" msgid="8366534415013819396">"Microfonul este dezactivat"</string>
-    <string name="dream_overlay_status_bar_camera_mic_off" msgid="3199425257833773569">"Camera și microfonul sunt dezactivate"</string>
     <string name="dream_overlay_status_bar_notification_indicator" msgid="8091389255691081711">"{count,plural, =1{# notificare}few{# notificări}other{# de notificări}}"</string>
     <string name="dream_overlay_weather_complication_desc" msgid="824503662089783824">"<xliff:g id="WEATHER_CONDITION">%1$s</xliff:g>, <xliff:g id="TEMPERATURE">%2$s</xliff:g>"</string>
     <string name="note_task_button_label" msgid="230135078402003532">"Luare de notițe"</string>
