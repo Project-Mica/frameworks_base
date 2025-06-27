@@ -101,6 +101,12 @@ interface KeyguardRepository {
     val isKeyguardDismissible: StateFlow<Boolean>
 
     /**
+     * Whether device entry believes the device is trusted. This can be true or false when keyguard
+     * has been dismissed depending on biometric and trust states.
+     */
+    val hasTrust: StateFlow<Boolean>
+
+    /**
      * Observable for the signal that keyguard is about to go away.
      *
      * TODO(b/278086361): Remove once KEYGUARD_WM_STATE_REFACTOR flag is removed.
@@ -375,6 +381,9 @@ constructor(
     override val isKeyguardDismissible: MutableStateFlow<Boolean> =
         MutableStateFlow(keyguardStateController.isUnlocked)
 
+    override val hasTrust: MutableStateFlow<Boolean> =
+        MutableStateFlow(keyguardStateController.canDismissLockScreen())
+
     @SuppressLint("SharedFlowCreation")
     override val isKeyguardGoingAway: MutableSharedFlow<Boolean> =
         MutableSharedFlow<Boolean>(
@@ -576,6 +585,7 @@ constructor(
                 }
 
                 override fun onUnlockedChanged() {
+                    hasTrust.value = keyguardStateController.canDismissLockScreen()
                     isKeyguardDismissible.value = keyguardStateController.isUnlocked
                 }
             }
