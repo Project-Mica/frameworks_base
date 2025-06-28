@@ -23,8 +23,6 @@ import static android.view.WindowManager.DOCKED_TOP;
 
 import static com.android.internal.jank.InteractionJankMonitor.CUJ_SPLIT_SCREEN_DOUBLE_TAP_DIVIDER;
 import static com.android.internal.jank.InteractionJankMonitor.CUJ_SPLIT_SCREEN_RESIZE;
-import static com.android.wm.shell.common.split.DividerSnapAlgorithm.SNAP_FLEXIBLE_HYBRID;
-import static com.android.wm.shell.common.split.DividerSnapAlgorithm.SNAP_FLEXIBLE_SPLIT;
 import static com.android.wm.shell.shared.animation.Interpolators.EMPHASIZED;
 import static com.android.wm.shell.shared.animation.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.wm.shell.shared.animation.Interpolators.LINEAR;
@@ -115,11 +113,6 @@ public final class SplitLayout implements DisplayInsetsController.OnInsetsChange
      * Otherwise, we fall back to PARALLAX_ALIGN_CENTER behavior.
      */
     public static final int PARALLAX_FLEX = 3;
-    /**
-     * A custom parallax effect for flexible hybrid split. Gives the appearance of
-     * PARALLAX_ALIGN_CENTER when dragging and PARALLAX_FLEX when tapping an offscreen app.
-     */
-    public static final int PARALLAX_FLEX_HYBRID = 4;
 
     public static final int FLING_RESIZE_DURATION = 250;
     private static final int FLING_ENTER_DURATION = 450;
@@ -606,28 +599,16 @@ public final class SplitLayout implements DisplayInsetsController.OnInsetsChange
             bounds1.right = position;
             bounds2.left = bounds1.right + mDividerSize;
 
+            // For flexible split, expand app offscreen as well
             if (mDividerSnapAlgorithm.areOffscreenRatiosSupported()) {
-                if (mDividerSnapAlgorithm.getSnapMode() == SNAP_FLEXIBLE_SPLIT) {
-                    // In flexible split, also extend app offscreen.
-                    int distanceToCenter =
-                            position - mDividerSnapAlgorithm.getMiddleTarget().position;
-                    if (position < mDividerSnapAlgorithm.getMiddleTarget().position) {
-                        bounds1.left += distanceToCenter * 2;
-                    } else {
-                        bounds2.right += distanceToCenter * 2;
-                    }
-                } else if (mDividerSnapAlgorithm.getSnapMode() == SNAP_FLEXIBLE_HYBRID) {
-                    // In flex hybrid split, extend offscreen only if it is at the flex breakpoint.
-                    int leftFlexTargetPos = mDividerSnapAlgorithm.getFirstSplitTarget().position;
-                    int rightFlexTargetPos = mDividerSnapAlgorithm.getLastSplitTarget().position;
-                    int sizeOf90App = rightFlexTargetPos - mRootBounds.left;
-                    if (position <= leftFlexTargetPos) {
-                        bounds1.left = position - sizeOf90App;
-                    } else if (position >= rightFlexTargetPos) {
-                        bounds2.right = position + mDividerSize + sizeOf90App;
-                    }
+                int distanceToCenter = position - mDividerSnapAlgorithm.getMiddleTarget().position;
+                if (position < mDividerSnapAlgorithm.getMiddleTarget().position) {
+                    bounds1.left += distanceToCenter * 2;
+                } else {
+                    bounds2.right += distanceToCenter * 2;
                 }
             }
+
         } else {
             position += mRootBounds.top;
             dividerBounds.top = position - mDividerInsets;
@@ -635,26 +616,13 @@ public final class SplitLayout implements DisplayInsetsController.OnInsetsChange
             bounds1.bottom = position;
             bounds2.top = bounds1.bottom + mDividerSize;
 
+            // For flexible split, expand app offscreen as well
             if (mDividerSnapAlgorithm.areOffscreenRatiosSupported()) {
-                if (mDividerSnapAlgorithm.getSnapMode() == SNAP_FLEXIBLE_SPLIT) {
-                    // In flexible split, also extend app offscreen.
-                    int distanceToCenter =
-                            position - mDividerSnapAlgorithm.getMiddleTarget().position;
-                    if (position < mDividerSnapAlgorithm.getMiddleTarget().position) {
-                        bounds1.top += distanceToCenter * 2;
-                    } else {
-                        bounds2.bottom += distanceToCenter * 2;
-                    }
-                } else if (mDividerSnapAlgorithm.getSnapMode() == SNAP_FLEXIBLE_HYBRID) {
-                    // In flex hybrid split, extend offscreen only if it is at the flex breakpoint.
-                    int topFlexTargetPos = mDividerSnapAlgorithm.getFirstSplitTarget().position;
-                    int bottomFlexTargetPos = mDividerSnapAlgorithm.getLastSplitTarget().position;
-                    int sizeOf90App = bottomFlexTargetPos - mRootBounds.top;
-                    if (position <= topFlexTargetPos) {
-                        bounds1.top = position - sizeOf90App;
-                    } else if (position >= bottomFlexTargetPos) {
-                        bounds2.bottom = position + mDividerSize + sizeOf90App;
-                    }
+                int distanceToCenter = position - mDividerSnapAlgorithm.getMiddleTarget().position;
+                if (position < mDividerSnapAlgorithm.getMiddleTarget().position) {
+                    bounds1.top += distanceToCenter * 2;
+                } else {
+                    bounds2.bottom += distanceToCenter * 2;
                 }
             }
         }
@@ -1257,7 +1225,7 @@ public final class SplitLayout implements DisplayInsetsController.OnInsetsChange
             // offscreen or vice versa, we set the dim layer's alpha on every frame for a smooth
             // transition.
             if (Flags.enableFlexibleTwoAppSplit()
-                    && mSplitState.currentStateHasOffscreenApps()
+                    && mSplitState.currentStateSupportsOffscreenApps()
                     && dimLayer != null) {
                 float instantaneousAlpha = 0f;
                 if (goingOffscreen) {
