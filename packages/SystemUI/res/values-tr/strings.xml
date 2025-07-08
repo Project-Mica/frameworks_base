@@ -834,10 +834,10 @@
     <string name="enable_bluetooth_message" msgid="6740938333772779717">"Klavyenizi tabletinize bağlamak için önce Bluetooth\'u açmanız gerekir."</string>
     <string name="enable_bluetooth_confirmation_ok" msgid="2866408183324184876">"Aç"</string>
     <string name="rotation_lock_camera_rotation_on" msgid="789434807790534274">"Açık - Yüze göre"</string>
-    <string name="notification_guts_bundle_title" msgid="5252530007273079591">"Sesi kapatma ve gruplandırma"</string>
+    <string name="notification_guts_bundle_title" msgid="5252530007273079591">"Sesi kapat ve gruplandır"</string>
     <string name="notification_guts_single_bundle_notif_title" msgid="3186784466618443494">"Bildirim düzenleyiciyi kullanın"</string>
     <string name="notification_guts_bundle_summary" msgid="3971530802237393600">"<xliff:g id="APP_NAME">%1$s</xliff:g> için"</string>
-    <string name="notification_guts_promotions_summary" msgid="1565750619813325885">"Satışlar, yeni özellikler ve daha fazlası"</string>
+    <string name="notification_guts_promotions_summary" msgid="1565750619813325885">"İndirimler, yeni özellikler ve daha fazlası"</string>
     <string name="notification_guts_news_summary" msgid="638697931043407835">"En çok okunan haberler, editoryal içerikler ve daha fazlası"</string>
     <string name="notification_guts_social_summary" msgid="3749147631983977040">"Beğeniler, gönderiler ve daha fazlası"</string>
     <string name="notification_guts_recs_summary" msgid="8391881843238947007">"Bültenler, önerilen medya ve daha fazlası"</string>

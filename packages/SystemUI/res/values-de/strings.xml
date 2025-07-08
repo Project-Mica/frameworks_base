@@ -1577,27 +1577,27 @@
     <string name="touchpad_back_gesture_action_title" msgid="7199067250654332735">"Zurück"</string>
     <string name="touchpad_back_gesture_guidance" msgid="5352221087725906542">"Wische mit drei Fingern auf dem Touchpad nach links oder rechts"</string>
     <string name="touchpad_back_gesture_success_title" msgid="7370719098633023496">"Sehr gut!"</string>
-    <string name="touchpad_back_gesture_success_body" msgid="2324724953720741719">"Du hast das Tutorial für die Touch-Geste „Zurück“ abgeschlossen."</string>
+    <string name="touchpad_back_gesture_success_body" msgid="2324724953720741719">"Du hast das Tutorial für die Touchgeste „Zurück“ abgeschlossen."</string>
     <string name="touchpad_back_gesture_error_body" msgid="7112668207481458792">"Wenn du mit dem Touchpad zurückgehen möchtest, wische mit drei Fingern nach links oder rechts"</string>
     <string name="touchpad_home_gesture_action_title" msgid="8885107349719257882">"Startbildschirm"</string>
     <string name="touchpad_home_gesture_guidance" msgid="4178219118381915899">"Wische an einer beliebigen Stelle auf dem Touchpad mit drei Fingern nach oben"</string>
     <string name="touchpad_home_gesture_success_title" msgid="3648264553645798470">"Gut gemacht!"</string>
-    <string name="touchpad_home_gesture_success_body" msgid="2590690589194027059">"Du hast das Tutorial für die Touch-Geste „Zum Startbildschirm“ abgeschlossen"</string>
+    <string name="touchpad_home_gesture_success_body" msgid="2590690589194027059">"Du hast den Schritt für die „Startbildschirm“-Touchgeste abgeschlossen"</string>
     <string name="touchpad_home_gesture_error_body" msgid="3810674109999513073">"Wenn du zum Startbildschirm gelangen möchtest, wische auf dem Touchpad mit drei Fingern nach oben"</string>
     <string name="touchpad_recent_apps_gesture_action_title" msgid="934906836867137906">"Letzte Apps aufrufen"</string>
     <string name="touchpad_recent_apps_gesture_guidance" msgid="6304446013842271822">"Wische mit drei Fingern nach oben und halte das Touchpad gedrückt"</string>
     <string name="touchpad_recent_apps_gesture_success_title" msgid="8481920554139332593">"Gut gemacht!"</string>
-    <string name="touchpad_recent_apps_gesture_success_body" msgid="4334263906697493273">"Du hast das Tutorial für die Touch-Geste zum Aufrufen der zuletzt verwendeten Apps abgeschlossen."</string>
+    <string name="touchpad_recent_apps_gesture_success_body" msgid="4334263906697493273">"Du hast das Tutorial für die Touchgeste zum Aufrufen der zuletzt verwendeten Apps abgeschlossen."</string>
     <string name="touchpad_recent_gesture_error_body" msgid="8695535720378462022">"Wenn du zuletzt verwendete Apps aufrufen möchtest, wische mit drei Fingern nach oben und halte das Touchpad gedrückt"</string>
     <string name="touchpad_switch_apps_gesture_action_title" msgid="6835222344612924512">"Zwischen Apps wechseln"</string>
     <string name="touchpad_switch_apps_gesture_guidance" msgid="2554844933805502538">"Wische mit vier Fingern auf dem Touchpad nach rechts"</string>
     <string name="touchpad_switch_apps_gesture_success_title" msgid="4894947244328032458">"Gut gemacht!"</string>
-    <string name="touchpad_switch_apps_gesture_success_body" msgid="8151089866035126312">"Du hast das Tutorial für die Touch-Geste „Apps wechseln“ abgeschlossen."</string>
+    <string name="touchpad_switch_apps_gesture_success_body" msgid="8151089866035126312">"Du hast das Tutorial für die Touchgeste „Apps wechseln“ abgeschlossen."</string>
     <string name="touchpad_switch_gesture_error_body" msgid="5895231916964677918">"Wische mit vier Fingern auf dem Touchpad nach rechts, um zwischen Apps zu wechseln"</string>
     <string name="tutorial_action_key_title" msgid="8172535792469008169">"Alle Apps anzeigen"</string>
     <string name="tutorial_action_key_guidance" msgid="5040613427202799294">"Drücke die Aktionstaste auf deiner Tastatur"</string>
     <string name="tutorial_action_key_success_title" msgid="2371827347071979571">"Perfekt!"</string>
-    <string name="tutorial_action_key_success_body" msgid="1688986269491357832">"Du hast das Tutorial für die Touch-Geste zum Aufrufen aller Apps abgeschlossen"</string>
+    <string name="tutorial_action_key_success_body" msgid="1688986269491357832">"Du hast das Tutorial für die Touchgeste zum Aufrufen aller Apps abgeschlossen"</string>
     <string name="touchpad_action_key_error_body" msgid="8685502040091860903">"Drücke die Aktionstaste auf deiner Tastatur, um alle deine Apps aufzurufen"</string>
     <string name="tutorial_animation_content_description" msgid="2698816574982370184">"Animation während des Tutorials, zum Pausieren und Fortsetzen der Wiedergabe klicken."</string>
     <string name="keyboard_backlight_dialog_title" msgid="8273102932345564724">"Tastaturbeleuchtung"</string>

@@ -391,7 +391,7 @@
     <string name="quick_settings_hotspot_secondary_label_num_devices" msgid="7536823087501239457">"{count,plural, =1{#ଟି ଡିଭାଇସ}other{#ଟି ଡିଭାଇସ}}"</string>
     <string name="quick_settings_flashlight_label" msgid="4904634272006284185">"ଫ୍ଲାସଲାଇଟ"</string>
     <string name="quick_settings_flashlight_camera_in_use" msgid="4820591564526512571">"କ୍ୟାମେରା ବ୍ୟବହାରରେ ଅଛି"</string>
-    <string name="flashlight_dialog_title" msgid="4232742718579701241">"ଫ୍ଲାସଲାଇଟର କ୍ଷମତା"</string>
+    <string name="flashlight_dialog_title" msgid="4232742718579701241">"ଫ୍ଲାସଲାଇଟର ତୀବ୍ରତା"</string>
     <string name="quick_settings_flashlight_tile_level_percentage" msgid="2071942013174794819">"<xliff:g id="PERCENTAGE">%1$d</xliff:g>%%"</string>
     <string name="quick_settings_cellular_detail_title" msgid="792977203299358893">"ମୋବାଇଲ୍‌ ଡାଟା"</string>
     <string name="quick_settings_cellular_detail_data_usage" msgid="6105969068871138427">"ଡାଟାର ବ୍ୟବହାର"</string>

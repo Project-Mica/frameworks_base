@@ -658,8 +658,7 @@
     <string name="go_to_adaptive_notification_settings" msgid="2423690125178298479">"Tắt"</string>
     <string name="unlock_to_see_notif_text" msgid="7439033907167561227">"Mở khoá để xem thông báo cũ"</string>
     <string name="quick_settings_disclosure_parental_controls" msgid="2114102871438223600">"Thiết bị này do cha mẹ của bạn quản lý"</string>
-    <!-- no translation found for quick_settings_disclosure_pin_protection (9219481515114868267) -->
-    <skip />
+    <string name="quick_settings_disclosure_pin_protection" msgid="9219481515114868267">"Một số chế độ cài đặt thiết bị được bảo vệ bằng mã PIN."</string>
     <string name="quick_settings_disclosure_management_monitoring" msgid="8231336875820702180">"Tổ chức của bạn sở hữu thiết bị này và có thể giám sát lưu lượng truy cập mạng"</string>
     <string name="quick_settings_disclosure_named_management_monitoring" msgid="2831423806103479812">"<xliff:g id="ORGANIZATION_NAME">%1$s</xliff:g> sở hữu thiết bị này và có thể giám sát lưu lượng truy cập mạng"</string>
     <string name="quick_settings_financed_disclosure_named_management" msgid="2307703784594859524">"Thiết bị này do <xliff:g id="ORGANIZATION_NAME">%s</xliff:g> cung cấp"</string>
@@ -700,8 +699,7 @@
     <string name="monitoring_description_vpn_settings_separator" msgid="8292589617720435430">" "</string>
     <string name="monitoring_description_vpn_settings" msgid="5264167033247632071">"Mở phần cài đặt VPN"</string>
     <string name="monitoring_description_parental_controls" msgid="8184693528917051626">"Thiết bị này do cha mẹ bạn quản lý. Cha mẹ có thể có thể xem và quản lý những thông tin như ứng dụng bạn dùng, vị trí của bạn và thời gian bạn sử dụng thiết bị."</string>
-    <!-- no translation found for monitoring_description_pin_protection (1983580207046670355) -->
-    <skip />
+    <string name="monitoring_description_pin_protection" msgid="1983580207046670355">"Bạn chỉ có thể thay đổi một số chế độ kiểm soát trên thiết bị bằng mã PIN, chẳng hạn như giới hạn hằng ngày và thời gian ngừng hoạt động."</string>
     <string name="legacy_vpn_name" msgid="4174223520162559145">"VPN"</string>
     <string name="keyguard_indication_trust_unlocked" msgid="7395154975733744547">"Luôn được TrustAgent mở khóa"</string>
     <string name="kg_prompt_after_adaptive_auth_lock" msgid="2587481497846342760">"Thiết bị đã bị khoá do quá nhiều lần thử xác thực"</string>
@@ -805,8 +803,7 @@
     <string name="status_bar_work" msgid="5238641949837091056">"Hồ sơ công việc"</string>
     <string name="status_bar_airplane" msgid="4848702508684541009">"Chế độ trên máy bay"</string>
     <string name="status_bar_supervision" msgid="6735015942701134125">"Chế độ kiểm soát của cha mẹ"</string>
-    <!-- no translation found for status_bar_pin_supervision (4376576498566645782) -->
-    <skip />
+    <string name="status_bar_pin_supervision" msgid="4376576498566645782">"Bảo vệ bằng mã PIN đối với một số chế độ điều khiển thiết bị"</string>
     <string name="zen_alarm_warning" msgid="7844303238486849503">"Bạn sẽ không nghe thấy chuông báo tiếp theo lúc <xliff:g id="WHEN">%1$s</xliff:g> của mình"</string>
     <string name="alarm_template" msgid="2234991538018805736">"lúc <xliff:g id="WHEN">%1$s</xliff:g>"</string>
     <string name="alarm_template_far" msgid="3561752195856839456">"vào <xliff:g id="WHEN">%1$s</xliff:g>"</string>
@@ -817,8 +814,7 @@
     <string name="accessibility_status_bar_satellite_available" msgid="6514855015496916829">"Hiện có kết nối vệ tinh"</string>
     <string name="satellite_connected_carrier_text" msgid="118524195198532589">"Liên lạc khẩn cấp qua vệ tinh"</string>
     <string name="satellite_emergency_only_carrier_text" msgid="9103913890116841786">"Chỉ cuộc gọi khẩn cấp hoặc SOS"</string>
-    <!-- no translation found for satellite_network_title_text (4825315858295910999) -->
-    <skip />
+    <string name="satellite_network_title_text" msgid="4825315858295910999">"Mạng vệ tinh"</string>
     <string name="accessibility_phone_string_format" msgid="7798841417881811812">"<xliff:g id="CARRIER_NAME">%1$s</xliff:g>, <xliff:g id="SIGNAL_STRENGTH_DESCRIPTION">%2$s</xliff:g>."</string>
     <string name="accessibility_no_signal" msgid="7052827511409250167">"không có tín hiệu"</string>
     <string name="accessibility_one_bar" msgid="5342012847647834506">"1 vạch"</string>
