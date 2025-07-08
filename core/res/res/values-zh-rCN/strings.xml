@@ -666,7 +666,7 @@
     <string name="permlab_hand_tracking" msgid="6478233866595566940">"跟踪您的手部动作"</string>
     <string name="permdesc_hand_tracking" msgid="8639715900104966456">"允许应用访问手部跟踪数据。"</string>
     <string name="permlab_head_tracking" msgid="1309731456372087270">"跟踪您的头部动作"</string>
-    <string name="permdesc_head_tracking" msgid="231597390513699188">"允许应用访问头部追踪数据。"</string>
+    <string name="permdesc_head_tracking" msgid="231597390513699188">"允许应用访问头部跟踪数据。"</string>
     <string name="permlab_scene_understanding_coarse" msgid="6518646430502858641">"了解您周围的环境"</string>
     <string name="permdesc_scene_understanding_coarse" msgid="4508880777646198656">"允许应用访问关于您周围环境的跟踪数据。"</string>
     <string name="permlab_scene_understanding_fine" msgid="409126403264393251">"详细了解您周围的环境"</string>
