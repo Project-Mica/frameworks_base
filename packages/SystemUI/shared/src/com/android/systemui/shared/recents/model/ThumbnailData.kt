@@ -24,7 +24,6 @@ import android.graphics.Rect
 import android.util.Log
 import android.view.WindowInsetsController.Appearance
 import android.window.TaskSnapshot
-import com.android.launcher3.Flags.enableRefactorTaskThumbnail
 
 /** Data for a single thumbnail. */
 data class ThumbnailData(
@@ -62,11 +61,7 @@ data class ThumbnailData(
                     ex,
                 )
             }
-            if (enableRefactorTaskThumbnail()) {
-                // These bitmaps are used with custom rendering logic (PreviewPositionHelper) that
-                // doesn't account for bitmap density
-                thumbnail?.density = Bitmap.DENSITY_NONE
-            }
+
             return thumbnail
                 ?: Bitmap.createBitmap(snapshot.taskSize.x, snapshot.taskSize.y, ARGB_8888).apply {
                     eraseColor(Color.BLACK)
