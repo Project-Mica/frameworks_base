@@ -834,7 +834,7 @@
     <string name="enable_bluetooth_message" msgid="6740938333772779717">"ကီးဘုတ်ကို တပ်ဘလက်နှင့် ချိတ်ဆက်ရန်၊ ပမထဦးစွာ ဘလူးတုသ်ကို ဖွင့်ပါ။"</string>
     <string name="enable_bluetooth_confirmation_ok" msgid="2866408183324184876">"ဖွင့်ပါ"</string>
     <string name="rotation_lock_camera_rotation_on" msgid="789434807790534274">"ဖွင့် - မျက်နှာအခြေခံ"</string>
-    <string name="notification_guts_bundle_title" msgid="5252530007273079591">"အသံတိတ်ပြီး စုစည်းခြင်း"</string>
+    <string name="notification_guts_bundle_title" msgid="5252530007273079591">"အသံတိတ်ခြင်းနှင့် စုစည်းခြင်း"</string>
     <string name="notification_guts_single_bundle_notif_title" msgid="3186784466618443494">"အကြောင်းကြားချက် စီစဉ်သောစနစ် သုံးခြင်း"</string>
     <string name="notification_guts_bundle_summary" msgid="3971530802237393600">"<xliff:g id="APP_NAME">%1$s</xliff:g> အတွက်"</string>
     <string name="notification_guts_promotions_summary" msgid="1565750619813325885">"အရောင်း၊ တူးလ်အသစ်စသည်"</string>

@@ -1801,7 +1801,7 @@
     <string name="reduce_bright_colors_feature_name" msgid="3222994553174604132">"Допълнително затъмняване"</string>
     <string name="hearing_aids_feature_name" msgid="1125892105105852542">"Слухови апарати"</string>
     <string name="autoclick_feature_name" msgid="4056260617171267864">"Автоматично кликване (време на задържане на курсора на мишката)"</string>
-    <string name="mouse_keys_feature_name" msgid="3362643216513384542">"Бутони на мишката"</string>
+    <string name="mouse_keys_feature_name" msgid="3362643216513384542">"Клавиши за мишката"</string>
     <string name="hearing_device_status_disconnected" msgid="497547752953543832">"Няма връзка"</string>
     <string name="hearing_device_status_connected" msgid="2149385149669918764">"Свързано"</string>
     <string name="hearing_device_status_active" msgid="4770378695482566032">"Активно"</string>

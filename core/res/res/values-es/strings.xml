@@ -1444,7 +1444,7 @@
     <string name="usb_unsupported_audio_accessory_title" msgid="2335775548086533065">"Se ha detectado un accesorio de audio analógico"</string>
     <string name="usb_unsupported_audio_accessory_message" msgid="1300168007129796621">"El dispositivo adjunto no es compatible con este teléfono. Toca para obtener más información."</string>
     <string name="adb_active_notification_title" msgid="408390247354560331">"Depuración por USB activa"</string>
-    <string name="adb_active_notification_message" msgid="5617264033476778211">"Toca para desactivar la depuración por USB"</string>
+    <string name="adb_active_notification_message" msgid="5617264033476778211">"Toca para desactivarla"</string>
     <string name="adb_active_notification_message" product="tv" msgid="6624498401272780855">"Seleccionar para inhabilitar la depuración por USB"</string>
     <string name="adbwifi_active_notification_title" msgid="6147343659168302473">"Depuración inalámbrica conectada"</string>
     <string name="adbwifi_active_notification_message" msgid="930987922852867972">"Toca para desactivar la depuración inalámbrica"</string>
@@ -1801,7 +1801,7 @@
     <string name="one_handed_mode_feature_name" msgid="2334330034828094891">"Modo Una mano"</string>
     <string name="reduce_bright_colors_feature_name" msgid="3222994553174604132">"Atenuación extra"</string>
     <string name="hearing_aids_feature_name" msgid="1125892105105852542">"Audífonos"</string>
-    <string name="autoclick_feature_name" msgid="4056260617171267864">"Clic automático (tiempo permanencia)"</string>
+    <string name="autoclick_feature_name" msgid="4056260617171267864">"Autoclic (tiempo detenido)"</string>
     <string name="mouse_keys_feature_name" msgid="3362643216513384542">"Teclas de ratón"</string>
     <string name="hearing_device_status_disconnected" msgid="497547752953543832">"Desconectado"</string>
     <string name="hearing_device_status_connected" msgid="2149385149669918764">"Conectado"</string>

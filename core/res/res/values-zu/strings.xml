@@ -355,11 +355,11 @@
     <string name="permgrouplab_notifications" msgid="5472972361980668884">"Izaziso"</string>
     <string name="permgroupdesc_notifications" msgid="4608679556801506580">"bonisa izaziso"</string>
     <string name="permgrouplab_xr_eye_sensitive" msgid="2099659100156643683">"Idatha ebucayi yokulandelela ngehlo i-XR"</string>
-    <string name="permgroupdesc_xr_eye_sensitive" msgid="1414121516133760271">"finyelela idatha ebucayi yokubuka ngamehlo"</string>
+    <string name="permgroupdesc_xr_eye_sensitive" msgid="1414121516133760271">"finyelela kudatha ebucayi yokubuka ngamehlo"</string>
     <string name="permgrouplab_xr_tracking" msgid="7418994009794287471">"Idatha yokulandelela ye-XR"</string>
     <string name="permgroupdesc_xr_tracking" msgid="6777198859446500821">"finyelela idatha ye-XR emayelana nawe nendawo ekuzungezile"</string>
     <string name="permgrouplab_xr_tracking_sensitive" msgid="2993940754322250652">"Idatha ebucayi yokulandelela i-XR"</string>
-    <string name="permgroupdesc_xr_tracking_sensitive" msgid="8498501397939308918">"finyelela idatha yokulandelela ebucayi emayelana nawe nendawo okuyo"</string>
+    <string name="permgroupdesc_xr_tracking_sensitive" msgid="8498501397939308918">"finyelela kudatha yokulandelela ebucayi emayelana nawe nendawo okuyo"</string>
     <string name="capability_title_canRetrieveWindowContent" msgid="7554282892101587296">"Thola okuqukethwe kwewindi"</string>
     <string name="capability_desc_canRetrieveWindowContent" msgid="6195610527625237661">"Hlola okuqukethwe kwewindi ohlanganyela nalo."</string>
     <string name="capability_title_canRequestTouchExploration" msgid="327598364696316213">"Vula ukuhlola ngokuthinta"</string>

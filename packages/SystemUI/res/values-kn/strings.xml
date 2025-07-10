@@ -1330,7 +1330,7 @@
     <string name="media_output_broadcast_code_hint_no_less_than_min" msgid="4663836092607696185">"ಕನಿಷ್ಠ 4 ಅಕ್ಷರಗಳನ್ನು ಬಳಸಿ"</string>
     <string name="media_output_broadcast_edit_hint_no_more_than_max" msgid="3923625800037673922">"<xliff:g id="LENGTH">%1$d</xliff:g> ಕ್ಕಿಂತ ಕಡಿಮೆ ಅಕ್ಷರಗಳನ್ನು ಬಳಸಿ"</string>
     <string name="build_number_clip_data_label" msgid="3623176728412560914">"ಬಿಲ್ಡ್ ಸಂಖ್ಯೆ"</string>
-    <string name="build_number_copy_toast" msgid="877720921605503046">"ಬಿಲ್ಡ್ ಸಂಖ್ಯೆಯನ್ನು ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ನಲ್ಲಿ ನಕಲಿಸಲಾಗಿದೆ."</string>
+    <string name="build_number_copy_toast" msgid="877720921605503046">"ಬಿಲ್ಡ್ ಸಂಖ್ಯೆಯನ್ನು ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ನಲ್ಲಿ ಕಾಪಿ ಮಾಡಲಾಗಿದೆ."</string>
     <string name="copy_to_clipboard_a11y_action" msgid="4312789069718446749">"ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ಕಾಪಿ ಮಾಡಿ."</string>
     <string name="basic_status" msgid="2315371112182658176">"ಸಂಭಾಷಣೆಯನ್ನು ತೆರೆಯಿರಿ"</string>
     <string name="select_conversation_title" msgid="6716364118095089519">"ಸಂಭಾಷಣೆ ವಿಜೆಟ್‌ಗಳು"</string>
