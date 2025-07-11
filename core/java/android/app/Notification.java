@@ -6296,7 +6296,7 @@ public class Notification implements Parcelable
                 // If there is no title, the text (or big_text) needs to wrap around the image
                 result.mTitleMarginSet.applyToView(contentView, p.mTextViewId);
                 contentView.setInt(p.mTextViewId, "setNumIndentLines", p.hasTitle() ? 0 : 1);
-            } else if (notificationsRedesignTemplates() && !p.mCompact) {
+            } else if (notificationsRedesignTemplates() && p.mNeedsExtraTextMargin) {
                 // In the collapsed view (except for compact HUNs), the top line needs to
                 // accommodate both the expander and large icon (when present)
                 result.mHeadingFullMarginSet.applyToView(contentView, R.id.notification_top_line);
@@ -7154,7 +7154,7 @@ public class Notification implements Parcelable
 
             final StandardTemplateParams p = mParams.reset()
                     .viewType(StandardTemplateParams.VIEW_TYPE_HEADS_UP)
-                    .compact(true)
+                    .needsExtraTextMargin(false)
                     .fillTextsFrom(this);
             // Notification text is shown as secondary header text
             // for the minimal hun when it is provided.
@@ -8418,7 +8418,7 @@ public class Notification implements Parcelable
                 // ensures that we don't under-pad the content, which could lead to abuse, at the
                 // cost of making single-line custom content over-padded.
                 Builder.setHeaderlessVerticalMargins(template, p, true /* hasSecondLine */);
-                if (notificationsRedesignTemplates()) {
+                if (notificationsRedesignTemplates() && p.mNeedsExtraTextMargin) {
                     // also update the end margin to account for the large icon or expander
                     result.mHeadingFullMarginSet.applyToView(template,
                             R.id.notification_main_column);
@@ -10887,7 +10887,8 @@ public class Notification implements Parcelable
                     .hideLeftIcon(false)                  // allow large icon on left when grouped
                     .hideRightIcon(numActionsToShow > 0)  // right icon or actions; not both
                     .hideProgress(true)
-                    .fillTextsFrom(mBuilder);
+                    .fillTextsFrom(mBuilder)
+                    .needsExtraTextMargin(false);
             TemplateBindResult result = new TemplateBindResult();
             RemoteViews template = mBuilder.applyStandardTemplate(
                     mBuilder.getCollapsedMediaLayoutResource(), p,
@@ -16492,7 +16493,9 @@ public class Notification implements Parcelable
 
         int mViewType = VIEW_TYPE_UNSPECIFIED;
         boolean mHeaderless;
-        boolean mCompact;
+        // Whether the layout handles the end margin for the text already (to leave space for the
+        // expander/large icon) or we need to set it separately.
+        boolean mNeedsExtraTextMargin = true;
         boolean mHideAppName;
         boolean mHideTitle;
         boolean mHideSubText;
@@ -16518,7 +16521,7 @@ public class Notification implements Parcelable
         final StandardTemplateParams reset() {
             mViewType = VIEW_TYPE_UNSPECIFIED;
             mHeaderless = false;
-            mCompact = false;
+            mNeedsExtraTextMargin = true;
             mHideAppName = false;
             mHideTitle = false;
             mHideSubText = false;
@@ -16557,8 +16560,8 @@ public class Notification implements Parcelable
             return this;
         }
 
-        public StandardTemplateParams compact(boolean compact) {
-            mCompact = compact;
+        public StandardTemplateParams needsExtraTextMargin(boolean needsExtraTextMargin) {
+            mNeedsExtraTextMargin = needsExtraTextMargin;
             return this;
         }
 
