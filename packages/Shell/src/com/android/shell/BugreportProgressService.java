@@ -1222,11 +1222,6 @@ public class BugreportProgressService extends Service {
                 + " and shareDescription: " + info.shareDescription);
         info.finished.set(true);
 
-        synchronized (mLock) {
-            // Stop running on foreground, otherwise share notification cannot be dismissed.
-            stopForegroundWhenDoneLocked(info.id);
-        }
-
         File bugreportFile = info.bugreportLocationInfo.mBugreportFile;
         if (!info.bugreportLocationInfo.isValidBugreportResult()) {
             Log.e(TAG, "Could not read bugreport file " + bugreportFile);
@@ -1238,6 +1233,14 @@ public class BugreportProgressService extends Service {
         }
 
         triggerLocalNotification(info);
+        // b/425350942: Stop running on foreground after triggering the local notification.
+        // AM re-sends the notification when the service is removed from the foreground.
+        // This way, we increase the chances of final notiifcation being sent via AM,
+        // rather than the progress one.
+        synchronized (mLock) {
+            // Stop running on foreground, otherwise share notification cannot be dismissed.
+            stopForegroundWhenDoneLocked(info.id);
+        }
     }
 
     /**
