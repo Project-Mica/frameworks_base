@@ -1413,16 +1413,16 @@
     <string name="fgs_manager_app_item_stop_button_label" msgid="7188317969020801156">"ನಿಲ್ಲಿಸಿ"</string>
     <string name="fgs_manager_app_item_stop_button_stopped_label" msgid="6950382004441263922">"ನಿಲ್ಲಿಸಲಾಗಿದೆ"</string>
     <string name="clipboard_edit_text_done" msgid="4551887727694022409">"ಮುಗಿದಿದೆ"</string>
-    <string name="clipboard_overlay_text_copied" msgid="1872624400464891363">"ನಕಲಿಸಲಾಗಿದೆ"</string>
+    <string name="clipboard_overlay_text_copied" msgid="1872624400464891363">"ಕಾಪಿ ಮಾಡಲಾಗಿದೆ"</string>
     <string name="clipboard_edit_source" msgid="9156488177277788029">"<xliff:g id="APPNAME">%1$s</xliff:g> ನಿಂದ"</string>
     <string name="clipboard_dismiss_description" msgid="3335990369850165486">"ನಕಲಿಸಿದ ಪಠ್ಯವನ್ನು ವಜಾಗೊಳಿಸಿ"</string>
     <string name="clipboard_edit_text_description" msgid="805254383912962103">"ನಕಲಿಸಿದ ಪಠ್ಯವನ್ನು ಎಡಿಟ್ ಮಾಡಿ"</string>
     <string name="clipboard_edit_image_description" msgid="8904857948976041306">"ನಕಲಿಸಿದ ಚಿತ್ರವನ್ನು ಎಡಿಟ್ ಮಾಡಿ"</string>
     <string name="clipboard_send_nearby_description" msgid="4629769637846717650">"ಸಮೀಪದಲ್ಲಿರುವ ಸಾಧನಕ್ಕೆ ಕಳುಹಿಸಿ"</string>
     <string name="clipboard_text_hidden" msgid="7926899867471812305">"ವೀಕ್ಷಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
-    <string name="clipboard_text_copied" msgid="5100836834278976679">"ಪಠ್ಯವನ್ನು ನಕಲಿಸಲಾಗಿದೆ"</string>
-    <string name="clipboard_image_copied" msgid="3793365360174328722">"ಚಿತ್ರವನ್ನು ನಕಲಿಸಲಾಗಿದೆ"</string>
-    <string name="clipboard_content_copied" msgid="144452398567828145">"ವಿಷಯವನ್ನು ನಕಲಿಸಲಾಗಿದೆ"</string>
+    <string name="clipboard_text_copied" msgid="5100836834278976679">"ಪಠ್ಯವನ್ನು ಕಾಪಿ ಮಾಡಲಾಗಿದೆ"</string>
+    <string name="clipboard_image_copied" msgid="3793365360174328722">"ಚಿತ್ರವನ್ನು ಕಾಪಿ ಮಾಡಲಾಗಿದೆ"</string>
+    <string name="clipboard_content_copied" msgid="144452398567828145">"ಕಂಟೆಂಟ್ ಅನ್ನು ಕಾಪಿ ಮಾಡಲಾಗಿದೆ"</string>
     <string name="clipboard_editor" msgid="2971197550401892843">"ಕ್ಲಿಪ್‌ಬೋರ್ಡ್ ಎಡಿಟರ್"</string>
     <string name="clipboard_overlay_window_name" msgid="6450043652167357664">"ಕ್ಲಿಪ್‌ಬೋರ್ಡ್"</string>
     <string name="clipboard_image_preview" msgid="2156475174343538128">"ಚಿತ್ರದ ಪೂರ್ವವೀಕ್ಷಣೆ"</string>
