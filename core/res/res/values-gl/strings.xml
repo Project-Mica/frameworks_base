@@ -2510,8 +2510,8 @@
     <string name="unarchival_session_app_label" msgid="6811856981546348205">"Pendente..."</string>
     <string name="satellite_sos_available_notification_title" msgid="5396708154268096124">"SOS por satélite xa está dispoñible"</string>
     <string name="satellite_sos_available_notification_summary" msgid="1727088812951848330">"Podes enviar mensaxes aos servizos de emerxencia se non tes conexión con ningunha rede wifi nin de telefonía móbil. Debes ter definida Mensaxes de Google como aplicación predeterminada de mensaxaría."</string>
-    <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"Non se admite SOS por satélite"</string>
-    <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"Non se admite SOS por satélite neste dispositivo"</string>
+    <string name="satellite_sos_not_supported_notification_title" msgid="2659100983227637285">"Os SOS por satélite non son compatibles"</string>
+    <string name="satellite_sos_not_supported_notification_summary" msgid="1071762454665310549">"Os SOS por satélite non son compatibles con este dispositivo"</string>
     <string name="satellite_sos_not_provisioned_notification_title" msgid="8564738683795406715">"SOS por satélite non se configurou"</string>
     <string name="satellite_sos_not_provisioned_notification_summary" msgid="3127320958911180629">"Asegúrate de ter conexión a Internet e tenta volver facer a configuración"</string>
     <string name="satellite_sos_not_in_allowed_region_notification_title" msgid="3164093193467075926">"SOS por satélite non está dispoñible"</string>
@@ -2523,7 +2523,7 @@
     <string name="satellite_messaging_available_notification_title" msgid="3366657987618784706">"Mensaxaría por satélite dispoñible"</string>
     <string name="satellite_messaging_available_notification_summary" msgid="7573949038500243670">"Podes intercambiar mensaxes por satélite se non tes conexión con ningunha rede wifi nin de telefonía móbil. Debes ter definida Mensaxes de Google como aplicación predeterminada de mensaxaría."</string>
     <string name="satellite_messaging_not_supported_notification_title" msgid="8202139632766878610">"Mensaxaría por satélite non admitida"</string>
-    <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"Non se admite a mensaxaría por satélite neste dispositivo"</string>
+    <string name="satellite_messaging_not_supported_notification_summary" msgid="61629858627638545">"A mensaxaría por satélite non é compatible con este dispositivo"</string>
     <string name="satellite_messaging_not_provisioned_notification_title" msgid="961909101918169727">"Mensaxaría por satélite non configurada"</string>
     <string name="satellite_messaging_not_provisioned_notification_summary" msgid="1060961852174442155">"Asegúrate de ter conexión a Internet e tenta volver facer a configuración"</string>
     <string name="satellite_messaging_not_in_allowed_region_notification_title" msgid="2035303593479031655">"Mensaxaría por satélite non dispoñible"</string>

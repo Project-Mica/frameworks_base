@@ -582,7 +582,7 @@
     <string name="communal_widgets_disclaimer_text" msgid="1423545475160506349">"K otevření aplikace pomocí widgetu budete muset ověřit svou totožnost. Také mějte na paměti, že widgety uvidí kdokoli, i když tablet bude uzamčen. Některé widgety nemusí být pro obrazovku uzamčení určeny a nemusí být bezpečné je na ni přidat."</string>
     <string name="communal_widgets_disclaimer_button" msgid="4423059765740780753">"Rozumím"</string>
     <string name="accessibility_glanceable_hub_to_dream_button" msgid="7552776300297055307">"Zobrazit tlačítko spořiče obrazovky"</string>
-    <string name="hub_onboarding_bottom_sheet_title" msgid="162092881395529947">"Prozkoumejte Režim centra"</string>
+    <string name="hub_onboarding_bottom_sheet_title" msgid="162092881395529947">"Prozkoumejte režim centra"</string>
     <string name="hub_onboarding_bottom_sheet_text" msgid="8589816797970240544">"Mějte po ruce oblíbené widgety a spořiče obrazovky při nabíjení."</string>
     <string name="hub_onboarding_bottom_sheet_action_button" msgid="6161983690157872829">"Jdeme na to"</string>
     <string name="glanceable_hub_to_dream_button_tooltip" msgid="9018287673822335829">"Během nabíjení zobrazovat oblíbené spořiče obrazovky"</string>
