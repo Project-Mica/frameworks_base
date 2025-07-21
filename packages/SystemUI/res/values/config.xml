@@ -1150,4 +1150,7 @@
     <string name="config_growthReceiverClassName" translatable="false" />
     <!-- Permission to send a broadcast to the growth app receiver. -->
     <string name="config_growthReceiverPermission" translatable="false" />
+
+    <!-- Whether minmode is enabled on the device. -->
+    <bool name="config_minmode_enabled">false</bool>
 </resources>
