@@ -255,6 +255,17 @@
      This represents 16dp for the left margin + 40dp for the icon + 16dp for the right margin -->
     <dimen name="notification_2025_content_margin_start">72dp</dimen>
 
+    <!-- The margin on the start of the content view (accommodates the icon), 2025 redesign version
+     This represents 16dp for the left margin + 40dp for the icon + 16dp for the right margin, minus
+      5dp for padding the inner view needs to avoid truncating italic text -->
+    <dimen name="notification_2025_content_margin_start_summarization">67dp</dimen>
+
+    <!-- The margin value to use for text message views that are displaying a summarization -->
+    <dimen name="notification_text_message_start_padding_summarization">5dp</dimen>
+
+    <!-- The margin value to use for text message views that are not displaying a summarization -->
+    <dimen name="notification_text_message_start_padding">0dp</dimen>
+
     <!-- The margin on the start of the media actions, selected to ensure that action icons which
      are visually 12x12 in a 24x24 drawable will align correctly with the text.  This means that
      stock media action icons will align, but icons may be visually up to 20x20 and remain in-spec,
@@ -267,6 +278,10 @@
      fit with it included.
      72dp (content margin) - 12dp (action padding) - 4dp (button inset) -->
     <dimen name="notification_2025_actions_margin_start">56dp</dimen>
+
+    <!-- The margin at the end of the top line in collapsed notifications to accommodate the expader.
+     28dp (notification_2025_expand_button_pill_width) + 2 * 16dp (notification_2025_margin) -->
+    <dimen name="notification_2025_content_margin_end">60dp</dimen>
 
     <!-- The margin on the end of most content views (ignores the expander) -->
     <dimen name="notification_content_margin_end">16dp</dimen>
@@ -407,10 +422,10 @@
     <!-- The absolute size of the notification expand icon. -->
     <dimen name="notification_header_expand_icon_size">56dp</dimen>
 
-    <!-- Margin to allow space for the expand button when showing the right icon in expanded -->
-    <!-- notifications. The notification_2025_extra_space_for_expander should be used in -->
-    <!-- addition to this to ensure the spacing adjusts with the font size accordingly -->
-    <dimen name="notification_2025_right_icon_expanded_margin_end">42dp</dimen>
+    <!-- Margin to allow space for the expand button when showing the right icon. -->
+    <!-- The notification_2025_extra_space_for_expander should be used in addition to this -->
+    <!-- to ensure the spacing adjusts with the font size accordingly -->
+    <dimen name="notification_2025_right_icon_margin_end">42dp</dimen>
 
     <!-- sp-based additional spacing for the expand button, to scale with the font size -->
     <dimen name="notification_2025_extra_space_for_expander">10sp</dimen>
