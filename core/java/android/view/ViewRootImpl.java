@@ -3496,9 +3496,6 @@ public final class ViewRootImpl implements ViewParent,
      * TODO(b/260382739): Apply this to all windows.
      */
     private static boolean shouldOptimizeMeasure(final WindowManager.LayoutParams lp) {
-        if (com.android.window.flags.Flags.reduceUnnecessaryMeasure()) {
-            return true;
-        }
         return (lp.privateFlags & PRIVATE_FLAG_OPTIMIZE_MEASURE) != 0;
     }
 
