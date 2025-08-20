@@ -136,14 +136,14 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
     @Override
     public CharSequence getTileLabel() {
         if (mBatteryController.isPowerSave()) {
-            return mContext.getString(R.string.quick_settings_powershare_off_powersave_label);
+            return mContext.getString(com.android.internal.R.string.battery_share_disabled_power_saver);
         } else {
             if (getBatteryLevel() < getMinBatteryLevel()) {
-                return mContext.getString(R.string.quick_settings_powershare_off_low_battery_label);
+                return mContext.getString(com.android.internal.R.string.battery_share_disabled_low_battery);
             }
         }
 
-        return mContext.getString(R.string.quick_settings_powershare_label);
+        return mContext.getString(com.android.internal.R.string.battery_share_label);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class PowerShareTile extends QSTileImpl<BooleanState>
 
         state.icon = ResourceIcon.get(com.android.internal.R.drawable.ic_qs_powershare);
         state.value = mPowerShareManager.isEnabled();
-        state.label = mContext.getString(R.string.quick_settings_powershare_label);
+        state.label = mContext.getString(com.android.internal.R.string.battery_share_label);
 
         if (mBatteryController.isPowerSave() || getBatteryLevel() < getMinBatteryLevel()) {
             state.state = Tile.STATE_UNAVAILABLE;
