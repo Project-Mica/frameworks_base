@@ -27,8 +27,10 @@ import com.android.systemui.dagger.SysUISingleton
 import com.android.systemui.dagger.qualifiers.Background
 import com.android.systemui.dagger.qualifiers.Main
 import com.android.systemui.display.data.repository.DisplayWindowPropertiesRepository
+import com.android.systemui.display.data.repository.FocusedDisplayRepository
 import com.android.systemui.shade.data.repository.ShadeDisplaysRepository
 import com.android.systemui.shade.shared.flag.ShadeWindowGoesAround
+import com.android.window.flags.Flags
 import javax.inject.Inject
 import javax.inject.Provider
 import kotlinx.coroutines.CoroutineScope
@@ -49,6 +51,7 @@ constructor(
     private val displayWindowPropertyRepository: Provider<DisplayWindowPropertiesRepository>,
     private val shadeDisplaysRepository: Provider<ShadeDisplaysRepository>,
     @Background private val bgScope: CoroutineScope,
+    private val focusedDisplayRepository: FocusedDisplayRepository,
 ) : CoreStartable, ShadeDialogContextInteractor {
 
     override fun start() {
@@ -68,15 +71,21 @@ constructor(
     }
 
     override val context: Context
-        get() = getContextOrDefault(shadeDisplayId)
-
-    private val shadeDisplayId: Int
-        get() =
-            if (!ShadeWindowGoesAround.isEnabled) {
-                Display.DEFAULT_DISPLAY
+        get() {
+            if (Flags.enableWindowContextOverrideType()) {
+                return focusedDisplayContext
             } else {
-                shadeDisplaysRepository.get().displayId.value
+                if (!ShadeWindowGoesAround.isEnabled) {
+                    return defaultContext
+                }
+                val displayId = shadeDisplaysRepository.get().displayId.value
+                return getContextOrDefault(displayId)
             }
+        }
+
+    /** Context that can be used to open a dialog on the focused display. */
+    private val focusedDisplayContext: Context
+        get() = getContextOrDefault(focusedDisplayRepository.focusedDisplayId.value)
 
     private fun getContextOrDefault(displayId: Int): Context {
         return try {
