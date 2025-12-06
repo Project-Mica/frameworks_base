@@ -652,7 +652,7 @@ public class Camera {
     }
 
     /** used by Camera#open, Camera#open(int) */
-    Camera(int cameraId, @NonNull Context context, int rotationOverride) {
+    Camera(int cameraId, @NonNull Context context, CameraCompatibilityInfo compatInfo) {
         if (cameraId >= getNumberOfCameras()) {
             throw new RuntimeException("Unknown camera ID");
         }
