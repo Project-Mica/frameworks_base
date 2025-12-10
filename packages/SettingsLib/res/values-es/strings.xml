@@ -118,8 +118,8 @@
     <string name="bluetooth_hearing_aid_right_active" msgid="2244728507170385397">"Activo (solo derecho)"</string>
     <string name="bluetooth_hearing_aid_left_and_right_active" msgid="4294571497939983181">"Activo (izquierdo y derecho)"</string>
     <string name="bluetooth_hearing_device_ambient_error" msgid="6035857289108813878">"No se han podido actualizar los alrededores"</string>
-    <!-- no translation found for bluetooth_hearing_aids_presets_error (4523942574698610976) -->
-    <skip />
+    <string name="bluetooth_hearing_aids_presets_error" msgid="4523942574698610976">"No se ha podido actualizar el preajuste"</string>
+    <string name="hearing_device_spinner_item_selected" msgid="3884049360428514878">"Seleccionado"</string>
     <string name="bluetooth_active_media_only_battery_level" msgid="7772517511061834073">"Activo (solo multimedia). <xliff:g id="BATTERY_LEVEL_AS_PERCENTAGE">%1$s</xliff:g> de batería."</string>
     <string name="bluetooth_active_media_only_battery_level_untethered" msgid="7444753133664620926">"Activo (solo multimedia). Izquierdo: <xliff:g id="BATTERY_LEVEL_AS_PERCENTAGE_0">%1$s</xliff:g> de batería. Derecho: <xliff:g id="BATTERY_LEVEL_AS_PERCENTAGE_1">%2$s</xliff:g> de batería."</string>
     <string name="bluetooth_guest_battery_level" msgid="2820003593899467676">"Dispositivo invitado. <xliff:g id="BATTERY_LEVEL_AS_PERCENTAGE">%1$s</xliff:g> de batería."</string>
@@ -445,7 +445,7 @@
     <string name="animator_duration_scale_title" msgid="7082913931326085176">"Escala de duración de animación"</string>
     <string name="overlay_display_devices_title" msgid="5411894622334469607">"Simular pantallas secundarias"</string>
     <string name="shade_display_awareness_title" msgid="8000009404669495876">"Posición del panel en la pantalla"</string>
-    <string name="debug_applications_category" msgid="5394089406638954196">"Apps"</string>
+    <string name="debug_applications_category" msgid="5394089406638954196">"Aplicaciones"</string>
     <string name="immediately_destroy_activities" msgid="1826287490705167403">"No mantener actividades"</string>
     <string name="immediately_destroy_activities_summary" msgid="6289590341144557614">"Destruye actividades cuando el usuario salga de ellas"</string>
     <string name="app_process_limit_title" msgid="8361367869453043007">"Límitar procesos en segundo plano"</string>

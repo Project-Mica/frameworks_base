@@ -25,6 +25,11 @@ import static android.media.MediaRouter2.SCANNING_STATE_SCANNING_FULL;
 import static android.media.MediaRouter2.SCANNING_STATE_WHILE_INTERACTIVE;
 import static android.media.MediaRouter2Utils.getOriginalId;
 import static android.media.MediaRouter2Utils.getProviderId;
+import static android.media.RouteListingPreference.Item.FLAG_SUGGESTED;
+import static android.media.RoutingChangeInfo.SUGGESTION_PROVIDER_DEVICE_SUGGESTION_APP;
+import static android.media.RoutingChangeInfo.SUGGESTION_PROVIDER_DEVICE_SUGGESTION_OTHER;
+import static android.media.RoutingChangeInfo.SUGGESTION_PROVIDER_RLP;
+import static android.media.RoutingChangeInfo.SuggestionProviderFlags;
 
 import static com.android.internal.util.function.pooled.PooledLambda.obtainMessage;
 import static com.android.server.media.MediaRouterMetricLogger.EVENT_TYPE_CREATE_SESSION;
@@ -1629,9 +1634,16 @@ class MediaRouter2ServiceImpl {
         }
 
         long uniqueRequestId = toUniqueRequestId(routerRecord.mRouterId, requestId);
+        @SuggestionProviderFlags
+        int suggestionProviderFlags = getSuggestionProviderFlags(routerRecord, route);
+        RoutingChangeInfo updatedInfo =
+                new RoutingChangeInfo(
+                        routingChangeInfo.getEntryPoint(),
+                        routingChangeInfo.isSuggested(),
+                        suggestionProviderFlags);
         mMediaRouterMetricLogger.addRequestInfo(
-                uniqueRequestId, EVENT_TYPE_CREATE_SESSION, routingChangeInfo);
-        mMediaRouterMetricLogger.notifyRoutingChangeRequested(uniqueRequestId, routingChangeInfo);
+                uniqueRequestId, EVENT_TYPE_CREATE_SESSION, updatedInfo);
+        mMediaRouterMetricLogger.notifyRoutingChangeRequested(uniqueRequestId, updatedInfo);
         userHandler.sendMessage(
                 obtainMessage(
                         UserHandler::requestCreateSessionWithRouter2OnHandler,
@@ -2465,6 +2477,45 @@ class MediaRouter2ServiceImpl {
         }
     }
 
+    private static @SuggestionProviderFlags int getSuggestionProviderFlags(
+            RouterRecord routerRecord, MediaRoute2Info mediaRoute2Info) {
+        String routeId = mediaRoute2Info.getId();
+        int result = 0;
+        if (routerRecord.mRouteListingPreference != null) {
+            List<RouteListingPreference.Item> routeListingPreferenceItems =
+                    routerRecord.mRouteListingPreference.getItems();
+            if (routeListingPreferenceItems.stream()
+                    .anyMatch(
+                            item ->
+                                    (item.getRouteId().equals(routeId))
+                                            && (item.getFlags() & FLAG_SUGGESTED) != 0)) {
+                result |= SUGGESTION_PROVIDER_RLP;
+            }
+        }
+        Map<String, List<SuggestedDeviceInfo>> suggestionsMap = routerRecord.mDeviceSuggestions;
+        List<SuggestedDeviceInfo> suggestionsByApp = suggestionsMap.get(routerRecord.mPackageName);
+        if (suggestionsByApp != null
+                && suggestionsByApp.stream()
+                        .anyMatch(
+                                suggestedDeviceInfo ->
+                                        suggestedDeviceInfo.getRouteId().equals(routeId))) {
+            result |= SUGGESTION_PROVIDER_DEVICE_SUGGESTION_APP;
+        }
+        if (suggestionsMap.entrySet().stream()
+                .filter(entry -> !entry.getKey().equals(routerRecord.mPackageName))
+                .anyMatch(
+                        entry ->
+                                entry.getValue().stream()
+                                        .anyMatch(
+                                                suggestedDeviceInfo ->
+                                                        suggestedDeviceInfo
+                                                                .getRouteId()
+                                                                .equals(routeId)))) {
+            result |= SUGGESTION_PROVIDER_DEVICE_SUGGESTION_OTHER;
+        }
+        return result;
+    }
+
     /** Invoked when {@link MediaRouterService#systemRunning()} is invoked. */
     /* package */ void systemRunning() {
         sInstance.set(this);
@@ -2845,12 +2896,18 @@ class MediaRouter2ServiceImpl {
          * Updates the device suggestions for the given suggesting package.
          *
          * @param suggestingPackageName The package name of the suggesting app.
-         * @param deviceSuggestions The device suggestions.
+         * @param deviceSuggestions The device suggestions. May be null if the caller is clearing
+         *     out their suggestions.
          */
         @GuardedBy("mLock")
         public void putDeviceSuggestionsLocked(
-                String suggestingPackageName, List<SuggestedDeviceInfo> deviceSuggestions) {
-            mDeviceSuggestions.put(suggestingPackageName, deviceSuggestions);
+                String suggestingPackageName,
+                @Nullable List<SuggestedDeviceInfo> deviceSuggestions) {
+            if (deviceSuggestions != null) {
+                mDeviceSuggestions.put(suggestingPackageName, deviceSuggestions);
+            } else {
+                mDeviceSuggestions.remove(suggestingPackageName);
+            }
         }
 
         /**

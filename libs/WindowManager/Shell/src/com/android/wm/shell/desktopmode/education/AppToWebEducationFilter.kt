@@ -46,11 +46,13 @@ class AppToWebEducationFilter(
 
         return if (isAppToWebEducationRequested(taskInfo)) {
             !isEducationViewLimitReached(windowingEducationProto) &&
+                taskInfo.isFocused &&
                 !isOtherEducationShowing() &&
                 !isBrowserApp(taskInfo) &&
                 isBrowserSessionAvailable(taskInfo)
         } else {
             !isEducationViewLimitReached(windowingEducationProto) &&
+                taskInfo.isFocused &&
                 !isOtherEducationShowing() &&
                 hasSufficientTimeSinceSetup() &&
                 !isFeatureUsedBefore(windowingEducationProto) &&
@@ -124,7 +126,7 @@ class AppToWebEducationFilter(
         Duration.ofSeconds(context.resources.getInteger(resourceId).toLong())
 
     companion object {
-        private const val MAXIMUM_TIMES_EDUCATION_SHOWN = 100
+        private const val MAXIMUM_TIMES_EDUCATION_SHOWN = 2
 
         /**
          * Debug flag to indicate whether to force default display to be in desktop-first mode

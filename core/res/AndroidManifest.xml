@@ -2341,10 +2341,9 @@
                 android:featureFlag="android.permission.flags.bluetooth_permission_use_module_protection_level"
                 android:protectionLevel="signature|role|module" />
 
-    <!-- @SystemApi @hide Allows applications to register a NetworkAgent for its own use.
+    <!-- @hide Allows applications to register a NetworkAgent for its own use.
          <p>Such networks are not available to other applications on the device unless they have
          the CONNECTIVITY_USE_RESTRICTED_NETWORKS permission.
-         @FlaggedApi(android.net.platform.flags.Flags.FLAG_CREATE_APP_SPECIFIC_NETWORK_PERMISSION)
     -->
     <permission android:name="android.permission.CREATE_APP_SPECIFIC_NETWORK"
                 android:protectionLevel="signature|privileged"
@@ -8758,14 +8757,6 @@
         android:protectionLevel="signature" />
 
     <!-- Allows an application to perform actions on behalf of users inside of
-         applications.
-         <p>This permission is currently only granted to privileged system apps.
-         <p>Protection level: internal|privileged -->
-    <permission android:name="android.permission.EXECUTE_APP_FUNCTIONS"
-        android:featureFlag="!android.permission.flags.app_function_access_api_enabled"
-        android:protectionLevel="internal|privileged" />
-
-    <!-- Allows an application to perform actions on behalf of users inside of
      applications.
      <p>To execute a function in another app, an application must first hold the
         android.permission.EXECUTE_APP_FUNCTIONS permission. In addition, the application must be
@@ -8775,6 +8766,14 @@
     <permission android:name="android.permission.EXECUTE_APP_FUNCTIONS"
         android:featureFlag="android.permission.flags.app_function_access_api_enabled"
         android:protectionLevel="normal" />
+
+    <!-- Allows an application to perform actions on behalf of users inside of
+         applications.
+         <p>This permission is currently only granted to privileged system apps.
+         <p>Protection level: internal|privileged -->
+    <permission android:name="android.permission.EXECUTE_APP_FUNCTIONS"
+        android:featureFlag="!android.permission.flags.app_function_access_api_enabled"
+        android:protectionLevel="internal|privileged" />
 
     <!-- Allows an application to display its suggestions using the autofill framework.
          <p>For now, this permission is only granted to the Browser application.
@@ -9456,6 +9455,14 @@
             android:requiresPurposeTargetSdkVersion="37">
             <valid-purpose android:name="notForIdentification" />
     </permission>
+
+    <!-- Permission required to bind content restriction service
+         <p>Protection level: signature
+         @FlaggedApi(android.permission.flags.Flags.FLAG_CONTENT_RESTRICTION_ROLE_ENABLED)
+    -->
+    <permission android:name="android.permission.BIND_CONTENT_RESTRICTION_SERVICE"
+        android:protectionLevel="signature"
+        android:featureFlag="android.permission.flags.content_restriction_role_enabled" />
 
     <!-- Attribution for Geofencing service. -->
     <attribution android:tag="GeofencingService" android:label="@string/geofencing_service"/>

@@ -118,8 +118,8 @@
     <string name="bluetooth_hearing_aid_right_active" msgid="2244728507170385397">"سماعة الأذن الطبية نشطة (اليمنى فقط)"</string>
     <string name="bluetooth_hearing_aid_left_and_right_active" msgid="4294571497939983181">"سماعتا الأذن الطبيتان نشطتان (اليسرى واليمنى)"</string>
     <string name="bluetooth_hearing_device_ambient_error" msgid="6035857289108813878">"تعذَّر تعديل حالة الأصوات المحيطة"</string>
-    <!-- no translation found for bluetooth_hearing_aids_presets_error (4523942574698610976) -->
-    <skip />
+    <string name="bluetooth_hearing_aids_presets_error" msgid="4523942574698610976">"تعذَّر تعديل الإعداد المسبق"</string>
+    <string name="hearing_device_spinner_item_selected" msgid="3884049360428514878">"تم الاختيار"</string>
     <string name="bluetooth_active_media_only_battery_level" msgid="7772517511061834073">"‏البلوتوث نشِط (للوسائط فقط). مستوى شحن البطارية: ‎<xliff:g id="BATTERY_LEVEL_AS_PERCENTAGE">%1$s</xliff:g>"</string>
     <string name="bluetooth_active_media_only_battery_level_untethered" msgid="7444753133664620926">"‏البلوتوث نشِط (للوسائط فقط)، مستوى الشحن في سماعة الرأس اليسرى: ‎<xliff:g id="BATTERY_LEVEL_AS_PERCENTAGE_0">%1$s</xliff:g>، مستوى الشحن في سماعة الرأس اليمنى: ‎<xliff:g id="BATTERY_LEVEL_AS_PERCENTAGE_1">%2$s</xliff:g>"</string>
     <string name="bluetooth_guest_battery_level" msgid="2820003593899467676">"‏جهاز ضيف. مستوى شحن البطارية: ‎<xliff:g id="BATTERY_LEVEL_AS_PERCENTAGE">%1$s</xliff:g>"</string>
@@ -497,7 +497,7 @@
     <string name="picture_color_mode_desc" msgid="151780973768136200">"‏استخدام sRGB"</string>
     <string name="daltonizer_mode_disabled" msgid="403424372812399228">"غير مفعّلة"</string>
     <string name="daltonizer_mode_monochromacy" msgid="362060873835885014">"عمى ألوان كامل"</string>
-    <string name="daltonizer_mode_deuteranomaly" msgid="3507284319584683963">"العجز في رؤية اللونين الأخضر والأحمر"</string>
+    <string name="daltonizer_mode_deuteranomaly" msgid="3507284319584683963">"العجز عن رؤية بعض درجات الأخضر"</string>
     <string name="daltonizer_mode_protanomaly" msgid="7805583306666608440">"غطش الأحمر (الأحمر والأخضر)"</string>
     <string name="daltonizer_mode_tritanomaly" msgid="7135266249220732267">"غمش الأزرق (الأزرق والأصفر)"</string>
     <string name="accessibility_display_daltonizer_preference_title" msgid="1810693571332381974">"تصحيح الألوان"</string>

@@ -138,6 +138,7 @@ import com.android.wm.shell.desktopmode.DesktopTestHelpers.createFullscreenTask
 import com.android.wm.shell.desktopmode.DesktopTestHelpers.createHomeTask
 import com.android.wm.shell.desktopmode.DesktopTestHelpers.createSplitScreenTask
 import com.android.wm.shell.desktopmode.ExitDesktopTaskTransitionHandler.FULLSCREEN_ANIMATION_DURATION
+import com.android.wm.shell.desktopmode.clientfullscreenrequest.ClientFullscreenRequestTransitionHandler
 import com.android.wm.shell.desktopmode.common.ToggleTaskSizeInteraction
 import com.android.wm.shell.desktopmode.data.DesktopRepository
 import com.android.wm.shell.desktopmode.data.DesktopRepositoryInitializer
@@ -193,6 +194,7 @@ import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.test.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
@@ -260,6 +262,8 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
     lateinit var toggleResizeDesktopTaskTransitionHandler: ToggleResizeDesktopTaskTransitionHandler
     @Mock lateinit var dragToDesktopTransitionHandler: DragToDesktopTransitionHandler
     @Mock lateinit var mMockDesktopImmersiveController: DesktopImmersiveController
+    @Mock
+    lateinit var clientFullscreenRequestTransitionHandler: ClientFullscreenRequestTransitionHandler
     @Mock lateinit var splitScreenController: SplitScreenController
     @Mock lateinit var recentsTransitionHandler: RecentsTransitionHandler
     @Mock lateinit var dragAndDropController: DragAndDropController
@@ -508,6 +512,7 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
             toggleResizeDesktopTaskTransitionHandler,
             dragToDesktopTransitionHandler,
             mMockDesktopImmersiveController,
+            clientFullscreenRequestTransitionHandler,
             userRepositories,
             repositoryInitializer,
             recentsTransitionHandler,
@@ -3070,6 +3075,48 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
     fun moveToFullscreen_nonExistentTask_doesNothing() {
         controller.moveToFullscreen(999, transitionSource = UNKNOWN)
         verifyExitDesktopWCTNotExecuted()
+    }
+
+    @Test
+    @EnableFlags(
+        Flags.FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND,
+        com.android.launcher3.Flags.FLAG_ENABLE_ALT_TAB_KQS_FLATENNING,
+        FLAG_MOVE_TO_NEXT_DISPLAY_SHORTCUT_WITH_PROJECTED_MODE,
+    )
+    fun moveToFullscreen_fullscreenNonRunningTask_deskActive_cleansUpSourceDisplay() {
+        whenever(focusTransitionObserver.globallyFocusedDisplayId).thenReturn(SECOND_DISPLAY)
+        taskRepository.addDesk(displayId = SECOND_DISPLAY, deskId = 9)
+        taskRepository.setActiveDesk(displayId = SECOND_DISPLAY, deskId = 9)
+        val task = setUpFullscreenTask(displayId = INVALID_TASK_ID, background = true)
+
+        controller.moveToFullscreen(task.taskId, transitionSource = UNKNOWN)
+
+        val wct = getLatestExitDesktopWct()
+        // Verify that cleanup (e.g. resetting the launcher) is performed on the source display
+        // where the task originated from.
+        wct.assertPendingIntent(launchHomeIntent(SECOND_DISPLAY))
+        wct.assertPendingIntentActivityOptionsLaunchDisplayId(SECOND_DISPLAY)
+    }
+
+    @Test
+    @EnableFlags(
+        Flags.FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND,
+        com.android.launcher3.Flags.FLAG_ENABLE_ALT_TAB_KQS_FLATENNING,
+        FLAG_MOVE_TO_NEXT_DISPLAY_SHORTCUT_WITH_PROJECTED_MODE,
+    )
+    fun moveToFullscreen_fullscreenNonRunningTask_noDeskActive_cleansUpSourceDisplay() {
+        whenever(focusTransitionObserver.globallyFocusedDisplayId).thenReturn(SECOND_DISPLAY)
+        taskRepository.addDesk(displayId = SECOND_DISPLAY, deskId = 9)
+        taskRepository.setDeskInactive(deskId = 9)
+        val task = setUpFullscreenTask(displayId = INVALID_TASK_ID, background = true)
+
+        controller.moveToFullscreen(task.taskId, transitionSource = UNKNOWN)
+
+        val wct = getLatestExitDesktopWct()
+        // Verify that cleanup (e.g. resetting the launcher) is performed on the source display
+        // where the task originated from.
+        wct.assertPendingIntent(launchHomeIntent(SECOND_DISPLAY))
+        wct.assertPendingIntentActivityOptionsLaunchDisplayId(SECOND_DISPLAY)
     }
 
     @Test
@@ -11515,10 +11562,13 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
             val transition = Binder()
             whenever(transitions.startTransition(eq(TRANSIT_CHANGE), any(), anyOrNull()))
                 .thenReturn(transition)
+            val preservedDisplay =
+                taskRepository.removePreservedDisplay(SECOND_DISPLAY_UNIQUE_ID)
+                    ?: fail("Expected to find preserved display.")
 
             controller.restoreDisplay(
                 displayId = SECOND_DISPLAY_ON_RECONNECT,
-                uniqueDisplayId = SECOND_DISPLAY_UNIQUE_ID,
+                preservedDisplay = preservedDisplay,
                 userId = taskRepository.userId,
             )
             runCurrent()
@@ -11527,8 +11577,6 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
             val wct = wctCaptor.firstValue
             assertThat(findBoundsChange(wct, firstTask)).isEqualTo(firstTaskBounds)
             assertThat(findBoundsChange(wct, secondTask)).isEqualTo(secondTaskBounds)
-            wct.assertReorder(task = firstTask, toTop = true, includingParents = true)
-            wct.assertReorder(task = secondTask, toTop = true, includingParents = true)
             verify(desksOrganizer).moveTaskToDesk(any(), anyInt(), eq(firstTask), eq(false))
             verify(desksOrganizer).moveTaskToDesk(any(), anyInt(), eq(secondTask), eq(false))
             val deskIds = taskRepository.getDeskIds(SECOND_DISPLAY_ON_RECONNECT)
@@ -11597,11 +11645,13 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
             val transition = Binder()
             whenever(transitions.startTransition(eq(TRANSIT_CHANGE), any(), anyOrNull()))
                 .thenReturn(transition)
-
+            val preservedDisplay =
+                taskRepository.removePreservedDisplay(SECOND_DISPLAY_UNIQUE_ID)
+                    ?: fail("Expected to find preserved display.")
             controller.restoreDisplay(
-                SECOND_DISPLAY_ON_RECONNECT,
-                SECOND_DISPLAY_UNIQUE_ID,
-                taskRepository.userId,
+                displayId = SECOND_DISPLAY_ON_RECONNECT,
+                preservedDisplay = preservedDisplay,
+                userId = taskRepository.userId,
             )
             runCurrent()
 
@@ -11618,55 +11668,6 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
                         minimized = true,
                     )
                 )
-        }
-
-    @Test
-    @EnableFlags(
-        Flags.FLAG_ENABLE_DISPLAY_DISCONNECT_INTERACTION,
-        Flags.FLAG_ENABLE_DISPLAY_RECONNECT_INTERACTION,
-        Flags.FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND,
-    )
-    fun restoreDisplay_keyguardLocked_noOp() =
-        testScope.runTest {
-            taskRepository.addDesk(SECOND_DISPLAY, DISCONNECTED_DESK_ID, SECOND_DISPLAY_UNIQUE_ID)
-            taskRepository.setActiveDesk(displayId = SECOND_DISPLAY, deskId = DISCONNECTED_DESK_ID)
-            val firstTaskBounds = Rect(100, 300, 1000, 1200)
-            val firstTask =
-                setUpFreeformTask(
-                    displayId = SECOND_DISPLAY,
-                    deskId = DISCONNECTED_DESK_ID,
-                    bounds = firstTaskBounds,
-                )
-            val secondTaskBounds = Rect(400, 400, 1600, 900)
-            val secondTask =
-                setUpFreeformTask(
-                    displayId = SECOND_DISPLAY,
-                    deskId = DISCONNECTED_DESK_ID,
-                    bounds = secondTaskBounds,
-                )
-            val wctCaptor = argumentCaptor<WindowContainerTransaction>()
-            taskRepository.preserveDisplay(SECOND_DISPLAY, SECOND_DISPLAY_UNIQUE_ID)
-            taskRepository.onDeskDisplayChanged(
-                DISCONNECTED_DESK_ID,
-                DEFAULT_DISPLAY,
-                DEFAULT_DISPLAY_UNIQUE_ID,
-            )
-            whenever(desksOrganizer.createDesk(eq(SECOND_DISPLAY_ON_RECONNECT), any(), any()))
-                .thenAnswer { invocation ->
-                    (invocation.arguments[2] as DesksOrganizer.OnCreateCallback).onCreated(
-                        deskId = 5
-                    )
-                }
-            whenever(keyguardManager.isKeyguardLocked).thenReturn(true)
-
-            controller.restoreDisplay(
-                SECOND_DISPLAY_ON_RECONNECT,
-                SECOND_DISPLAY_UNIQUE_ID,
-                DEFAULT_USER_ID,
-            )
-            runCurrent()
-
-            verify(transitions, never()).startTransition(anyInt(), any(), anyOrNull())
         }
 
     @Test
@@ -11713,10 +11714,13 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
             val transition = Binder()
             whenever(transitions.startTransition(eq(TRANSIT_CHANGE), any(), anyOrNull()))
                 .thenReturn(transition)
+            val preservedDisplay =
+                taskRepository.removePreservedDisplay(SECOND_DISPLAY_UNIQUE_ID)
+                    ?: fail("Expected to find preserved display.")
 
             controller.restoreDisplay(
                 displayId = SECOND_DISPLAY_ON_RECONNECT,
-                uniqueDisplayId = SECOND_DISPLAY_UNIQUE_ID,
+                preservedDisplay = preservedDisplay,
                 userId = taskRepository.userId,
             )
             runCurrent()
@@ -11724,65 +11728,6 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
             verify(transitions).startTransition(anyInt(), wctCaptor.capture(), anyOrNull())
             val wct = wctCaptor.firstValue
             wct.assertReorder(defaultDisplayTask.token, toTop = true, includingParents = true)
-        }
-
-    @Test
-    @EnableFlags(
-        Flags.FLAG_ENABLE_DISPLAY_DISCONNECT_INTERACTION,
-        Flags.FLAG_ENABLE_DISPLAY_RECONNECT_INTERACTION,
-        Flags.FLAG_ENABLE_MULTIPLE_DESKTOPS_BACKEND,
-    )
-    fun keyguardUnlocked_displayToRestore_restoresDisplay() =
-        testScope.runTest {
-            taskRepository.addDesk(SECOND_DISPLAY, DISCONNECTED_DESK_ID, SECOND_DISPLAY_UNIQUE_ID)
-            taskRepository.setActiveDesk(displayId = SECOND_DISPLAY, deskId = DISCONNECTED_DESK_ID)
-            val firstTaskBounds = Rect(100, 300, 1000, 1200)
-            val firstTask =
-                setUpFreeformTask(
-                    displayId = SECOND_DISPLAY,
-                    deskId = DISCONNECTED_DESK_ID,
-                    bounds = firstTaskBounds,
-                )
-            val secondTaskBounds = Rect(400, 400, 1600, 900)
-            val secondTask =
-                setUpFreeformTask(
-                    displayId = SECOND_DISPLAY,
-                    deskId = DISCONNECTED_DESK_ID,
-                    bounds = secondTaskBounds,
-                )
-            val wctCaptor = argumentCaptor<WindowContainerTransaction>()
-            taskRepository.preserveDisplay(SECOND_DISPLAY, SECOND_DISPLAY_UNIQUE_ID)
-            taskRepository.onDeskDisplayChanged(
-                DISCONNECTED_DESK_ID,
-                DEFAULT_DISPLAY,
-                DEFAULT_DISPLAY_UNIQUE_ID,
-            )
-            whenever(desksOrganizer.createDesk(eq(SECOND_DISPLAY_ON_RECONNECT), any(), any()))
-                .thenAnswer { invocation ->
-                    (invocation.arguments[2] as DesksOrganizer.OnCreateCallback).onCreated(
-                        deskId = 5
-                    )
-                }
-            whenever(displayController.allDisplaysByUniqueId)
-                .thenReturn(
-                    mutableMapOf(
-                        DEFAULT_DISPLAY_UNIQUE_ID to DEFAULT_DISPLAY,
-                        SECOND_DISPLAY_UNIQUE_ID to SECOND_DISPLAY_ON_RECONNECT,
-                    )
-                )
-            whenever(keyguardManager.isKeyguardLocked).thenReturn(false)
-
-            controller.onKeyguardVisibilityChanged(false, false, false)
-            runCurrent()
-
-            verify(transitions).startTransition(anyInt(), wctCaptor.capture(), anyOrNull())
-            val wct = wctCaptor.firstValue
-            assertThat(findBoundsChange(wct, firstTask)).isEqualTo(firstTaskBounds)
-            assertThat(findBoundsChange(wct, secondTask)).isEqualTo(secondTaskBounds)
-            wct.assertReorder(task = firstTask, toTop = true, includingParents = true)
-            wct.assertReorder(task = secondTask, toTop = true, includingParents = true)
-            verify(desksOrganizer).moveTaskToDesk(any(), anyInt(), eq(firstTask), eq(false))
-            verify(desksOrganizer).moveTaskToDesk(any(), anyInt(), eq(secondTask), eq(false))
         }
 
     @Test
@@ -12631,6 +12576,7 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
         enableSystemFullscreenOverride: Boolean = false,
         aspectRatioOverrideApplied: Boolean = false,
         visible: Boolean = true,
+        background: Boolean = false,
     ): RunningTaskInfo {
         val task = createFullscreenTask(displayId)
         val activityInfo = ActivityInfo()
@@ -12681,8 +12627,14 @@ class DesktopTasksControllerTest(flags: FlagsParameterization) : ShellTestCase()
             }
             isVisible = visible
         }
-        whenever(shellTaskOrganizer.getRunningTaskInfo(task.taskId)).thenReturn(task)
-        runningTasks.add(task)
+        if (background) {
+            whenever(shellTaskOrganizer.getRunningTaskInfo(task.taskId)).thenReturn(null)
+            whenever(recentTasksController.findTaskInBackground(task.taskId))
+                .thenReturn(createRecentTaskInfo(taskId = task.taskId, displayId = INVALID_DISPLAY))
+        } else {
+            whenever(shellTaskOrganizer.getRunningTaskInfo(task.taskId)).thenReturn(task)
+            runningTasks.add(task)
+        }
         return task
     }
 

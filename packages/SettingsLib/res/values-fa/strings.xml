@@ -118,8 +118,8 @@
     <string name="bluetooth_hearing_aid_right_active" msgid="2244728507170385397">"فعال (فقط راست)"</string>
     <string name="bluetooth_hearing_aid_left_and_right_active" msgid="4294571497939983181">"فعال (چپ و راست)"</string>
     <string name="bluetooth_hearing_device_ambient_error" msgid="6035857289108813878">"پیرامون به‌روز نشد"</string>
-    <!-- no translation found for bluetooth_hearing_aids_presets_error (4523942574698610976) -->
-    <skip />
+    <string name="bluetooth_hearing_aids_presets_error" msgid="4523942574698610976">"پیش‌تنظیم به‌روز نشد"</string>
+    <string name="hearing_device_spinner_item_selected" msgid="3884049360428514878">"انتخاب‌شده"</string>
     <string name="bluetooth_active_media_only_battery_level" msgid="7772517511061834073">"فعال (فقط رسانه). باتری: <xliff:g id="BATTERY_LEVEL_AS_PERCENTAGE">%1$s</xliff:g>."</string>
     <string name="bluetooth_active_media_only_battery_level_untethered" msgid="7444753133664620926">"فعال (فقط رسانه). باتری چپ: <xliff:g id="BATTERY_LEVEL_AS_PERCENTAGE_0">%1$s</xliff:g>، باتری راست: <xliff:g id="BATTERY_LEVEL_AS_PERCENTAGE_1">%2$s</xliff:g>."</string>
     <string name="bluetooth_guest_battery_level" msgid="2820003593899467676">"‏دستگاه مهمان. سطح باتری: ‎<xliff:g id="BATTERY_LEVEL_AS_PERCENTAGE">%1$s</xliff:g>."</string>
@@ -176,7 +176,7 @@
     <string name="bluetooth_hid_profile_summary_use_for" msgid="4289460627406490952">"استفاده برای چاپ"</string>
     <string name="bluetooth_hearing_aid_profile_summary_use_for" msgid="3374057355721486932">"استفاده برای سمعک"</string>
     <string name="bluetooth_le_audio_profile_summary_use_for" msgid="2778318636027348572">"‏استفاده برای LE_AUDIO"</string>
-    <string name="bluetooth_pairing_accept" msgid="2054232610815498004">"مرتبط‌سازی"</string>
+    <string name="bluetooth_pairing_accept" msgid="2054232610815498004">"جفت کردن"</string>
     <string name="bluetooth_pairing_accept_all_caps" msgid="2734383073450506220">"مرتبط‌سازی"</string>
     <string name="bluetooth_pairing_decline" msgid="6483118841204885890">"لغو"</string>
     <string name="bluetooth_pairing_will_share_phonebook" msgid="3064334458659165176">"وقتی وصل باشید، مرتبط‌سازی اجازه دسترسی به مخاطبین و سابقه تماستان را فراهم می‌کند."</string>
@@ -549,8 +549,8 @@
     <string name="disabled_in_phone_call_text" msgid="6568931334337318320">"درطول تماس دردسترس نیست"</string>
     <string name="disabled" msgid="8017887509554714950">"غیر فعال شد"</string>
     <string name="enabled" msgid="3997122818554810678">"فعال"</string>
-    <string name="external_source_trusted" msgid="1146522036773132905">"مجاز بودن"</string>
-    <string name="external_source_untrusted" msgid="5037891688911672227">"مجاز نبودن"</string>
+    <string name="external_source_trusted" msgid="1146522036773132905">"اجازه داشتن"</string>
+    <string name="external_source_untrusted" msgid="5037891688911672227">"اجازه نداشتن"</string>
     <string name="install_other_apps" msgid="3232595082023199454">"نصب برنامه‌های ناشناس"</string>
     <string name="home" msgid="973834627243661438">"صفحه اصلی تنظیمات"</string>
   <string-array name="battery_labels">
@@ -712,12 +712,12 @@
     <string name="guest_exit_quick_settings_button" msgid="1912362095913765471">"خروج مهمان"</string>
     <string name="guest_notification_ephemeral" msgid="7263252466950923871">"همه فعالیت‌ها هنگام خروج حذف خواهد شد"</string>
     <string name="guest_notification_non_ephemeral" msgid="6843799963012259330">"می‌توانید فعالیتتان را هنگام خروج ذخیره یا حذف کنید"</string>
-    <string name="guest_notification_non_ephemeral_non_first_login" msgid="8009307983766934876">"برای حذف فعالیت جلسه در این لحظه، بازنشانی کنید یا می‌توانید فعالیت را هنگام خروج ذخیره یا حذف کنید"</string>
+    <string name="guest_notification_non_ephemeral_non_first_login" msgid="8009307983766934876">"برای حذف فعالیت جلسه در این لحظه، بازنشانی کنید یا اینکه فعالیت را هنگام خروج ذخیره یا حذف کنید"</string>
     <string name="user_image_photo_selector" msgid="433658323306627093">"انتخاب عکس"</string>
     <string name="failed_attempts_now_wiping_device" msgid="4016329172216428897">"تلاش‌های نادرست بسیار زیادی انجام شده است. داده‌های این دستگاه حذف خواهد شد."</string>
     <string name="failed_attempts_now_wiping_user" msgid="469060411789668050">"تلاش‌های اشتباه بسیار زیادی انجام شده است. این کاربر حذف خواهد شد."</string>
     <string name="failed_attempts_now_wiping_profile" msgid="7626589520888963129">"تلاش‌های اشتباه بسیار زیادی انجام شده است. این نمایه کاری و داده‌های آن‌ حذف خواهند شد."</string>
-    <string name="failed_attempts_now_wiping_dialog_dismiss" msgid="2749889771223578925">"رد شدن"</string>
+    <string name="failed_attempts_now_wiping_dialog_dismiss" msgid="2749889771223578925">"بستن"</string>
     <string name="cached_apps_freezer_device_default" msgid="2616594131750144342">"پیش‌فرض دستگاه"</string>
     <string name="cached_apps_freezer_disabled" msgid="4816382260660472042">"غیرفعال"</string>
     <string name="cached_apps_freezer_enabled" msgid="8866703500183051546">"فعال"</string>

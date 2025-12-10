@@ -260,6 +260,7 @@ import android.window.IWindowOrganizerController;
 import android.window.SplashScreenView.SplashScreenViewParcelable;
 import android.window.TaskSnapshot;
 import android.window.TaskSnapshotManager;
+import android.window.WindowContainerTransaction;
 
 import com.android.internal.R;
 import com.android.internal.annotations.GuardedBy;
@@ -285,7 +286,6 @@ import com.android.server.UiThread;
 import com.android.server.Watchdog;
 import com.android.server.am.ActivityManagerService;
 import com.android.server.am.ActivityManagerServiceDumpProcessesProto;
-import com.android.server.wm.ActivityTaskManagerInternal.HandoffEnablementListener;
 import com.android.server.am.AppTimeTracker;
 import com.android.server.am.AssistDataRequester;
 import com.android.server.am.BaseErrorDialog;
@@ -2696,11 +2696,20 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
                 }
                 if (DesktopExperienceFlags.ENABLE_DESKTOP_WINDOWING_ENTERPRISE_BUGFIX.isTrue()
                         && getTransitionController().isShellTransitionsEnabled()) {
+                    if (!canEnterLockTaskMode(task)) {
+                        Slog.w(TAG, "startLockTaskMode: Can't lock due to auth");
+                        return;
+                    }
                     final Transition transition = new Transition(TRANSIT_START_LOCK_TASK_MODE,
                             0 /* flags */,
                             getTransitionController(), mWindowManager.mSyncEngine);
                     getTransitionController().startCollectOrQueue(transition,
                             (deferred) -> {
+                                if (deferred && !task.isAttached()) {
+                                    Slog.w(TAG, "startLockTaskMode aborted: the task is removed.");
+                                    transition.abort();
+                                    return;
+                                }
                                 final ActionChain chain = mChainTracker.start(
                                         "startSystemLockTaskMOde",
                                         transition);
@@ -2787,6 +2796,17 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
         } finally {
             Binder.restoreCallingIdentity(ident);
         }
+    }
+
+    /** @return either a task can enter LockTask mode or not. */
+    public boolean canEnterLockTaskMode(Task task) {
+        return task.isAttached() && task.mLockTaskAuth != LOCK_TASK_AUTH_DONT_LOCK;
+    }
+
+    /** @return either a task is the top most or not. */
+    public boolean isTopMostTask(Task task) {
+        final Task rootTask = mRootWindowContainer.getTopDisplayFocusedRootTask();
+        return rootTask != null && task == rootTask.getTopMostTask();
     }
 
     @Override
@@ -6482,6 +6502,35 @@ public class ActivityTaskManagerService extends IActivityTaskManager.Stub {
             }
 
             mHandoffEnablementListeners.remove(listener);
+        }
+
+        @Override
+        public void moveAllTasks(int fromDisplayId, int toDisplayId) {
+            enforceTaskPermission("moveAllTasks()");
+            synchronized (mGlobalLock) {
+                final DisplayContent fromDc = mRootWindowContainer.getDisplayContent(fromDisplayId);
+                final DisplayContent toDc = mRootWindowContainer.getDisplayContent(toDisplayId);
+
+                if (fromDc == null) {
+                    Slog.w(TAG, "moveAllTasks: invalid fromDisplayId=" + fromDisplayId);
+                    return;
+                }
+                if (toDc == null) {
+                    Slog.w(TAG, "moveAllTasks: invalid toDisplayId=" + toDisplayId);
+                    return;
+                }
+                if (fromDc == toDc) {
+                    Slog.w(TAG, "moveAllTasks: fromDisplayId=" + fromDisplayId
+                            + " and toDisplayId=" + toDisplayId + " are the same");
+                    return;
+                }
+
+                WindowContainerTransaction wct = new WindowContainerTransaction().reparentTasks(
+                        fromDc.getDefaultTaskDisplayArea().mRemoteToken.toWindowContainerToken(),
+                        toDc.getDefaultTaskDisplayArea().mRemoteToken.toWindowContainerToken(),
+                        /* windowingModes= */ null, /* activityTypes= */ null, /* onTop= */ true);
+                mWindowOrganizerController.startNewTransition(TRANSIT_TO_FRONT, wct);
+            }
         }
 
         @Override
