@@ -16,70 +16,137 @@
 
 package com.android.internal.util.mica;
 
-import android.content.res.Resources;
+import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
-import java.util.Arrays;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
-import com.android.internal.util.ArrayUtils;
-
+/**
+ * Utility class for managing DeviceConfig properties with dynamic overrides
+ * read from a JSON file instead of static resources.
+ */
 public class DeviceConfigUtils {
 
     private static final String TAG = DeviceConfigUtils.class.getSimpleName();
+    private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
+    private static final String DATA_FILE = "device_configs_override.json";
 
-    private static final boolean DEBUG = false;
+    // Map to store {namespace/property -> value} overrides
+    private static Map<String, String> sDeviceConfigsOverride = null;
 
-    private static String[] getDeviceConfigsOverride() {
-        String[] globalDeviceConfigs =
-            Resources.getSystem().getStringArray(com.android.internal.R.array.global_device_configs_override);
-        String[] deviceConfigs =
-            Resources.getSystem().getStringArray(com.android.internal.R.array.device_configs_override);
-        String[] allDeviceConfigs = Arrays.copyOf(globalDeviceConfigs, globalDeviceConfigs.length + deviceConfigs.length);
-        System.arraycopy(deviceConfigs, 0, allDeviceConfigs, globalDeviceConfigs.length, deviceConfigs.length);
-        return allDeviceConfigs;
-    }
+    private static Map<String, String> loadDeviceConfigsOverride() {
+        if (sDeviceConfigsOverride != null) {
+            return sDeviceConfigsOverride;
+        }
 
-    public static boolean shouldDenyDeviceConfigControl(String namespace, String property) {
-        if (DEBUG) Log.d(TAG, "shouldAllowDeviceConfigControl, namespace=" + namespace + ", property=" + property);
-        for (String p : getDeviceConfigsOverride()) {
-            String[] kv = p.split("=");
-            String fullKey = kv[0];
-            String[] nsKey = fullKey.split("/");
-            if (nsKey[0] == namespace && nsKey[1] == property){
-                if (DEBUG) Log.d(TAG, "shouldAllowDeviceConfigControl, deny, namespace=" + namespace + ", property=" + property);
-                return true;
+        File dataFile = new File(Environment.getDataSystemDirectory(), DATA_FILE);
+        JSONObject jsonObject = null;
+        
+        if (dataFile.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(dataFile))) {
+                StringBuilder content = new StringBuilder();
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    content.append(line);
+                }
+                
+                if (content.length() > 0) {
+                    jsonObject = new JSONObject(content.toString());
+                } else {
+                    Log.w(TAG, DATA_FILE + " is empty.");
+                }
+
+            } catch (IOException e) {
+                Log.e(TAG, "Error reading from file " + DATA_FILE, e);
+            } catch (JSONException e) {
+                Log.e(TAG, "Error parsing JSON from file " + DATA_FILE, e);
+            }
+        } else {
+            if (DEBUG) Log.d(TAG, DATA_FILE + " does not exist, using empty map.");
+        }
+
+        Map<String, String> configs = new HashMap<>();
+        if (jsonObject != null) {
+            Iterator<String> keys = jsonObject.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                try {
+                    // key format is expected to be "namespace/property"
+                    configs.put(key, jsonObject.getString(key));
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error getting value for key: " + key, e);
+                }
             }
         }
-        if (DEBUG) Log.d(TAG, "shouldAllowDeviceConfigControl, allow, namespace=" + namespace + ", property=" + property);
-        return false;
+        
+        sDeviceConfigsOverride = Collections.unmodifiableMap(configs);
+        if (DEBUG) Log.d(TAG, "Loaded " + sDeviceConfigsOverride.size() + " device config overrides.");
+        return sDeviceConfigsOverride;
     }
 
+    /**
+     * Checks if a given DeviceConfig property should be denied (i.e., overridden).
+     * The override keys in the JSON are expected to be in "namespace/property" format.
+     *
+     * @param namespace The namespace of the DeviceConfig property.
+     * @param property The name of the DeviceConfig property.
+     * @return true if an override exists for this property, false otherwise.
+     */
+    public static boolean shouldDenyDeviceConfigControl(String namespace, String property) {
+        String fullKey = namespace + "/" + property;
+        Map<String, String> overrides = loadDeviceConfigsOverride();
+
+        boolean deny = overrides.containsKey(fullKey);
+        if (DEBUG) Log.d(TAG, "shouldDenyDeviceConfigControl for " + fullKey + ": " + (deny ? "DENY" : "ALLOW"));
+        return deny;
+    }
+
+    /**
+     * Sets the default values for all properties found in the override JSON file
+     * if they are not filtered.
+     *
+     * @param filterNamespace If not null, properties in this namespace are skipped.
+     * @param filterProperty If not null, properties with this name are skipped.
+     */
     public static void setDefaultProperties(String filterNamespace, String filterProperty) {
         if (DEBUG) Log.d(TAG, "setDefaultProperties");
-        for (String p : getDeviceConfigsOverride()) {
-            String[] kv = p.split("=");
-            String fullKey = kv[0];
-            String[] nsKey = fullKey.split("/");
+        Map<String, String> overrides = loadDeviceConfigsOverride();
+
+        for (Map.Entry<String, String> entry : overrides.entrySet()) {
+            String fullKey = entry.getKey();
+            String value = entry.getValue();
+
+            String[] nsKey = fullKey.split("/", 2); // Split only once
+            if (nsKey.length != 2) {
+                Log.e(TAG, "Invalid key format in JSON: " + fullKey);
+                continue;
+            }
 
             String namespace = nsKey[0];
             String key = nsKey[1];
 
-            if (filterNamespace != null && filterNamespace == namespace){
+            if (filterNamespace != null && filterNamespace.equals(namespace)){
                 continue;
             }
 
-            if (filterProperty != null && filterProperty == key){
+            if (filterProperty != null && filterProperty.equals(key)){
                 continue;
             }
 
-            String value = "";
-            if (kv.length > 1) {
-                value = kv[1];
-            }
+            // The 'false' argument means 'makeDefault' is false, which is correct
+            // for setting a potentially-overridden default value.
             Settings.Config.putString(namespace, key, value, false);
+            if (DEBUG) Log.d(TAG, "Set default: " + fullKey + "=" + value);
         }
     }
 }

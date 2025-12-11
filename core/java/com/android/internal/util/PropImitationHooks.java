@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2022 Paranoid Android
- *           (C) 2023 StatiXOS
- *           (C) 2023 ArrowOS
- *           (C) 2025 MicaOS
- *           (C) 2023 The LibreMobileOS Foundation
+ * (C) 2023 StatiXOS
+ * (C) 2023 ArrowOS
+ * (C) 2025 MicaOS
+ * (C) 2023 The LibreMobileOS Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -102,17 +103,6 @@ public class PropImitationHooks {
             "FINGERPRINT", "google/mustang/mustang:16/BP4A.251205.006/14401865:user/release-keys"
     );
 
-    private static final Map<String, String> sPixelXLProps = Map.of(
-            "PRODUCT", "marlin",
-            "DEVICE", "marlin",
-            "HARDWARE", "marlin",
-            "MANUFACTURER", "Google",
-            "BRAND", "google",
-            "MODEL", "Pixel XL",
-            "ID", "QP1A.191005.007.A3",
-            "FINGERPRINT", "google/marlin/marlin:10/QP1A.191005.007.A3/5972272:user/release-keys"
-    );
-
     private static final Set<String> sNexusFeatures = Set.of(
             "NEXUS_PRELOAD",
             "nexus_preload",
@@ -150,8 +140,6 @@ public class PropImitationHooks {
     );
 
     private static volatile List<String> sCertifiedProps = new ArrayList<>();
-    private static volatile String sStockFp;
-    private static volatile String sNetflixModel;
 
     private static volatile String sProcessName;
     private static volatile boolean sIsPhotos;
@@ -170,9 +158,6 @@ public class PropImitationHooks {
             Log.e(TAG, "Null resources");
             return;
         }
-
-        sStockFp = res.getString(R.string.config_stockFingerprint);
-        sNetflixModel = res.getString(R.string.config_netflixSpoofModel);
 
         sProcessName = processName;
         sIsPhotos = packageName.equals(PACKAGE_GPHOTOS);
@@ -213,18 +198,6 @@ public class PropImitationHooks {
                 dlog("Spoofing Pixel 10 Pro XL for: " + packageName + " process: " + processName);
                 setProps(sPixelTenXLProps);
                 return;
-            case PACKAGE_NETFLIX:
-                if (!sNetflixModel.isEmpty()) {
-                    dlog("Setting model to " + sNetflixModel + " for Netflix");
-                    setPropValue("MODEL", sNetflixModel);;
-                }
-                return;
-            case PACKAGE_ARCORE:
-                if (!sStockFp.isEmpty()) {
-                    dlog("Setting stock fingerprint for: " + packageName);
-                    setPropValue("FINGERPRINT", sStockFp);;
-                }
-                return;
         }
     }
 
@@ -263,8 +236,11 @@ public class PropImitationHooks {
         String savedProps = readFromFile(dataFile);
 
         if (TextUtils.isEmpty(savedProps)) {
-            Log.d(TAG, "Parsing props locally - data file unavailable");
-            sCertifiedProps = Arrays.asList(context.getResources().getStringArray(R.array.config_certifiedBuildProperties));
+            Log.d(TAG, "Parsing props failed - data file unavailable or empty. Using empty list.");
+            // --- START: Removed resource-based fallback
+            // sCertifiedProps = Arrays.asList(context.getResources().getStringArray(R.array.config_certifiedBuildProperties));
+            sCertifiedProps = Collections.emptyList(); // Solely depend on JSON, no fallback
+            // --- END: Removed resource-based fallback
         } else {
             Log.d(TAG, "Parsing props fetched by attestation service");
             try {
@@ -278,8 +254,6 @@ public class PropImitationHooks {
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "Error parsing JSON data", e);
-                Log.d(TAG, "Parsing props locally as fallback");
-                sCertifiedProps = Arrays.asList(context.getResources().getStringArray(R.array.config_certifiedBuildProperties));
             }
         }
         final boolean was = isGmsAddAccountActivityOnTop();

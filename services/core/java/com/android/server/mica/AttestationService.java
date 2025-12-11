@@ -36,25 +36,32 @@ public final class AttestationService extends SystemService {
 
     private static final String TAG = AttestationService.class.getSimpleName();
 
-    private static final String API = "https://github.com/Project-Mica/vendor_certification/raw/refs/heads/main/gms_certified_props.json";
-    private static final String DATA_FILE = "gms_certified_props.json";
+    // GMS Props Constants (Original)
+    private static final String GMS_API = "https://github.com/Project-Mica/vendor_certification/raw/refs/heads/main/gms_certified_props.json";
+    private static final String GMS_DATA_FILE = "gms_certified_props.json";
+
+    private static final String DEVICE_CONFIG_API = "https://github.com/Project-Mica/vendor_certification/raw/refs/heads/main/device_configs_override.json";
+    private static final String DEVICE_CONFIG_DATA_FILE = "device_configs_override.json";
+
     private static final long INITIAL_DELAY = 0; // Start immediately on boot
     private static final long INTERVAL = 8; // Interval in hours
     private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
 
     private final Context mContext;
-    private final File mDataFile;
+    private final File mGmsDataFile; // Original
+    private final File mDeviceConfigDataFile; // NEW
     private final ScheduledExecutorService mScheduler;
     private final ConnectivityManager mConnectivityManager;
-    private final FetchGmsCertifiedProps mFetchRunnable;
+    private final FetchPropsRunnable mFetchRunnable;
 
     private boolean mPendingUpdate;
 
     public AttestationService(Context context) {
         super(context);
         mContext = context;
-        mDataFile = new File(Environment.getDataSystemDirectory(), DATA_FILE);
-        mFetchRunnable = new FetchGmsCertifiedProps();
+        mGmsDataFile = new File(Environment.getDataSystemDirectory(), GMS_DATA_FILE); // Original
+        mDeviceConfigDataFile = new File(Environment.getDataSystemDirectory(), DEVICE_CONFIG_DATA_FILE); // NEW
+        mFetchRunnable = new FetchPropsRunnable();
         mScheduler = Executors.newSingleThreadScheduledExecutor();
         mConnectivityManager =
                 (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -85,7 +92,7 @@ public final class AttestationService extends SystemService {
                     content.append(line);
                 }
             } catch (IOException e) {
-                Log.e(TAG, "Error reading from file", e);
+                Log.e(TAG, "Error reading from file " + file.getName(), e);
             }
         }
         return content.toString();
@@ -96,13 +103,14 @@ public final class AttestationService extends SystemService {
             writer.write(data);
             file.setReadable(true, false); // Set -rw-r--r-- (644)
         } catch (IOException e) {
-            Log.e(TAG, "Error writing to file", e);
+            Log.e(TAG, "Error writing to file " + file.getName(), e);
         }
     }
 
-    private String fetchProps() {
+    // Original method now renamed and takes the API URL
+    private String fetchProps(String apiUrl) {
         try {
-            URL url = new URI(API).toURL();
+            URL url = new URI(apiUrl).toURL();
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
             try {
@@ -124,7 +132,7 @@ public final class AttestationService extends SystemService {
                 urlConnection.disconnect();
             }
         } catch (Exception e) {
-            Log.e(TAG, "Error making API request", e);
+            Log.e(TAG, "Error making API request to " + apiUrl, e);
             return null;
         }
     }
@@ -179,11 +187,31 @@ public final class AttestationService extends SystemService {
         return true;
     }
 
-    private class FetchGmsCertifiedProps implements Runnable {
+    private class FetchPropsRunnable implements Runnable {
+        
+        private void updateFile(String apiUrl, File dataFile, String logTag) {
+            try {
+                String savedProps = readFromFile(dataFile);
+                String props = fetchProps(apiUrl);
+
+                if (props != null) {
+                    if (!savedProps.equals(props)) {
+                        dlog("Found new " + logTag + ", updating file");
+                        writeToFile(dataFile, props);
+                        dlog(logTag + " updated successfully");
+                    } else {
+                        dlog("No change in " + logTag);
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error in updating " + logTag, e);
+            }
+        }
+
         @Override
         public void run() {
             try {
-                dlog("FetchGmsCertifiedProps started");
+                dlog("FetchPropsRunnable started");
 
                 if (!isInternetConnected()) {
                     if (!mPendingUpdate) {
@@ -192,19 +220,15 @@ public final class AttestationService extends SystemService {
                     }
                     return;
                 }
+                
+                // 1. Update GMS Certified Props (Original Logic)
+                updateFile(GMS_API, mGmsDataFile, "GMS Certified Props");
 
-                String savedProps = readFromFile(mDataFile);
-                String props = fetchProps();
+                // 2. Update DeviceConfig Overrides (NEW Logic)
+                updateFile(DEVICE_CONFIG_API, mDeviceConfigDataFile, "DeviceConfig Overrides");
 
-                if (props != null && !savedProps.equals(props)) {
-                    dlog("Found new props, updating file");
-                    writeToFile(mDataFile, props);
-                    dlog("Props updated successfully");
-                } else {
-                    dlog("No change in props");
-                }
             } catch (Exception e) {
-                Log.e(TAG, "Error in FetchGmsCertifiedProps", e);
+                Log.e(TAG, "Error in FetchPropsRunnable", e);
             }
         }
     }
