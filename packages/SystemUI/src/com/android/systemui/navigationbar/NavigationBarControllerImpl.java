@@ -415,6 +415,13 @@ public class NavigationBarControllerImpl implements
             return;
         }
 
+        // Taskbar on connected displays will be created by TaskbarManager through display
+        // decoration callback when flag is on.
+        if (!isOnDefaultDisplay
+                && DesktopExperienceFlags.ENABLE_TASKBAR_CONNECTED_DISPLAYS.isTrue()) {
+            return;
+        }
+
         // We may show TaskBar on the default display for large screen device. Don't need to create
         // navigation bar for this case.
         if (isOnDefaultDisplay && initializeTaskbarIfNecessary()) {
@@ -424,6 +431,7 @@ public class NavigationBarControllerImpl implements
         final Context context = isOnDefaultDisplay
                 ? mContext
                 : mContext.createDisplayContext(display);
+
         NavigationBarComponent component = mNavigationBarComponentFactory.create(
                 context, savedState);
         NavigationBar navBar = component.getNavigationBar();
