@@ -779,19 +779,8 @@ android_library {
         "aconfig_settings_flags_lib",
         "kairos",
         "displaylib",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
         "dynamiccolors",
         "SurfaceEffectsComposeLib",
-=======
-        "vendor.lineage.powershare-V1.0-java",
->>>>>>> 8762e5ad13b4 (SystemUI: Add powershare QS tile)
-=======
-        "vendor.lineage.powershare-V1-java",
->>>>>>> f647d20dda8e (PowerShareTile: Migrate to AIDL PowerShare HAL)
-=======
->>>>>>> 67f193d3d080 (base: Add PowerShareManager)
     ],
 }
 
